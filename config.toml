@@ -1,4 +1,5 @@
-base_url = "https://galactic-forensics.github.io/blog"
+base_url = "https://blog.galactic-forensics.space"
+title = "Galactic Forensics"
 theme = "apollo"
 description = "Thoughts and ideas..."
 
@@ -15,14 +16,13 @@ highlight_theme = "ayu-light"
 [extra]
 toc = true
 use_cdn = false
-favicon = "/icon/favicon.png"
 theme = "toggle"              # light, dark, auto, toggle
 comment = false
 fancy_code = true
 dynamic_note = true           # a note that can be toggled
 mathjax = true
 mathjax_dollar_inline_enable = true
-repo_url = "https://github.com/not-matthias/apollo/tree/main/content"
+repo_url = "https://github.com/galactic-forensics/blog/tree/main/content"
 
 menu = [
     { name = "/posts", url = "/posts", weight = 1 },
@@ -30,7 +30,7 @@ menu = [
 ]
 
 socials = [
-    { name = "github", url = "https://github.com/trappitsch/", icon = "github" },
+    { name = "github", url = "https://github.com/galactic-forensics/", icon = "github" },
 ]
 
 custom_css = []
