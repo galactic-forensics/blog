@@ -1,0 +1,149 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<feed xmlns="http://www.w3.org/2005/Atom" xml:lang="en">
+    <title>Galactic Forensics</title>
+    <subtitle>Thoughts and ideas...</subtitle>
+    <link rel="self" type="application/atom+xml" href="https://galactic-forensics.github.io/blog/atom.xml"/>
+    <link rel="alternate" type="text/html" href="https://galactic-forensics.github.io/blog"/>
+    <generator uri="https://www.getzola.org/">Zola</generator>
+    <updated>2024-09-24T00:00:00+00:00</updated>
+    <id>https://galactic-forensics.github.io/blog/atom.xml</id>
+    <entry xml:lang="en">
+        <title>Simplify sharing your python application</title>
+        <published>2024-09-24T00:00:00+00:00</published>
+        <updated>2024-09-24T00:00:00+00:00</updated>
+        
+        <author>
+          <name>
+            
+              Unknown
+            
+          </name>
+        </author>
+        
+        <link rel="alternate" type="text/html" href="https://galactic-forensics.github.io/blog/posts/06-box-why/"/>
+        <id>https://galactic-forensics.github.io/blog/posts/06-box-why/</id>
+        
+        <summary type="html">&lt;p&gt;The python ecosystem has changed a lot over the last year,
+especially with respect to tooling.
+The usage of &lt;a href=&quot;https:&#x2F;&#x2F;rust-lang.org&quot;&gt;Rust&lt;&#x2F;a&gt; has opened new, very fast,
+and by now very popular tools
+that aid in linting (&lt;a href=&quot;https:&#x2F;&#x2F;astral.sh&#x2F;ruff&quot;&gt;ruff&lt;&#x2F;a&gt;) and
+package management (&lt;a href=&quot;https:&#x2F;&#x2F;astral.sh&#x2F;uv&quot;&gt;uv&lt;&#x2F;a&gt;, &lt;a href=&quot;https:&#x2F;&#x2F;rye.astral.sh&quot;&gt;rye&lt;&#x2F;a&gt;).
+But what tools are there if you want to share your python applications
+with colleagues that do not use python?&lt;&#x2F;p&gt;
+</summary>
+        
+    </entry>
+    <entry xml:lang="en">
+        <title>Seven in a row</title>
+        <published>2024-03-01T00:00:00+00:00</published>
+        <updated>2024-03-01T00:00:00+00:00</updated>
+        
+        <author>
+          <name>
+            
+              Unknown
+            
+          </name>
+        </author>
+        
+        <link rel="alternate" type="text/html" href="https://galactic-forensics.github.io/blog/posts/05-radiolab-stochasticity/"/>
+        <id>https://galactic-forensics.github.io/blog/posts/05-radiolab-stochasticity/</id>
+        
+        <summary type="html">&lt;p&gt;One of my favorite radio shows is &lt;a href=&quot;https:&#x2F;&#x2F;radiolab.org&#x2F;&quot;&gt;Radiolab&lt;&#x2F;a&gt;, which always presents the listener with an interesting scientific question from across the board. In a recent rerun, Radiolab discussed &lt;a href=&quot;https:&#x2F;&#x2F;radiolab.org&#x2F;podcast&#x2F;91684-stochasticity&#x2F;transcript&quot;&gt;Stochasticity&lt;&#x2F;a&gt;. Something struck me as odd...&lt;&#x2F;p&gt;
+</summary>
+        
+    </entry>
+    <entry xml:lang="en">
+        <title>Writing an Abstract</title>
+        <published>2023-11-23T00:00:00+00:00</published>
+        <updated>2023-11-23T00:00:00+00:00</updated>
+        
+        <author>
+          <name>
+            
+              Unknown
+            
+          </name>
+        </author>
+        
+        <link rel="alternate" type="text/html" href="https://galactic-forensics.github.io/blog/posts/04-writing-an-abstract/"/>
+        <id>https://galactic-forensics.github.io/blog/posts/04-writing-an-abstract/</id>
+        
+        <summary type="html">&lt;p&gt;Writing is an important part of everybody&#x27;s scientific work.
+I have taken several writing courses over the years.
+My approach to writing has been shaped by these courses
+with some additional experience.
+Is it great now? Surely not, but better than it used to be!
+Here are some of my pointers.&lt;&#x2F;p&gt;
+</summary>
+        
+    </entry>
+    <entry xml:lang="en">
+        <title>The day the Earth stood still</title>
+        <published>2023-09-06T00:00:00+00:00</published>
+        <updated>2023-09-06T00:00:00+00:00</updated>
+        
+        <author>
+          <name>
+            
+              Unknown
+            
+          </name>
+        </author>
+        
+        <link rel="alternate" type="text/html" href="https://galactic-forensics.github.io/blog/posts/03-suncrash/"/>
+        <id>https://galactic-forensics.github.io/blog/posts/03-suncrash/</id>
+        
+        <summary type="html">&lt;p&gt;Assume the following thought experiment:
+The Earth circling the Sun at a cozy distance of 1 AU (around 150 million km)
+suddenly stands still and doesn&#x27;t move anymore.
+The only force left on the Earth is now the Sun&#x27;s gravitational pull.
+How long will it be until we crash into the Sun?&lt;&#x2F;p&gt;
+</summary>
+        
+    </entry>
+    <entry xml:lang="en">
+        <title>The number of atoms in a SiC stardust grain</title>
+        <published>2022-03-26T00:00:00+00:00</published>
+        <updated>2022-03-26T00:00:00+00:00</updated>
+        
+        <author>
+          <name>
+            
+              Unknown
+            
+          </name>
+        </author>
+        
+        <link rel="alternate" type="text/html" href="https://galactic-forensics.github.io/blog/posts/02-atoms-in-sic-grain/"/>
+        <id>https://galactic-forensics.github.io/blog/posts/02-atoms-in-sic-grain/</id>
+        
+        <summary type="html">&lt;p&gt;Let&#x27;s calculate how many atoms are in a SiC stardust grain and use python to do so!&lt;&#x2F;p&gt;
+</summary>
+        
+    </entry>
+    <entry xml:lang="en">
+        <title>Resources for Programming</title>
+        <published>2022-01-27T00:00:00+00:00</published>
+        <updated>2022-01-27T00:00:00+00:00</updated>
+        
+        <author>
+          <name>
+            
+              Unknown
+            
+          </name>
+        </author>
+        
+        <link rel="alternate" type="text/html" href="https://galactic-forensics.github.io/blog/posts/01-resources-programming/"/>
+        <id>https://galactic-forensics.github.io/blog/posts/01-resources-programming/</id>
+        
+        <summary type="html">&lt;p&gt;Sooner or later, most scientist have to automate certain tasks.
+It is generally advisable to leave such repetitive things that can be
+automated to the computer. Here we have a look at tools that might help with
+this task.&lt;&#x2F;p&gt;
+</summary>
+        
+    </entry>
+</feed>
