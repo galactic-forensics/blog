@@ -1,0 +1,44 @@
+# adopted from https://github.com/shalzz/zola-deploy-action
+on:
+  push:
+    branches:
+      - main
+  pull_request:
+
+name: Build and deploy GH Pages
+
+jobs:
+  build_only: # only build for all non-main branches
+   runs-on: ubuntu-latest
+   if: github.ref != 'refs/heads/main'
+   steps:
+     - name: Checkout main 
+       uses: actions/checkout@v6
+       with:
+         submodules: recursive
+     - name: Build only
+       uses: shalzz/zola-deploy-action@v0.22.0
+       env:
+         BUILD_ONLY: true
+         BUILD_FLAGS: --drafts
+
+  build_and_deploy: # build an deploy for main branch
+    runs-on: ubuntu-latest
+    if: >-
+      github.ref == 'refs/heads/main' &&
+      github.repository_owner == 'galactic-forensics'
+    steps:
+      - name: checkout
+        uses: actions/checkout@v6
+        with:
+          submodules: recursive
+      - name: Build and deploy
+        uses: shalzz/zola-deploy-action@v0.22.0
+        env:
+          # Target branch
+          PAGES_BRANCH: gh-pages
+          # Provide personal access token
+          # TOKEN: ${{ secrets.TOKEN }}
+          # Or if publishing to the same repo, use the automatic token
+          TOKEN: ${{ secrets.GITHUB_TOKEN }}
+

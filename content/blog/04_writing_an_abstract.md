@@ -3,7 +3,8 @@ title = "Writing an Abstract"
 date = "2023-11-23"
 
 [taxonomies]
-tags=["writing"]
+tags=[]
+categories=["Science"]
 
 [extra]
 repo_view = false

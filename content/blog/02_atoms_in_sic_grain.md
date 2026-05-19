@@ -3,10 +3,13 @@ title = "The number of atoms in a SiC stardust grain"
 date = "2022-03-26"
 
 [taxonomies]
-tags = ["stardust", "python"]
+tags = ["Stardust", "Python"]
+categories = ["Science", "Programming"]
+
 
 [extra]
 repo_view = false
+mathjax = true
 +++
 
 
@@ -15,7 +18,7 @@ Let's calculate how many atoms are in a SiC stardust grain and use python to do 
 
 <!-- more -->
 
-In this article, we will analyze how many atoms of a given trace element are in a presolar SiC grain of a given size. Furthermore, the Jupyter notebook in which this article was written is available via [`binder`](https://mybinder.org/), so you can adjust it at any point to change the calculations and adopt it to your needs. Click on the icon on top to run this notebook in [`binder`](https://mybinder.org/). Throughout this notebook we will be using SI units.
+In this article, we will analyze how many atoms of a given trace element are in a presolar SiC grain of a given size. Furthermore, the Jupyter notebook in which this article was written is available via [`binder`](https://mybinder.org/), so you can adjust it at any point to change the calculations and adopt it to your needs. Click on the icon at the bottom to run this notebook in [`binder`](https://mybinder.org/). Throughout this notebook we will be using SI units.
 
 # Calculation
 
@@ -28,7 +31,7 @@ First, let us calculate the mass of a given SiC grain. We therefore need to defi
 we can calculate the mass of the grain as:
 
 \begin{equation}
-        m = V\rho = \frac{4}{3} \pi r^3 \rho
+    m = V\rho = \frac{4}{3} \pi r^3 \rho
 \end{equation}
 
 For a given radius, we can now write a `python` function to calculate the mass as following:

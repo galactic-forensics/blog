@@ -4,7 +4,8 @@ subtitle = "Why I started `box`?"
 date = "2024-09-24"
 
 [taxonomies]
-tags=["coding", "python", "box"]
+tags=["Python"]
+categories = ["Programming"]
 
 [extra]
 repo_view = false

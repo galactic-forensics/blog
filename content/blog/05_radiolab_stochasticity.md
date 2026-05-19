@@ -3,10 +3,12 @@ title = "Seven in a row"
 date = "2024-03-01"
 
 [taxonomies]
-tags = ["python", "science"]
+tags = ["Python"]
+categories = ["Science"]
 
 [extra]
 repo_view = false
+mathjax = true
 +++
 
 

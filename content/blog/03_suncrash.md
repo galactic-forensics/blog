@@ -3,10 +3,12 @@ title = "The day the Earth stood still"
 date = "2023-09-06"
 
 [taxonomies]
-tags=["physics", "python", "rust"]
+tags=["Physics", "Python", "Rust"]
+categories=["Science", "Programming"]
 
 [extra]
 repo_view = false
+mathjax = true
 +++
 
 Assume the following thought experiment:

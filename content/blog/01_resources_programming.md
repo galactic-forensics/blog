@@ -3,7 +3,8 @@ title = "Resources for Programming"
 date = "2022-01-27"
 
 [taxonomies]
-tags=["coding"]
+tags=[]
+categories = ["Programming"]
 
 [extra]
 repo_view = false

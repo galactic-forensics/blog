@@ -1,42 +1,256 @@
-base_url = "https://galactic-forensics.github.io/blog"
-title = "Galactic Forensics"
-theme = "apollo"
+# The URL the site will be built for
+title = "Mind bytes"
+base_url = "https://blog.galactic-forensics.space"
+
 description = "Thoughts and ideas..."
 
-compile_sass = true
-generate_feeds = true
-build_search_index = false
-minify_html = true
-taxonomies = [{ name = "tags" }]
+# The default author for pages
+author = "trappitsch"
 
+# The default language; used in feeds.
+# [Cela hint] Html lang default setting
+default_language = "en"
+
+# The site theme to use.
+# [Cela hint] Try cela
+theme = "cela"
+
+# Output directory `public` (by default)
+output_dir = "public"
+
+# Whether dotfiles at the root level of the output directory are preserved when (re)building the site.
+# Enabling this also prevents the deletion of the output folder itself on rebuilds.
+# [Cela hint] Cela will enable this feature by default
+preserve_dotfiles_in_output = true
+
+# When set to "true", the Sass files in the `sass` directory in the site root are compiled.
+# Sass files in theme directories are always compiled.
+compile_sass = false
+
+# When set to "true", the generated HTML files are minified.
+minify_html = false
+
+# A list of glob patterns specifying asset files to ignore when the content
+# directory is processed. Defaults to none, which means that all asset files are
+# copied over to the `public` directory.
+# Example:
+#     ignored_content = ["*.{graphml,xlsx}", "temp.*", "**/build_folder"]
+ignored_content = []
+
+# Similar to ignored_content, a list of glob patterns specifying asset files to
+# ignore when the static directory is processed. Defaults to none, which means
+# that all asset files are copied over to the `public` directory
+ignored_static = []
+
+# When set to "true", a feed is automatically generated.
+# [Cela hint] Cela will enable this feature by default for rss feed.
+generate_feeds = true
+
+# The filenames to use for the feeds. Used as the template filenames, too.
+# Defaults to ["atom.xml"], which has a built-in template that renders an Atom 1.0 feed.
+# There is also a built-in template "rss.xml" that renders an RSS 2.0 feed.
+feed_filenames = ["atom.xml"]
+
+# The number of articles to include in the feed. All items are included if
+# this limit is not set (the default).
+# [Cela hint] Cela will set the feed limit to 50 by default
+feed_limit = 50
+
+# The taxonomies to be rendered for the site and their configuration of the default languages
+# Example:
+#     taxonomies = [
+#       {name = "tags", feed = true}, # each tag will have its own feed
+#       {name = "tags"}, # you can have taxonomies with the same name in multiple languages
+#       {name = "categories", paginate_by = 5},  # 5 items per page for a term
+#       {name = "authors"}, # Basic definition: no feed or pagination
+#     ]
+#
+taxonomies = [
+  {name = "tags", feed = true},
+  {name = "categories", feed = true},
+]
+
+# When set to "true", a search index is built from the pages and section
+# content for `default_language`.
+# [Cela hint] Cela will enable this feature by default
+build_search_index = true
+
+[search]
+index_format = "fuse_json"
+
+# Configuration of the Markdown rendering
 [markdown]
-highlight_code = true
-highlight_theme = "dracula"
+# When set to "true", emoji aliases translated to their corresponding
+# Unicode emoji equivalent in the rendered Markdown files. (e.g.: :smile: => 😄)
+render_emoji = true
+
+# Whether smart punctuation is enabled (changing quotes, dashes, dots in their typographic form)
+# For example, `...` into `…`, `"quote"` into `“curly”` etc
+smart_punctuation = false
+
+# Whether footnotes are rendered in the GitHub-style (at the bottom, with back references) or plain (in the place, where they are defined)
+# Default to open
+# Reference [Github Docs](https://docs.github.com/en/get-started/writing-on-github/getting-started-with-writing-and-formatting-on-github/basic-writing-and-formatting-syntax#footnotes)
+bottom_footnotes = true
+
+# Syntax highlighting settings for Zola 0.22.x
+[markdown.highlighting]
+theme = "catppuccin-mocha"
+
+[link_checker]
+# See more details in https://www.getzola.org/documentation/getting-started/configuration/
+# YouTube watch link (used in test pages) are valid but can reject automated checker requests. 
+skip_prefixes = ["https://www.youtube.com"]
+
+[slugify]
+# default is on
+paths = "on"
+# default is on (slugify the categories and tags ..)
+taxonomies = "on"
+# Whether to remove date prefixes for page path slugs.
+# For example, content/posts/2016-10-08_a-post-with-dates.md => posts/a-post-with-dates
+# When true, content/posts/2016-10-08_a-post-with-dates.md => posts/2016-10-08-a-post-with-dates
+paths_keep_dates = false
 
 [extra]
-toc = true
-use_cdn = false
-theme = "toggle"              # light, dark, auto, toggle
-comment = false
-fancy_code = true
-dynamic_note = true           # a note that can be toggled
-mathjax = true
-mathjax_dollar_inline_enable = true
-repo_url = "https://github.com/galactic-forensics/blog/tree/main/content/"
+# Put all your custom variables here
+# Whether open the TOC on each page
+toc_open = false
 
-menu = [
-    { name = "/posts", url = "/posts", weight = 1 },
-    { name = "/tags", url = "/tags", weight = 4 },
+# Whether to use mathjax on each page
+# default false
+enable_mathjax = true
+
+[extra.cela]
+# The template title (shown in home page )
+default_keywords = ["Galactic Forensics", "Reto Trappitsch", "Mind Bytes"]
+favicon = "favicon.ico"
+favicon16x16 = "favicon-16x16.png"
+favicon32x32 = "favicon-32x32.png"
+header_title = "Mind Bytes"
+icon = "svg/cela_new_small_rec.svg"
+icon_dark = "svg/cela_new_small_rec.svg"
+
+date_format = "%Y-%m-%d"
+show_home_title = true
+home_title = "Mind Bytes"
+# Now the title of navigation item will be the default name. If the title_key is set, it will be override by the translation.
+# More details in the i18n/translations configuration.
+navigation = [
+  {path = "/", title = "Home", title_key = "nav_home"},
+  {path = "/tags", title = "Tags", title_key = "nav_tags"},
+  {path = "/categories", title = "Categories", title_key = "nav_categories"},
+  {path = "#", title = "Search", title_key = "nav_search", is_search = true},
+  # {path = "/robot", title = "Robot", title_key = "nav_robot", is_robot = true},
+  # {path = "https://getzola.org/", title = "Zola", is_external = true},
 ]
 
-socials = [
-    { name = "github", url = "https://github.com/galactic-forensics/", icon = "github" },
+show_home_content = true
+home_content = "Welcome to a collection of some thoughts, ideas, tutorials, learnings... some of these are surely half-baked, but they are there to read anyway."
+
+# [Cela hint] Default directory for blog post content.
+# This setting determines things following:
+#   1) Content in which directory is included when generating the homepage (including subsections)
+#   2) Base path used for resolving content.
+#
+# Examples:
+#   - ""      → includes all content under "content/"
+#   - "blog"  → includes only content under "content/blog/"
+# NOTE: Currently supports only first-level paths like "blog"; nested paths like "blog/engineering" may render no home posts. See https://github.com/edwardzcn-decade/cela/pull/4
+home_content_dir = "blog"
+
+# [Cela hint] Controls how posts are displayed on the content homepage.
+# Available values: "default" (default), "mix", "bare"
+#
+#   - "default" → displays posts grouped by year in descending order
+#   - "mix"     → displays posts in archive style with collapsible subsections
+#   - "bare"    → displays a simple descending list of posts (no year grouping)
+#
+# TODO: handle "" (empty string) case
+home_list_style = "default"
+
+# [Cela hint] Decide whether to display social icons on the homepage.
+# Default: true
+# Note: If home-info is disabled, the icons listed under "social_icons" will not be shown.
+show_home_social_icons = true
+social_icons = [
+  {path = "https://github.com/trappitsch", title = "GitHub", icon = "github"},
+  {path = "https://bsky.app/profile/galactic-forensics.space", title = "Bluesky", icon = "bluesky"},
+  {path = "https://scholar.google.com/citations?user=nuqrAOUAAAAJ&hl", title = "Google Scholar", icon = "googlescholar"},
+  {path = "/atom.xml", title = "RSS", icon = "rss"},
+]
+taxonomies_desc = []
+
+
+# [Cela hint] Decide whether to append an emoji "tail" to the header of a specific taxonomy page (e.g., selected tag/category).
+# Default: true
+# Note: When enabled, the emoji is matched and applied based on the taxonomy name defined in "taxonomies_tail".
+show_taxonomies_tail = true
+taxonomies_tail = [
+  {name = "tags", emoji = "🏷️"},
+  {name = "categories", emoji = "📂"},
 ]
 
-custom_css = []
-stylesheets = [
-    "override.css"
-]
+# Trigger when readers click the "suggest changes" on each page
+# it can be
+# - an email address (e.g. "mailto:edward@edwardzcn.me" )
+# - a github or gitlab repo link (e.g. "https://github.com/<your-username>/<your-source>/tree/main")
+# if your blog source is public, cela will try to find the orinal page with its relative path
+#edit_post_url = "mailto:your-username@gmail.com"
+edit_post_url = "https://github.com/galactic-forensics/blog/tree/main"
+show_cela_logo = false
+show_code_copy_buttons = true
+show_header_title = false
+show_post_edit_button = false 
+show_post_meta = true
+show_post_nav_links = true
+show_reading_time = true
+# Card hover: show accent-colored border on hover (default: false, uses shadow lift instead)
+card_hover_border = false
+show_scroll_to_top = true
+show_taxonomies_description = true
 
-[extra.analytics]
+show_theme_toggle = true
+show_toc = true
+unfold_toc = false
+show_word_count = true
+
+# [Cela hint] Cela will use this for search page title (default is "Search" if not set), and it wil be override by `./search/index.md` title if set.
+search_title = "Search"
+# [Cela hint] Cela will use this for search page description (default is "Find posts by title or body content" if not set), and it wil be override by `./search/index.md` description if set.
+search_description = "Find posts by title or body content"
+
+[extra.cela.nav_card]
 enabled = false
+show_avatar = true
+avatar = "android-chrome-192x192.png"
+title = "Mind Bytes"
+slogan = ""
+home_path = "/blog"
+# Empty uses the translated home-info default label.
+home_label = ""
+links = [
+  {path = "https://github.com/", title = "GitHub", icon = "github"},
+  {path = "/atom.xml", title = "RSS", icon = "rss"},
+]
+
+[extra.cela.color]
+
+default_theme = "dark"
+# If disable javascript, the website will always use the default_theme
+remember_choice = true
+# If remeber_choice is true, the cookie/localStorage will use the theme last time user visited
+
+[extra.cela.global]
+# Whether to show the original title defined in base configure
+title_show = false
+# Title prefix/delimiter before page or section title
+title_prefix = "🌟"
+# Language direction map for the first i18n version.
+language_directions = { en = "ltr" }
+
+# # TODO
+# # Whether to load social icons (default = true)
+# social_icon = true
+# # Specify the directory of social icon (default = "") If set, the original social_icon macro will not be loaded and used
+# social_icon_dir = "auto"
