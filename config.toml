@@ -66,8 +66,8 @@ feed_limit = 50
 #     ]
 #
 taxonomies = [
-  {name = "tags", feed = true},
-  {name = "categories", feed = true},
+  { name = "tags", feed = true },
+  { name = "categories", feed = true },
 ]
 
 # When set to "true", a search index is built from the pages and section
@@ -137,10 +137,10 @@ home_title = "Mind Bytes"
 # Now the title of navigation item will be the default name. If the title_key is set, it will be override by the translation.
 # More details in the i18n/translations configuration.
 navigation = [
-  {path = "/", title = "Home", title_key = "nav_home"},
-  {path = "/tags", title = "Tags", title_key = "nav_tags"},
-  {path = "/categories", title = "Categories", title_key = "nav_categories"},
-  {path = "#", title = "Search", title_key = "nav_search", is_search = true},
+  { path = "/", title = "Home", title_key = "nav_home" },
+  { path = "/tags", title = "Tags", title_key = "nav_tags" },
+  { path = "/categories", title = "Categories", title_key = "nav_categories" },
+  { path = "#", title = "Search", title_key = "nav_search", is_search = true },
   # {path = "/robot", title = "Robot", title_key = "nav_robot", is_robot = true},
   # {path = "https://getzola.org/", title = "Zola", is_external = true},
 ]
@@ -174,10 +174,10 @@ home_list_style = "default"
 # Note: If home-info is disabled, the icons listed under "social_icons" will not be shown.
 show_home_social_icons = true
 social_icons = [
-  {path = "https://github.com/trappitsch", title = "GitHub", icon = "github"},
-  {path = "https://bsky.app/profile/galactic-forensics.space", title = "Bluesky", icon = "bluesky"},
-  {path = "https://scholar.google.com/citations?user=nuqrAOUAAAAJ&hl", title = "Google Scholar", icon = "googlescholar"},
-  {path = "/atom.xml", title = "RSS", icon = "rss"},
+  { path = "https://github.com/trappitsch", title = "GitHub", icon = "github" },
+  { path = "https://bsky.app/profile/galactic-forensics.space", title = "Bluesky", icon = "bluesky" },
+  { path = "https://scholar.google.com/citations?user=nuqrAOUAAAAJ&hl", title = "Google Scholar", icon = "googlescholar" },
+  { path = "/atom.xml", title = "RSS", icon = "rss" },
 ]
 taxonomies_desc = []
 
@@ -187,8 +187,8 @@ taxonomies_desc = []
 # Note: When enabled, the emoji is matched and applied based on the taxonomy name defined in "taxonomies_tail".
 show_taxonomies_tail = true
 taxonomies_tail = [
-  {name = "tags", emoji = "🏷️"},
-  {name = "categories", emoji = "📂"},
+  { name = "tags", emoji = "🏷️" },
+  { name = "categories", emoji = "📂" },
 ]
 
 # Trigger when readers click the "suggest changes" on each page
@@ -201,7 +201,7 @@ edit_post_url = "https://github.com/galactic-forensics/blog/tree/main"
 show_cela_logo = false
 show_code_copy_buttons = true
 show_header_title = false
-show_post_edit_button = false 
+show_post_edit_button = false
 show_post_meta = true
 show_post_nav_links = true
 show_reading_time = true
@@ -230,8 +230,8 @@ home_path = "/blog"
 # Empty uses the translated home-info default label.
 home_label = ""
 links = [
-  {path = "https://github.com/", title = "GitHub", icon = "github"},
-  {path = "/atom.xml", title = "RSS", icon = "rss"},
+  { path = "https://github.com/", title = "GitHub", icon = "github" },
+  { path = "/atom.xml", title = "RSS", icon = "rss" },
 ]
 
 [extra.cela.color]
