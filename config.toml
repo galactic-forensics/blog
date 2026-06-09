@@ -175,6 +175,7 @@ home_list_style = "default"
 show_home_social_icons = true
 social_icons = [
   { path = "https://github.com/trappitsch", title = "GitHub", icon = "github" },
+  { path = "https://matrix.to/%40trappits:epfl.ch#/%40trappits:epfl.ch", title = "Matrix", icon = "matrix" },
   { path = "https://bsky.app/profile/galactic-forensics.space", title = "Bluesky", icon = "bluesky" },
   { path = "https://scholar.google.com/citations?user=nuqrAOUAAAAJ&hl", title = "Google Scholar", icon = "googlescholar" },
   { path = "/atom.xml", title = "RSS", icon = "rss" },
