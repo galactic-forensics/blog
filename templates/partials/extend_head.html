@@ -1,0 +1,19 @@
+{% if config.extra.enable_mathjax %}
+  {% if page.extra.mathjax %}
+  <script>
+    window.MathJax = {
+      tex: {
+        inlineMath: [['$', '$'], ['\\(', '\\)']],
+        displayMath: [['$$', '$$'], ['\\[', '\\]']]
+      },
+      options: {
+        ignoreHtmlClass: "no-mathjax",
+        processHtmlClass: "mathjax"
+      }
+    };
+  </script>
+  <script async src="https://cdn.jsdelivr.net/npm/mathjax@3/es5/tex-mml-chtml.js"></script>
+  {% endif %}
+{% endif %}
+
+<link rel="stylesheet" href="{{ get_url(path='css/code-theme-overrides.css') }}">

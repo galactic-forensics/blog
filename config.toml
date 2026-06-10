@@ -95,7 +95,8 @@ bottom_footnotes = true
 
 # Syntax highlighting settings for Zola 0.22.x
 [markdown.highlighting]
-theme = "catppuccin-mocha"
+light_theme = "catppuccin-latte"
+dark_theme = "catppuccin-mocha"
 
 [link_checker]
 # See more details in https://www.getzola.org/documentation/getting-started/configuration/
