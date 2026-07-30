@@ -33,16 +33,16 @@ which is very low. However, remember that they flipped one hundred times. This -
 My issue with the episode was the following dialog (transcript taken directly from [here](https://radiolab.org/podcast/91684-stochasticity/transcript):
 
 > JAD: And then Jay explained it to us: if you're just doing seven flips then yeah, getting seven in a row is really unlikely. But if you're doing multiple sets of seven ...
-> 
+>
 > JAY KOEHLER: Fourteen of those sets of seven.
-> 
+>
 > JAD: ... which we were, because we were doing a hundred. Then the probabilities start to add up. And we start small, like one percent. But then that one becomes two, which becomes four, which becomes eight until, when it's all said and done, the chances of getting seven tails in a row somewhere in a set of a hundred is—don't hold your breath.
 
 This statement didn't make much sense to me, since any seven in a row in the series of 100 flips would work and not just one of the fourteen!
 
 # Let's do the math
 
-To calculate the probability of getting seven in a row out of one hundred flips, let's first define what this even means: In order to have exactly seven in a row, the flip before and after (if we are somewhere in between flip one and flip 100) must be of the opposite side. This means that to have seven tails, the flip before and after must be heads. Therefore, we need to get in fact nine in a row correct! The probability that the first or last seven flips are of the same suit requires the flip after or before that row to be different, thus for these edge cases we only need to get eight in a row correct. 
+To calculate the probability of getting seven in a row out of one hundred flips, let's first define what this even means: In order to have exactly seven in a row, the flip before and after (if we are somewhere in between flip one and flip 100) must be of the opposite side. This means that to have seven tails, the flip before and after must be heads. Therefore, we need to get in fact nine in a row correct! The probability that the first or last seven flips are of the same suit requires the flip after or before that row to be different, thus for these edge cases we only need to get eight in a row correct.
 
 As so often with probability calculations, let us turn the problem around and ask the question of what is the probability that the two edge cases are not seven in a row. We can calculate the edge cases as following:
 
@@ -73,7 +73,6 @@ This is pretty close to the answer on the show of one in six, which would be aro
 # Flipping coins in python
 
 Let's do a simulation of this experiment in python. We are going to simulate `nmc` times `nflips` coin flips in a row and count how many times we get at least one seven in a row. Dividing the total count by `nmc` should then give us the same result as we have determined in the calculation above.
-
 
 ```python
 from numba import njit
@@ -118,25 +117,21 @@ def check_flips(all_flips: np.ndarray) -> np.ndarray:
     return results
 ```
 
-
 ```python
 # some starting values
 nmc = 10_000_000
 nflips = 100
 ```
 
-
 ```python
 # let's generate all the flips using numpy's random.randint routine
 all_flips = np.random.randint(0, 2, size=(nmc, nflips))
 ```
 
-
 ```python
 # get the result from our routine that we defined above
 seven_in_a_row = check_flips(all_flips)
 ```
-
 
 ```python
 # Calculate the probability to get at least one seven in a row
@@ -146,8 +141,6 @@ print(f"Probability for at least one time seven in a row in {nflips} flips is {p
 
     Probability for at least one time seven in a row in 100 flips is 17.13%.
 
-
-
 ```python
 # Calculate the probability to get exactly one time seven in a row
 prob = len(np.where(seven_in_a_row == 1)[0]) / nmc
@@ -156,17 +149,14 @@ print(f"Probability for one time seven in a row in {nflips} flips is {prob * 100
 
     Probability for one time seven in a row in 100 flips is 15.77%.
 
-
 # Comparison of the results
 
-As you can see, we get the same result from the Monte Carlo calculation as we got from the analytical calculation. If you are interested in why we used `@njit` before the `check_flips` function, please have a look at the docstring in that function and check out [`numba`](https://numba.pydata.org/). Without this decorator, we would wait a lot longer to simulate 10 million times one hundred flips. Numba was also used in this blog post [here](https://galactic-forensics.space/resources/mind-bytes/suncrash/), where more details are given.
+As you can see, we get the same result from the Monte Carlo calculation as we got from the analytical calculation. If you are interested in why we used `@njit` before the `check_flips` function, please have a look at the docstring in that function and check out [`numba`](https://numba.pydata.org/). Without this decorator, we would wait a lot longer to simulate 10 million times one hundred flips. Numba was also used in this blog post [here](/blog/03-suncrash/), where more details are given.
 
 Also, feel free to play with this example! Some questions you might ask:
 
 - How many streaks of at least seven in a row are in the set?
 - How many streaks *insert you number here* are in the set?
 - How well has the result converged after ten million tries?
-
-
 
 [![Binder](https://mybinder.org/badge_logo.svg)](https://mybinder.org/v2/gh/galactic-forensics/mindbytes/HEAD?labpath=radiolab_stochasticity%2Fradiolab_stochasticity.ipynb)
