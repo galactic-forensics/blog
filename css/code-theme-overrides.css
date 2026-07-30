@@ -1,0 +1,79 @@
+/* Keep Cela's block/container styling sane */
+.post-content pre.giallo,
+.post-content pre,
+.post-content .highlight,
+.post-content .highlight pre {
+  background: var(--highlight-bg) !important;
+  color: var(--content-text) !important;
+}
+
+.post-content pre code {
+  background: transparent !important;
+  color: inherit !important;
+}
+
+.post-content .giallo-l {
+  display: inline-block;
+  min-height: 1lh;
+  width: 100%;
+}
+
+/* Light mode block root */
+:root[data-scheme="catppuccin-latte"] .post-content pre.giallo[style] {
+  color: #4c4f69 !important;
+  background-color: #eff1f5 !important;
+}
+
+/* Dark mode block root */
+:root:not([data-scheme="catppuccin-latte"]) .post-content pre.giallo[style] {
+  color: #cdd6f4 !important;
+  background-color: #1e1e2e !important;
+}
+
+/* Default reset for styled spans in light mode */
+:root[data-scheme="catppuccin-latte"] .post-content pre.giallo code span[style] {
+  color: #4c4f69 !important;
+  background: transparent !important;
+}
+
+/* ===== Full-ish Catppuccin Mocha -> Latte color remap ===== */
+
+/* text */
+:root[data-scheme="catppuccin-latte"] .post-content pre.giallo code span[style*="#CDD6F4"] { color: #4c4f69 !important; }
+:root[data-scheme="catppuccin-latte"] .post-content pre.giallo code span[style*="#BAC2DE"] { color: #5c5f77 !important; }
+:root[data-scheme="catppuccin-latte"] .post-content pre.giallo code span[style*="#A6ADC8"] { color: #6c6f85 !important; }
+:root[data-scheme="catppuccin-latte"] .post-content pre.giallo code span[style*="#9399B2"] { color: #7c7f93 !important; }
+:root[data-scheme="catppuccin-latte"] .post-content pre.giallo code span[style*="#7F849C"] { color: #8c8fa1 !important; }
+:root[data-scheme="catppuccin-latte"] .post-content pre.giallo code span[style*="#6C7086"] { color: #9ca0b0 !important; }
+
+/* rosewater / flamingo / pink / mauve */
+:root[data-scheme="catppuccin-latte"] .post-content pre.giallo code span[style*="#F5E0DC"] { color: #dc8a78 !important; }
+:root[data-scheme="catppuccin-latte"] .post-content pre.giallo code span[style*="#F2CDCD"] { color: #dd7878 !important; }
+:root[data-scheme="catppuccin-latte"] .post-content pre.giallo code span[style*="#F5C2E7"] { color: #ea76cb !important; }
+:root[data-scheme="catppuccin-latte"] .post-content pre.giallo code span[style*="#CBA6F7"] { color: #8839ef !important; }
+
+/* red / maroon / peach / yellow */
+:root[data-scheme="catppuccin-latte"] .post-content pre.giallo code span[style*="#F38BA8"] { color: #d20f39 !important; }
+:root[data-scheme="catppuccin-latte"] .post-content pre.giallo code span[style*="#EBA0AC"] { color: #e64553 !important; }
+:root[data-scheme="catppuccin-latte"] .post-content pre.giallo code span[style*="#FAB387"] { color: #fe640b !important; }
+:root[data-scheme="catppuccin-latte"] .post-content pre.giallo code span[style*="#F9E2AF"] { color: #df8e1d !important; }
+
+/* green / teal / sky / sapphire */
+:root[data-scheme="catppuccin-latte"] .post-content pre.giallo code span[style*="#A6E3A1"] { color: #40a02b !important; }
+:root[data-scheme="catppuccin-latte"] .post-content pre.giallo code span[style*="#94E2D5"] { color: #179299 !important; }
+:root[data-scheme="catppuccin-latte"] .post-content pre.giallo code span[style*="#89DCEB"] { color: #04a5e5 !important; }
+:root[data-scheme="catppuccin-latte"] .post-content pre.giallo code span[style*="#74C7EC"] { color: #209fb5 !important; }
+
+/* blue / lavender */
+:root[data-scheme="catppuccin-latte"] .post-content pre.giallo code span[style*="#89B4FA"] { color: #1e66f5 !important; }
+:root[data-scheme="catppuccin-latte"] .post-content pre.giallo code span[style*="#B4BEFE"] { color: #7287fd !important; }
+
+/* surface/background-ish colors if emitted */
+:root[data-scheme="catppuccin-latte"] .post-content pre.giallo code span[style*="#585B70"] { color: #acb0be !important; }
+:root[data-scheme="catppuccin-latte"] .post-content pre.giallo code span[style*="#45475A"] { color: #bcc0cc !important; }
+:root[data-scheme="catppuccin-latte"] .post-content pre.giallo code span[style*="#313244"] { color: #ccd0da !important; }
+:root[data-scheme="catppuccin-latte"] .post-content pre.giallo code span[style*="#1E1E2E"] { color: #dce0e8 !important; }
+
+/* crust/base/mantle variants if ever emitted inline */
+:root[data-scheme="catppuccin-latte"] .post-content pre.giallo code span[style*="#181825"] { color: #e6e9ef !important; }
+:root[data-scheme="catppuccin-latte"] .post-content pre.giallo code span[style*="#11111B"] { color: #eff1f5 !important; }

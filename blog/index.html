@@ -1,0 +1,622 @@
+<!DOCTYPE html>
+<html lang="en" dir="ltr">
+
+<head>
+<meta charset="utf-8">
+<meta http-equiv="X-UA-Compatible" content="IE=edge">
+<meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
+<meta name="robots" content="index, follow">
+
+
+
+
+<title>Blog</title>
+
+
+
+
+<meta name="keywords" content="Galactic Forensics, Reto Trappitsch, Mind Bytes">
+
+
+
+
+<meta name="description" content="My blog posts">
+
+
+
+<meta name="author" content="trappitsch">
+
+
+
+
+
+
+
+  <link rel="canonical" href="https:&#x2F;&#x2F;blog.galactic-forensics.space&#x2F;blog&#x2F;">
+
+
+<link rel="stylesheet" href="https://blog.galactic-forensics.space/css/theme-runtime.css">
+<link rel="stylesheet" href="https://blog.galactic-forensics.space/css/theme.css">
+<link rel="icon" href="https://blog.galactic-forensics.space/favicon.ico">
+<link rel="icon" type="image/png" sizes="16x16" href="https://blog.galactic-forensics.space/favicon-16x16.png">
+<link rel="icon" type="image/png" sizes="32x32" href="https://blog.galactic-forensics.space/favicon-32x32.png">
+<link rel="apple-touch-icon" href="https://blog.galactic-forensics.space/apple-touch-icon.png">
+<meta name="theme-color" content="#2e2e33">
+<meta name="msapplication-TileColor" content="#2e2e33">
+
+
+
+<link rel="alternate" type="application/atom+xml" title="RSS" href="https://blog.galactic-forensics.space/atom.xml">
+
+
+
+<noscript>
+    <style>
+        #theme-toggle,
+        .top-link {
+            display: none;
+        }
+    </style>
+    
+    <style>
+        @media (prefers-color-scheme: dark) {
+            :root {
+                --theme-bg: rgb(24, 25, 38);
+                --surface-bg: rgb(36, 39, 58);
+                --surface-muted: rgb(54, 58, 79);
+                --surface-strong: rgb(68, 71, 90);
+                --text-main: rgb(202, 211, 245);
+                --text-muted: rgb(165, 173, 203);
+                --content-text: rgb(184, 192, 224);
+                --highlight-bg: rgb(54, 58, 79);
+                --code-bg: rgb(30, 32, 48);
+                --border-color: rgb(68, 71, 90);
+                --accent-color: rgb(138, 173, 244);
+                --accent-strong: rgb(125, 196, 228);
+                --accent-soft: rgba(138, 173, 244, 0.18);
+                --focus-ring: rgba(138, 173, 244, 0.32);
+                --overlay-backdrop: rgba(17, 17, 27, 0.72);
+                --hero-glow: radial-gradient(circle at top, rgba(138, 173, 244, 0.18), transparent 55%);
+            }
+
+            .list {
+                background: var(--theme-bg);
+            }
+
+            .list:not(.dark)::-webkit-scrollbar-track {
+                background: 0 0;
+            }
+
+            .list:not(.dark)::-webkit-scrollbar-thumb {
+                border-color: var(--theme-bg);
+            }
+        }
+
+    </style>
+    
+</noscript>
+
+
+  
+
+
+<link rel="stylesheet" href="https://blog.galactic-forensics.space/css/code-theme-overrides.css">
+
+</head>
+
+<body
+class="list"
+id="top"
+data-show-code-copy-buttons="true"
+data-show-theme-toggle="true"
+data-remember-choice="true"
+data-search-page-url="https://blog.galactic-forensics.space/search"
+data-search-index-json-url="https://blog.galactic-forensics.space/search_index.en.json"
+data-search-index-js-url="https://blog.galactic-forensics.space/search_index.en.js">
+
+  <script>document.documentElement.classList.add("js");</script>
+<script>
+  (function () {
+    var scheme;
+    var darkSchemes = ["catppuccin-macchiato", "rose-pine", "nord"];
+    scheme = localStorage.getItem("pref-scheme");
+    if (!scheme) {
+      scheme = "catppuccin-macchiato";
+      }
+    document.documentElement.setAttribute("data-scheme", scheme);
+    if (darkSchemes.indexOf(scheme) !== -1) {
+      document.documentElement.classList.add("dark");
+      document.body.classList.add("dark");
+    }
+    localStorage.setItem("pref-scheme", scheme);
+    })();
+</script>
+<header class="header">
+  <nav class="nav">
+    <div class="logo">
+      <a
+        href="https:&#x2F;&#x2F;blog.galactic-forensics.space"
+        accesskey="h"
+        title="Mind Bytes (Alt + H)"
+      >
+        
+        
+      </a>
+      <div class="logo-switches">
+        <button id="theme-toggle" accesskey="t" title="(Alt + T)">
+          <svg
+            id="moon"
+            xmlns="http://www.w3.org/2000/svg"
+            width="24"
+            height="18"
+            viewBox="0 0 24 24"
+            fill="none"
+            stroke="currentColor"
+            stroke-width="2"
+            stroke-linecap="round"
+            stroke-linejoin="round"
+          >
+            <path d="M21 12.79A9 9 0 1 1 11.21 3 7 7 0 0 0 21 12.79z"></path>
+          </svg>
+          <svg
+            id="sun"
+            xmlns="http://www.w3.org/2000/svg"
+            width="24"
+            height="18"
+            viewBox="0 0 24 24"
+            fill="none"
+            stroke="currentColor"
+            stroke-width="2"
+            stroke-linecap="round"
+            stroke-linejoin="round"
+          >
+            <circle cx="12" cy="12" r="5"></circle>
+            <line x1="12" y1="1" x2="12" y2="3"></line>
+            <line x1="12" y1="21" x2="12" y2="23"></line>
+            <line x1="4.22" y1="4.22" x2="5.64" y2="5.64"></line>
+            <line x1="18.36" y1="18.36" x2="19.78" y2="19.78"></line>
+            <line x1="1" y1="12" x2="3" y2="12"></line>
+            <line x1="21" y1="12" x2="23" y2="12"></line>
+            <line x1="4.22" y1="19.78" x2="5.64" y2="18.36"></line>
+            <line x1="18.36" y1="5.64" x2="19.78" y2="4.22"></line>
+          </svg>
+        </button>
+        
+        
+      </div>
+    </div>
+    
+    <ul id="menu">
+      
+        
+        
+        
+        
+        
+        
+          
+        
+
+        
+        
+        
+        
+        
+      <li>
+        <a href="https:&#x2F;&#x2F;blog.galactic-forensics.space" title="Home"
+          
+          >
+          <span>Home</span></a>
+      </li>
+      
+        
+        
+        
+        
+        
+        
+          
+
+          
+          
+            
+            
+              
+            
+          
+            
+            
+          
+
+          
+            
+            
+            
+              
+            
+          
+        
+
+        
+        
+        
+        
+        
+      <li>
+        <a href="https:&#x2F;&#x2F;blog.galactic-forensics.space&#x2F;tags&#x2F;" title="Tags"
+          
+          >
+          <span>Tags</span></a>
+      </li>
+      
+        
+        
+        
+        
+        
+        
+          
+
+          
+          
+            
+            
+          
+            
+            
+              
+            
+          
+
+          
+            
+            
+            
+              
+            
+          
+        
+
+        
+        
+        
+        
+        
+      <li>
+        <a href="https:&#x2F;&#x2F;blog.galactic-forensics.space&#x2F;categories&#x2F;" title="Categories"
+          
+          >
+          <span>Categories</span></a>
+      </li>
+      
+        
+        
+        
+        
+        
+        
+          
+        
+
+        
+        
+        
+        
+        
+      <li>
+        <a href="#" title="Search"
+          data-search-toggle="true"
+          >
+          <span>Search</span></a>
+      </li>
+      
+    </ul>
+    
+  </nav>
+</header>
+
+
+<main class="main">
+
+  <header class="page-header">
+  <nav class="breadcrumbs" aria-label="breadcrumb">
+      <a href="https://blog.galactic-forensics.space">Home</a>
+  </nav>
+  <h1>Blog
+    
+    <a href="https://blog.galactic-forensics.space/atom.xml" title="RSS" aria-label="RSS">
+      <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" height="23">
+        <path d="M4 11a9 9 0 0 1 9 9"></path>
+        <path d="M4 4a16 16 0 0 1 16 16"></path>
+        <circle cx="5" cy="19" r="1"></circle>
+      </svg>
+    </a>
+    
+</h1>
+</header>
+
+
+
+
+<article class="post-entry">
+  <header class="entry-header">
+    <h2>InstrumentRs: #[derive(Parameter)]</h2>
+  </header>
+  
+  <div class="entry-content">
+    <p><p>As promised in the <a rel="external" href="https://blog.galactic-forensics.space/blog/09-instrumentrs2-lakeshore336/">last blog post</a>,
+I spent some time developing a derive macro
+that allows deriving how new types will be written to
+and read from an instrument.
+This blog post is about these changes,
+how they work,
+and how they still need to be improved.</p></p>
+  </div>
+  
+  <footer class="entry-footer">
+    
+    
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+<span title="2026-07-30 00:00:00 +0000">2026-07-30</span>&nbsp;·&nbsp;11 min&nbsp;·&nbsp;2025 words&nbsp;·&nbsp;trappitsch
+
+  </footer>
+  <a class="entry-link" aria-label="post link to InstrumentRs: #[derive(Parameter)]" href="https:&#x2F;&#x2F;blog.galactic-forensics.space&#x2F;blog&#x2F;10-derive-macro&#x2F;"></a>
+</article>
+
+
+
+
+<article class="post-entry">
+  <header class="entry-header">
+    <h2>Lakeshore 336 Temperature Controller Driver with instrumentRs v0.2.0</h2>
+  </header>
+  
+  <div class="entry-content">
+    <p><p>It has been a few weeks since my last post.
+Since then I have focused on the async interface,
+a note on this at the end of this blog post,
+and on integrating a new instrument
+using <a rel="external" href="https://github.com/trappitsch/instrumentRs2">instrumentRs v0.2.0</a>.
+Here are my findings on writing a more complex driver.</p></p>
+  </div>
+  
+  <footer class="entry-footer">
+    
+    
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+<span title="2026-07-17 00:00:00 +0000">2026-07-17</span>&nbsp;·&nbsp;12 min&nbsp;·&nbsp;2357 words&nbsp;·&nbsp;trappitsch
+
+  </footer>
+  <a class="entry-link" aria-label="post link to Lakeshore 336 Temperature Controller Driver with instrumentRs v0.2.0" href="https:&#x2F;&#x2F;blog.galactic-forensics.space&#x2F;blog&#x2F;09-instrumentrs2-lakeshore336&#x2F;"></a>
+</article>
+
+
+
+
+<article class="post-entry">
+  <header class="entry-header">
+    <h2>Testing drivers in instrumentRs v0.2.0</h2>
+  </header>
+  
+  <div class="entry-content">
+    <p><p>In the <a href="/blog/07-instrumentrs2">last blogpost</a>
+we discussed design ideas for <code>instrumentRs v0.2.0</code>.
+Here, I will mainly focus on
+the mock interface for testing instruments drivers
+developed using <code>instrumenRs v0.2.0</code>.
+If you haven't already done so,
+it is highly recommended that you read the <a href="/blog/07-instrumentrs2">last blogpost</a> first
+for context.</p></p>
+  </div>
+  
+  <footer class="entry-footer">
+    
+    
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+<span title="2026-06-19 00:00:00 +0000">2026-06-19</span>&nbsp;·&nbsp;12 min&nbsp;·&nbsp;2296 words&nbsp;·&nbsp;trappitsch
+
+  </footer>
+  <a class="entry-link" aria-label="post link to Testing drivers in instrumentRs v0.2.0" href="https:&#x2F;&#x2F;blog.galactic-forensics.space&#x2F;blog&#x2F;08-instrumentrs2-mock-interface&#x2F;"></a>
+</article>
+
+
+
+
+<article class="post-entry">
+  <header class="entry-header">
+    <h2>instrumentRs v0.2.0 design ideas</h2>
+  </header>
+  
+  <div class="entry-content">
+    <p><p>Over the years I have written many drivers
+to control scientific equipment.
+These were mostly in python
+using the wonderful <a rel="external" href="https://github.com/instrumentkit/instrumentkit">instrumentkit</a>.
+As my tech stack has mostly moved to Rust however,
+I have missed a consistent, simple-to-use way
+to write instrument drivers.</p>
+<p>This post discusses a very rough idea
+on how such an improved driver kit might look like in Rust.
+In addition to inspiration from <a rel="external" href="https://github.com/instrumentkit/instrumentkit">instrumentkit</a>,
+a lot of inspiration is also taken from the fantastic <a rel="external" href="https://github.com/diondokter/device-driver">device-driver</a> tool.</p></p>
+  </div>
+  
+  <footer class="entry-footer">
+    
+    
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+<span title="2026-06-10 00:00:00 +0000">2026-06-10</span>&nbsp;·&nbsp;15 min&nbsp;·&nbsp;2956 words&nbsp;·&nbsp;trappitsch
+
+  </footer>
+  <a class="entry-link" aria-label="post link to instrumentRs v0.2.0 design ideas" href="https:&#x2F;&#x2F;blog.galactic-forensics.space&#x2F;blog&#x2F;07-instrumentrs2&#x2F;"></a>
+</article>
+
+
+
+
+<article class="post-entry">
+  <header class="entry-header">
+    <h2>Simplify sharing your python application</h2>
+  </header>
+  
+  <div class="entry-content">
+    <p><p>The python ecosystem has changed a lot over the last year,
+especially with respect to tooling.
+The usage of <a rel="external" href="https://rust-lang.org">Rust</a> has opened new, very fast,
+and by now very popular tools
+that aid in linting (<a rel="external" href="https://astral.sh/ruff">ruff</a>) and
+package management (<a rel="external" href="https://astral.sh/uv">uv</a>, <a rel="external" href="https://rye.astral.sh">rye</a>).
+But what tools are there if you want to share your python applications
+with colleagues that do not use python?</p></p>
+  </div>
+  
+  <footer class="entry-footer">
+    
+    
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+<span title="2024-09-24 00:00:00 +0000">2024-09-24</span>&nbsp;·&nbsp;10 min&nbsp;·&nbsp;1804 words&nbsp;·&nbsp;trappitsch
+
+  </footer>
+  <a class="entry-link" aria-label="post link to Simplify sharing your python application" href="https:&#x2F;&#x2F;blog.galactic-forensics.space&#x2F;blog&#x2F;06-box-why&#x2F;"></a>
+</article>
+
+
+
+
+
+
+<footer class="page-footer">
+<nav class="pagination">
+  
+  
+  <a class="next" href="https://blog.galactic-forensics.space/blog/page/2/">Next »</a>
+  
+</nav>
+</footer>
+
+
+
+</main>
+
+<footer class="footer">
+  <div class="footer-credits">
+    
+    <span>&copy; 2026 <a href="https:&#x2F;&#x2F;blog.galactic-forensics.space">trappitsch</a></span>
+    
+    <span>
+        Powered by
+        <a href="https://www.getzola.org/" rel="noopener noreferrer" target="_blank">Zola</a> &
+        <a href="https://github.com/edwardzcn-decade/cela" rel="noopener" target="_blank">Cela</a>
+    </span>
+  </div>
+  <div class="footer-scheme">
+    <select id="scheme-select" title="Color scheme" aria-label="Color scheme">
+      <option value="catppuccin-latte">Latte</option>
+      <option value="catppuccin-macchiato">Macchiato</option>
+      <option value="rose-pine">Rosé Pine</option>
+      <option value="nord">Nord</option>
+    </select>
+  </div>
+</footer>
+
+
+<a href="#top" aria-label="go to top" title="Go to Top (Alt + G)" class="top-link" id="top-link" accesskey="g">
+  <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 12 6" fill="currentColor">
+      <path d="M12 6H0l6-6z" />
+  </svg>
+</a>
+
+
+
+
+
+
+
+
+<div id="search-toggle-box" class="hidden">
+  <div class="search-toggle-modal">
+    <input type="text" id="search-toggle-input" placeholder="Type to search..." />
+    <button id="search-toggle-button">Search</button>
+  </div>
+</div>
+
+
+
+<script src="https://blog.galactic-forensics.space/js/site-ui.js"></script>
+<script src="https://blog.galactic-forensics.space/js/search-ui.js"></script>
+<script src="https://blog.galactic-forensics.space/js/home-effects.js"></script>
+
+
+</body>
+
+</html>

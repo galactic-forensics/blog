@@ -1,0 +1,1047 @@
+<!DOCTYPE html>
+<html lang="en" dir="ltr">
+
+<head>
+<meta charset="utf-8">
+<meta http-equiv="X-UA-Compatible" content="IE=edge">
+<meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
+<meta name="robots" content="index, follow">
+
+
+
+
+<title>instrumentRs v0.2.0 design ideas</title>
+
+
+
+
+
+<meta name="keywords" content="Rust, instrumentRs">
+
+
+
+
+<meta name="description" content="Thoughts and ideas...">
+
+
+
+<meta name="author" content="trappitsch">
+
+
+
+
+
+
+
+  <link rel="canonical" href="https:&#x2F;&#x2F;blog.galactic-forensics.space&#x2F;blog&#x2F;07-instrumentrs2&#x2F;">
+
+
+<link rel="stylesheet" href="https://blog.galactic-forensics.space/css/theme-runtime.css">
+<link rel="stylesheet" href="https://blog.galactic-forensics.space/css/theme.css">
+<link rel="icon" href="https://blog.galactic-forensics.space/favicon.ico">
+<link rel="icon" type="image/png" sizes="16x16" href="https://blog.galactic-forensics.space/favicon-16x16.png">
+<link rel="icon" type="image/png" sizes="32x32" href="https://blog.galactic-forensics.space/favicon-32x32.png">
+<link rel="apple-touch-icon" href="https://blog.galactic-forensics.space/apple-touch-icon.png">
+<meta name="theme-color" content="#2e2e33">
+<meta name="msapplication-TileColor" content="#2e2e33">
+
+
+
+<link rel="alternate" type="application/atom+xml" title="RSS" href="https://blog.galactic-forensics.space/atom.xml">
+
+
+
+<noscript>
+    <style>
+        #theme-toggle,
+        .top-link {
+            display: none;
+        }
+    </style>
+    
+    <style>
+        @media (prefers-color-scheme: dark) {
+            :root {
+                --theme-bg: rgb(24, 25, 38);
+                --surface-bg: rgb(36, 39, 58);
+                --surface-muted: rgb(54, 58, 79);
+                --surface-strong: rgb(68, 71, 90);
+                --text-main: rgb(202, 211, 245);
+                --text-muted: rgb(165, 173, 203);
+                --content-text: rgb(184, 192, 224);
+                --highlight-bg: rgb(54, 58, 79);
+                --code-bg: rgb(30, 32, 48);
+                --border-color: rgb(68, 71, 90);
+                --accent-color: rgb(138, 173, 244);
+                --accent-strong: rgb(125, 196, 228);
+                --accent-soft: rgba(138, 173, 244, 0.18);
+                --focus-ring: rgba(138, 173, 244, 0.32);
+                --overlay-backdrop: rgba(17, 17, 27, 0.72);
+                --hero-glow: radial-gradient(circle at top, rgba(138, 173, 244, 0.18), transparent 55%);
+            }
+
+            .list {
+                background: var(--theme-bg);
+            }
+
+            .list:not(.dark)::-webkit-scrollbar-track {
+                background: 0 0;
+            }
+
+            .list:not(.dark)::-webkit-scrollbar-thumb {
+                border-color: var(--theme-bg);
+            }
+        }
+
+    </style>
+    
+</noscript>
+
+
+  
+
+
+<link rel="stylesheet" href="https://blog.galactic-forensics.space/css/code-theme-overrides.css">
+
+</head>
+
+<body
+class=""
+id="top"
+data-show-code-copy-buttons="true"
+data-show-theme-toggle="true"
+data-remember-choice="true"
+data-search-page-url="https://blog.galactic-forensics.space/search"
+data-search-index-json-url="https://blog.galactic-forensics.space/search_index.en.json"
+data-search-index-js-url="https://blog.galactic-forensics.space/search_index.en.js">
+<script>document.documentElement.classList.add("js");</script>
+<script>
+  (function () {
+    var scheme;
+    var darkSchemes = ["catppuccin-macchiato", "rose-pine", "nord"];
+    scheme = localStorage.getItem("pref-scheme");
+    if (!scheme) {
+      scheme = "catppuccin-macchiato";
+      }
+    document.documentElement.setAttribute("data-scheme", scheme);
+    if (darkSchemes.indexOf(scheme) !== -1) {
+      document.documentElement.classList.add("dark");
+      document.body.classList.add("dark");
+    }
+    localStorage.setItem("pref-scheme", scheme);
+    })();
+</script>
+<header class="header">
+  <nav class="nav">
+    <div class="logo">
+      <a
+        href="https:&#x2F;&#x2F;blog.galactic-forensics.space"
+        accesskey="h"
+        title="Mind Bytes (Alt + H)"
+      >
+        
+        
+      </a>
+      <div class="logo-switches">
+        <button id="theme-toggle" accesskey="t" title="(Alt + T)">
+          <svg
+            id="moon"
+            xmlns="http://www.w3.org/2000/svg"
+            width="24"
+            height="18"
+            viewBox="0 0 24 24"
+            fill="none"
+            stroke="currentColor"
+            stroke-width="2"
+            stroke-linecap="round"
+            stroke-linejoin="round"
+          >
+            <path d="M21 12.79A9 9 0 1 1 11.21 3 7 7 0 0 0 21 12.79z"></path>
+          </svg>
+          <svg
+            id="sun"
+            xmlns="http://www.w3.org/2000/svg"
+            width="24"
+            height="18"
+            viewBox="0 0 24 24"
+            fill="none"
+            stroke="currentColor"
+            stroke-width="2"
+            stroke-linecap="round"
+            stroke-linejoin="round"
+          >
+            <circle cx="12" cy="12" r="5"></circle>
+            <line x1="12" y1="1" x2="12" y2="3"></line>
+            <line x1="12" y1="21" x2="12" y2="23"></line>
+            <line x1="4.22" y1="4.22" x2="5.64" y2="5.64"></line>
+            <line x1="18.36" y1="18.36" x2="19.78" y2="19.78"></line>
+            <line x1="1" y1="12" x2="3" y2="12"></line>
+            <line x1="21" y1="12" x2="23" y2="12"></line>
+            <line x1="4.22" y1="19.78" x2="5.64" y2="18.36"></line>
+            <line x1="18.36" y1="5.64" x2="19.78" y2="4.22"></line>
+          </svg>
+        </button>
+        
+        
+      </div>
+    </div>
+    
+    <ul id="menu">
+      
+        
+        
+        
+        
+        
+        
+          
+        
+
+        
+        
+        
+        
+        
+      <li>
+        <a href="https:&#x2F;&#x2F;blog.galactic-forensics.space" title="Home"
+          
+          >
+          <span>Home</span></a>
+      </li>
+      
+        
+        
+        
+        
+        
+        
+          
+
+          
+          
+            
+            
+              
+            
+          
+            
+            
+          
+
+          
+            
+            
+            
+              
+            
+          
+        
+
+        
+        
+        
+        
+        
+      <li>
+        <a href="https:&#x2F;&#x2F;blog.galactic-forensics.space&#x2F;tags&#x2F;" title="Tags"
+          
+          >
+          <span>Tags</span></a>
+      </li>
+      
+        
+        
+        
+        
+        
+        
+          
+
+          
+          
+            
+            
+          
+            
+            
+              
+            
+          
+
+          
+            
+            
+            
+              
+            
+          
+        
+
+        
+        
+        
+        
+        
+      <li>
+        <a href="https:&#x2F;&#x2F;blog.galactic-forensics.space&#x2F;categories&#x2F;" title="Categories"
+          
+          >
+          <span>Categories</span></a>
+      </li>
+      
+        
+        
+        
+        
+        
+        
+          
+        
+
+        
+        
+        
+        
+        
+      <li>
+        <a href="#" title="Search"
+          data-search-toggle="true"
+          >
+          <span>Search</span></a>
+      </li>
+      
+    </ul>
+    
+  </nav>
+</header>
+
+<main class="main">
+
+
+
+
+
+
+
+
+
+<article class="post-single">
+  <header class="post-header">
+      <nav class="breadcrumbs" aria-label="breadcrumb">
+          <a href="https://blog.galactic-forensics.space">Home</a>&nbsp;»&nbsp;
+          
+          <a href="https:&#x2F;&#x2F;blog.galactic-forensics.space&#x2F;blog&#x2F;">Posts</a>&nbsp;»&nbsp;
+          
+          <a href="https:&#x2F;&#x2F;blog.galactic-forensics.space&#x2F;blog&#x2F;07-instrumentrs2&#x2F;">instrumentRs v0.2.0 design ideas</a>
+      </nav>
+      <h1 class="post-title">instrumentRs v0.2.0 design ideas</h1>
+      
+      
+      <div class="post-meta">
+      
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+<span title="2026-06-10 00:00:00 +0000">2026-06-10</span>&nbsp;·&nbsp;15 min&nbsp;·&nbsp;2956 words&nbsp;·&nbsp;trappitsch
+
+      
+      </div>
+      
+  </header>
+
+  
+  
+
+<div class="toc">
+  <details >
+    <summary accesskey="c" title="(Alt + C)">
+      <span class="details">Table of Contents</span>
+    </summary>
+
+    <div class="inner">
+      <ul>
+        
+        <li>
+          <a href="#background" aria-label="Background">Background</a>
+          
+        </li>
+        
+        <li>
+          <a href="#architecture-of-instrumentrs-v0-2-0" aria-label="Architecture of instrumentRs v0.2.0">Architecture of instrumentRs v0.2.0</a>
+          
+          <ul>
+            
+            <li>
+              <a href="#the-instrument-instrumentchannel-structures-and-the-parameter-trait" aria-label="The Instrument, InstrumentChannel structures and the Parameter trait">The Instrument, InstrumentChannel structures and the Parameter trait</a>
+              
+            </li>
+            
+            <li>
+              <a href="#transport" aria-label="Transport">Transport</a>
+              
+            </li>
+            
+            <li>
+              <a href="#interface" aria-label="Interface">Interface</a>
+              
+            </li>
+            
+          </ul>
+          
+        </li>
+        
+        <li>
+          <a href="#errors" aria-label="Errors">Errors</a>
+          
+        </li>
+        
+        <li>
+          <a href="#the-end-user-experience" aria-label="The end user experience">The end user experience</a>
+          
+        </li>
+        
+        <li>
+          <a href="#what-remains-to-be-defined" aria-label="What remains to be defined?">What remains to be defined?</a>
+          
+          <ul>
+            
+            <li>
+              <a href="#testing" aria-label="Testing">Testing</a>
+              
+            </li>
+            
+            <li>
+              <a href="#macro-and-dsl-implementation" aria-label="Macro and DSL implementation">Macro and DSL implementation</a>
+              
+            </li>
+            
+            <li>
+              <a href="#bound-checks-and-unitfulness" aria-label="Bound checks and unitfulness">Bound checks and unitfulness</a>
+              
+            </li>
+            
+            <li>
+              <a href="#async-support" aria-label="Async support">Async support</a>
+              
+            </li>
+            
+            <li>
+              <a href="#additional-channels-for-e-g-math-functions" aria-label="Additional channels for, e.g., math functions">Additional channels for, e.g., math functions</a>
+              
+            </li>
+            
+            <li>
+              <a href="#repositories" aria-label="Repositories">Repositories</a>
+              
+            </li>
+            
+            <li>
+              <a href="#documentation" aria-label="Documentation">Documentation</a>
+              
+            </li>
+            
+          </ul>
+          
+        </li>
+        
+        <li>
+          <a href="#next-steps" aria-label="Next steps">Next steps</a>
+          
+        </li>
+        
+        <li>
+          <a href="#comments-questions-ideas" aria-label="Comments, questions, ideas?">Comments, questions, ideas?</a>
+          
+        </li>
+        
+      </ul>
+    </div>
+  </details>
+</div>
+
+  
+
+  
+  <div class="post-content">
+      <p>Over the years I have written many drivers
+to control scientific equipment.
+These were mostly in python
+using the wonderful <a rel="external" href="https://github.com/instrumentkit/instrumentkit">instrumentkit</a>.
+As my tech stack has mostly moved to Rust however,
+I have missed a consistent, simple-to-use way
+to write instrument drivers.</p>
+<p>This post discusses a very rough idea
+on how such an improved driver kit might look like in Rust.
+In addition to inspiration from <a rel="external" href="https://github.com/instrumentkit/instrumentkit">instrumentkit</a>,
+a lot of inspiration is also taken from the fantastic <a rel="external" href="https://github.com/diondokter/device-driver">device-driver</a> tool.</p>
+<span id="continue-reading"></span><h2 id="background">Background</h2>
+<p>End of July 2025 I published version <code>v0.1</code> of
+<a rel="external" href="https://crates.io/crates/instrumentrs">instrumentRs on crates.io</a>.
+This version relied heavily on using a
+<a rel="external" href="https://github.com/cargo-generate/cargo-generate">cargo-generate</a> template to facilitate writing a driver.
+Implementing a few drivers using <code>instrumentRs v0.1</code>,
+most of which are for good reasons still unpublished,
+quickly made me realize how clunky the interface
+in fact is.
+Some major limitations include:</p>
+<ul>
+<li>No async support.</li>
+<li>Interfaces require the driver author to work with specific crates.</li>
+<li>Handling of setting/getting of unitful quantities is clunky.</li>
+<li>The interface itself is wrapped in an <code>Arc&lt;Mutex&lt;&gt;&gt;</code>.</li>
+<li>Just providing templates doesn't really provide the necessary convenience.</li>
+</ul>
+<p>Overall, <code>v0.1</code> is far away from being a simple aid
+to write an instrument driver in Rust.</p>
+<p>You don't need to know anything about <code>v0.1</code>
+in order to continue reading.
+This background information should only serve
+to give a bit of additional information.
+With that being said, let's discuss some current ideas
+for the <code>instrumentRs v0.2.0</code> implementation
+and its advantages.</p>
+<h2 id="architecture-of-instrumentrs-v0-2-0">Architecture of <code>instrumentRs v0.2.0</code></h2>
+<p>Below figure shows a very rough overview of the architecture.
+This should allow for maximal flexibility
+while enabling minimal repeatability by automatically generating code.</p>
+<pre class="giallo" style="color-scheme: light dark; color: light-dark(#4C4F69, #CDD6F4); background-color: light-dark(#EFF1F5, #1E1E2E);"><code data-lang="plain"><span class="giallo-l"><span>╔═════════════════════════════════════════════╗                         </span></span>
+<span class="giallo-l"><span>║                                             ║                         </span></span>
+<span class="giallo-l"><span>║               Paramter trait                ║                         </span></span>
+<span class="giallo-l"><span>║                                             ║                         </span></span>
+<span class="giallo-l"><span>║        Instrument | InstrumentAsync         ║   DSL / Macro generation</span></span>
+<span class="giallo-l"><span>║ InstrumentChannel | InstrumentChannelAsync  ║                         </span></span>
+<span class="giallo-l"><span>║                                             ║                         </span></span>
+<span class="giallo-l"><span>╚═════════════════════════════════════════════╝                         </span></span>
+<span class="giallo-l"><span>                                                                        </span></span>
+<span class="giallo-l"><span>                                                                        </span></span>
+<span class="giallo-l"><span>╔═════════════════════════════════════════════╗                         </span></span>
+<span class="giallo-l"><span>║                                             ║                         </span></span>
+<span class="giallo-l"><span>║               Transport trait               ║   Implemented by driver </span></span>
+<span class="giallo-l"><span>║      Interface read / write functions       ║           author        </span></span>
+<span class="giallo-l"><span>║                                             ║                         </span></span>
+<span class="giallo-l"><span>╚═════════════════════════════════════════════╝                         </span></span>
+<span class="giallo-l"><span>                                                                        </span></span>
+<span class="giallo-l"><span>                                                                        </span></span>
+<span class="giallo-l"><span>╔═════════════════════════════════════════════╗                         </span></span>
+<span class="giallo-l"><span>║                                             ║                         </span></span>
+<span class="giallo-l"><span>║                  Interface                  ║    Provided by end user </span></span>
+<span class="giallo-l"><span>║  &lt;Read + Write&gt; | &lt;AsyncRead + AsyncWrite&gt;  ║                         </span></span>
+<span class="giallo-l"><span>║                                             ║                         </span></span>
+<span class="giallo-l"><span>╚═════════════════════════════════════════════╝</span></span></code></pre><h3 id="the-instrument-instrumentchannel-structures-and-the-parameter-trait">The <code>Instrument</code>, <code>InstrumentChannel</code> structures and the <code>Parameter</code> trait</h3>
+<p>This part is the core of every instrument driver.
+It describes how the end user interacts with the driver, i.e.,
+what functions are available for getting and setting various instrument properties.
+What does this entail?</p>
+<p>Each instrument holds a generic interface <code>&lt;I&gt;</code>
+that implements <code>Read</code> and <code>Write</code> in the blocking
+and <code>AsyncRead</code> and <code>AsyncWrite</code> in the asynchronous case.
+This interface encapsulates how to communicate with the instrument.
+Furthermore, we need to consider:</p>
+<ul>
+<li>Instrument configurations.
+<ul>
+<li>Configurations, e.g., the number of channels can vary between different models
+while the communication protocol stays the same.
+Thus, such configurations might have to be end-user configurable.</li>
+<li>Certain parameters are also fixed, e.g., how a command is terminated
+is often not changeable.</li>
+</ul>
+</li>
+<li>Instrument-wide properties, e.g., the brightness of the instrument's display.
+<ul>
+<li>These are properties that are defined instrument-wide.</li>
+<li>Properties can be read-only, write-only, or read-write.</li>
+<li>Unitful properties should be handled in a unitful way.</li>
+</ul>
+</li>
+<li>Instrument channels.
+<ul>
+<li>Each channel will integrate the same properties, e.g.,
+measure a voltage.</li>
+<li>Channels can also have read-only, write-only, or read-write properties.</li>
+<li>Unitful properties should be handled in a unitful way.</li>
+</ul>
+</li>
+</ul>
+<p><strong>Code for the core implementation of an instrument
+should be automatically generated
+using a to-be-defined domain specific language (DSL)
+and/or appropriate macros.</strong></p>
+<p>To allow for an automatically generated instrument core
+we need to make sure that the types created by the driver author
+can automatically be transformed into
+values that are received from/written to the instrument.
+In other words, these parameters must be "writable".
+To make this possible, the macro will also define
+a driver specific <code>Parameter</code> trait that will look somewhat like this:</p>
+<pre class="giallo" style="color-scheme: light dark; color: light-dark(#4C4F69, #CDD6F4); background-color: light-dark(#EFF1F5, #1E1E2E);"><code data-lang="rust"><span class="giallo-l"><span style="color: light-dark(#8839EF, #CBA6F7);">pub</span><span style="color: light-dark(#8839EF, #CBA6F7);"> trait</span><span style="color: light-dark(#DF8E1D, #F9E2AF);font-style: italic;"> Parameter</span><span style="color: light-dark(#04A5E5, #89DCEB);">&lt;</span><span style="color: light-dark(#DF8E1D, #F9E2AF);font-style: italic;">W</span><span style="color: light-dark(#179299, #94E2D5);">:</span><span style="color: light-dark(#DF8E1D, #F9E2AF);font-style: italic;"> Writable</span><span style="color: light-dark(#04A5E5, #89DCEB);">&gt;</span><span style="color: light-dark(#179299, #94E2D5);">:</span><span style="color: light-dark(#DF8E1D, #F9E2AF);font-style: italic;"> Sized</span><span style="color: light-dark(#7C7F93, #9399B2);"> {</span></span>
+<span class="giallo-l"><span style="color: light-dark(#8839EF, #CBA6F7);">    fn</span><span style="color: light-dark(#1E66F5, #89B4FA);font-style: italic;"> to_writable</span><span style="color: light-dark(#7C7F93, #9399B2);">(</span><span style="color: light-dark(#179299, #94E2D5);">&amp;</span><span style="color: light-dark(#D20F39, #F38BA8);">self</span><span style="color: light-dark(#7C7F93, #9399B2);">)</span><span style="color: light-dark(#179299, #94E2D5);"> -&gt;</span><span style="color: light-dark(#DF8E1D, #F9E2AF);font-style: italic;"> W</span><span style="color: light-dark(#7C7F93, #9399B2);">;</span></span>
+<span class="giallo-l"><span style="color: light-dark(#8839EF, #CBA6F7);">    fn</span><span style="color: light-dark(#1E66F5, #89B4FA);font-style: italic;"> try_from_writable</span><span style="color: light-dark(#7C7F93, #9399B2);">(</span><span style="color: light-dark(#E64553, #EBA0AC);">val</span><span style="color: light-dark(#179299, #94E2D5);">:</span><span style="color: light-dark(#DF8E1D, #F9E2AF);font-style: italic;"> W</span><span style="color: light-dark(#7C7F93, #9399B2);">)</span><span style="color: light-dark(#179299, #94E2D5);"> -&gt;</span><span style="color: light-dark(#DF8E1D, #F9E2AF);font-style: italic;"> Result</span><span style="color: light-dark(#04A5E5, #89DCEB);">&lt;</span><span style="color: light-dark(#D20F39, #F38BA8);">Self</span><span style="color: light-dark(#7C7F93, #9399B2);">,</span><span style="color: light-dark(#DF8E1D, #F9E2AF);font-style: italic;"> InstrumentRsError</span><span style="color: light-dark(#04A5E5, #89DCEB);">&gt;</span><span style="color: light-dark(#7C7F93, #9399B2);">;</span></span>
+<span class="giallo-l"><span style="color: light-dark(#7C7F93, #9399B2);">}</span></span></code></pre>
+<p>Here <code>W</code> is the writable trait that is defined in <code>instrumentRs</code>.
+More on this trait in the <a href="https://blog.galactic-forensics.space/blog/07-instrumentrs2/#transport">transport section</a>.</p>
+<p>For any type that the driver author wants to make available to the end user
+for interaction with the instrument,
+the <code>Parameter</code> trait must be implemented.
+Keeping the <code>Parameter</code> trait in the instrument driver itself
+and not as part of the <code>instrumentRs</code> crate allows the driver author
+to also implement it on basic types.</p>
+<p>Two examples on how to implement the <code>Parameter</code> trait:</p>
+<ol>
+<li>
+<p>A channel that we can turn on and off, implemented as a new type.</p>
+<pre class="giallo" style="color-scheme: light dark; color: light-dark(#4C4F69, #CDD6F4); background-color: light-dark(#EFF1F5, #1E1E2E);"><code data-lang="rust"><span class="giallo-l"><span style="color: light-dark(#7C7F93, #9399B2);font-style: italic;">///</span><span style="color: light-dark(#7C7F93, #9399B2);font-style: italic;"> State of the channel.</span></span>
+<span class="giallo-l"><span style="color: light-dark(#DF8E1D, #F9E2AF);font-style: italic;">#</span><span style="color: light-dark(#7C7F93, #9399B2);">[</span><span style="color: light-dark(#DF8E1D, #F9E2AF);font-style: italic;">derive</span><span style="color: light-dark(#7C7F93, #9399B2);">(</span><span style="color: light-dark(#DF8E1D, #F9E2AF);font-style: italic;">Clone</span><span style="color: light-dark(#7C7F93, #9399B2);">,</span><span style="color: light-dark(#DF8E1D, #F9E2AF);font-style: italic;"> Copy</span><span style="color: light-dark(#7C7F93, #9399B2);">,</span><span style="color: light-dark(#DF8E1D, #F9E2AF);font-style: italic;"> Debug</span><span style="color: light-dark(#7C7F93, #9399B2);">)</span><span style="color: light-dark(#7C7F93, #9399B2);">]</span></span>
+<span class="giallo-l"><span style="color: light-dark(#8839EF, #CBA6F7);">pub</span><span style="color: light-dark(#8839EF, #CBA6F7);"> enum</span><span style="color: light-dark(#DF8E1D, #F9E2AF);font-style: italic;"> Channel</span><span style="color: light-dark(#7C7F93, #9399B2);"> {</span></span>
+<span class="giallo-l"><span style="color: light-dark(#7C7F93, #9399B2);font-style: italic;">    ///</span><span style="color: light-dark(#7C7F93, #9399B2);font-style: italic;"> The channel is on.</span></span>
+<span class="giallo-l"><span style="color: light-dark(#DF8E1D, #F9E2AF);font-style: italic;">    On</span><span style="color: light-dark(#7C7F93, #9399B2);">,</span></span>
+<span class="giallo-l"><span style="color: light-dark(#7C7F93, #9399B2);font-style: italic;">    ///</span><span style="color: light-dark(#7C7F93, #9399B2);font-style: italic;"> The channel is off.</span></span>
+<span class="giallo-l"><span style="color: light-dark(#DF8E1D, #F9E2AF);font-style: italic;">    Off</span><span style="color: light-dark(#7C7F93, #9399B2);">,</span></span>
+<span class="giallo-l"><span style="color: light-dark(#7C7F93, #9399B2);">}</span></span>
+<span class="giallo-l"></span>
+<span class="giallo-l"><span style="color: light-dark(#8839EF, #CBA6F7);">impl</span><span style="color: light-dark(#DF8E1D, #F9E2AF);font-style: italic;"> Parameter</span><span style="color: light-dark(#04A5E5, #89DCEB);">&lt;</span><span style="color: light-dark(#DF8E1D, #F9E2AF);font-style: italic;">String</span><span style="color: light-dark(#04A5E5, #89DCEB);">&gt;</span><span style="color: light-dark(#8839EF, #CBA6F7);"> for</span><span style="color: light-dark(#DF8E1D, #F9E2AF);font-style: italic;"> Channel</span><span style="color: light-dark(#7C7F93, #9399B2);"> {</span></span>
+<span class="giallo-l"><span style="color: light-dark(#8839EF, #CBA6F7);">    fn</span><span style="color: light-dark(#1E66F5, #89B4FA);font-style: italic;"> to_writable</span><span style="color: light-dark(#7C7F93, #9399B2);">(</span><span style="color: light-dark(#179299, #94E2D5);">&amp;</span><span style="color: light-dark(#D20F39, #F38BA8);">self</span><span style="color: light-dark(#7C7F93, #9399B2);">)</span><span style="color: light-dark(#179299, #94E2D5);"> -&gt;</span><span style="color: light-dark(#DF8E1D, #F9E2AF);font-style: italic;"> String</span><span style="color: light-dark(#7C7F93, #9399B2);"> {</span></span>
+<span class="giallo-l"><span style="color: light-dark(#8839EF, #CBA6F7);">        match</span><span style="color: light-dark(#D20F39, #F38BA8);"> self</span><span style="color: light-dark(#7C7F93, #9399B2);"> {</span></span>
+<span class="giallo-l"><span style="color: light-dark(#DF8E1D, #F9E2AF);font-style: italic;">            Channel</span><span style="color: light-dark(#179299, #94E2D5);">::</span><span style="color: light-dark(#DF8E1D, #F9E2AF);font-style: italic;">On</span><span style="color: light-dark(#179299, #94E2D5);"> =&gt;</span><span style="color: light-dark(#40A02B, #A6E3A1);"> &quot;</span><span style="color: light-dark(#40A02B, #A6E3A1);">1</span><span style="color: light-dark(#40A02B, #A6E3A1);">&quot;</span><span style="color: light-dark(#179299, #94E2D5);">.</span><span style="color: light-dark(#1E66F5, #89B4FA);font-style: italic;">to_string</span><span style="color: light-dark(#7C7F93, #9399B2);">(</span><span style="color: light-dark(#7C7F93, #9399B2);">)</span><span style="color: light-dark(#7C7F93, #9399B2);">,</span></span>
+<span class="giallo-l"><span style="color: light-dark(#DF8E1D, #F9E2AF);font-style: italic;">            Channel</span><span style="color: light-dark(#179299, #94E2D5);">::</span><span style="color: light-dark(#DF8E1D, #F9E2AF);font-style: italic;">Off</span><span style="color: light-dark(#179299, #94E2D5);"> =&gt;</span><span style="color: light-dark(#40A02B, #A6E3A1);"> &quot;</span><span style="color: light-dark(#40A02B, #A6E3A1);">0</span><span style="color: light-dark(#40A02B, #A6E3A1);">&quot;</span><span style="color: light-dark(#179299, #94E2D5);">.</span><span style="color: light-dark(#1E66F5, #89B4FA);font-style: italic;">to_string</span><span style="color: light-dark(#7C7F93, #9399B2);">(</span><span style="color: light-dark(#7C7F93, #9399B2);">)</span><span style="color: light-dark(#7C7F93, #9399B2);">,</span></span>
+<span class="giallo-l"><span style="color: light-dark(#7C7F93, #9399B2);">        }</span></span>
+<span class="giallo-l"><span style="color: light-dark(#7C7F93, #9399B2);">    }</span></span>
+<span class="giallo-l"></span>
+<span class="giallo-l"><span style="color: light-dark(#8839EF, #CBA6F7);">    fn</span><span style="color: light-dark(#1E66F5, #89B4FA);font-style: italic;"> try_from_writable</span><span style="color: light-dark(#7C7F93, #9399B2);">(</span><span style="color: light-dark(#E64553, #EBA0AC);">val</span><span style="color: light-dark(#179299, #94E2D5);">:</span><span style="color: light-dark(#DF8E1D, #F9E2AF);font-style: italic;"> String</span><span style="color: light-dark(#7C7F93, #9399B2);">)</span><span style="color: light-dark(#179299, #94E2D5);"> -&gt;</span><span style="color: light-dark(#DF8E1D, #F9E2AF);font-style: italic;"> Result</span><span style="color: light-dark(#04A5E5, #89DCEB);">&lt;</span><span style="color: light-dark(#D20F39, #F38BA8);">Self</span><span style="color: light-dark(#7C7F93, #9399B2);">,</span><span style="color: light-dark(#DF8E1D, #F9E2AF);font-style: italic;"> InstrumentRsError</span><span style="color: light-dark(#04A5E5, #89DCEB);">&gt;</span><span style="color: light-dark(#7C7F93, #9399B2);"> {</span></span>
+<span class="giallo-l"><span style="color: light-dark(#8839EF, #CBA6F7);">        match</span><span> val</span><span style="color: light-dark(#179299, #94E2D5);">.</span><span style="color: light-dark(#1E66F5, #89B4FA);font-style: italic;">trim</span><span style="color: light-dark(#7C7F93, #9399B2);">(</span><span style="color: light-dark(#7C7F93, #9399B2);">)</span><span style="color: light-dark(#7C7F93, #9399B2);"> {</span></span>
+<span class="giallo-l"><span style="color: light-dark(#40A02B, #A6E3A1);">            &quot;</span><span style="color: light-dark(#40A02B, #A6E3A1);">0</span><span style="color: light-dark(#40A02B, #A6E3A1);">&quot;</span><span style="color: light-dark(#179299, #94E2D5);"> =&gt;</span><span style="color: light-dark(#DF8E1D, #F9E2AF);font-style: italic;"> Ok</span><span style="color: light-dark(#7C7F93, #9399B2);">(</span><span style="color: light-dark(#DF8E1D, #F9E2AF);font-style: italic;">Channel</span><span style="color: light-dark(#179299, #94E2D5);">::</span><span style="color: light-dark(#DF8E1D, #F9E2AF);font-style: italic;">Off</span><span style="color: light-dark(#7C7F93, #9399B2);">)</span><span style="color: light-dark(#7C7F93, #9399B2);">,</span></span>
+<span class="giallo-l"><span style="color: light-dark(#40A02B, #A6E3A1);">            &quot;</span><span style="color: light-dark(#40A02B, #A6E3A1);">1</span><span style="color: light-dark(#40A02B, #A6E3A1);">&quot;</span><span style="color: light-dark(#179299, #94E2D5);"> =&gt;</span><span style="color: light-dark(#DF8E1D, #F9E2AF);font-style: italic;"> Ok</span><span style="color: light-dark(#7C7F93, #9399B2);">(</span><span style="color: light-dark(#DF8E1D, #F9E2AF);font-style: italic;">Channel</span><span style="color: light-dark(#179299, #94E2D5);">::</span><span style="color: light-dark(#DF8E1D, #F9E2AF);font-style: italic;">On</span><span style="color: light-dark(#7C7F93, #9399B2);">)</span><span style="color: light-dark(#7C7F93, #9399B2);">,</span></span>
+<span class="giallo-l"><span>            _</span><span style="color: light-dark(#179299, #94E2D5);"> =&gt;</span><span style="color: light-dark(#DF8E1D, #F9E2AF);font-style: italic;"> Err</span><span style="color: light-dark(#7C7F93, #9399B2);">(</span><span style="color: light-dark(#DF8E1D, #F9E2AF);font-style: italic;">InstrumentRsError</span><span style="color: light-dark(#179299, #94E2D5);">::</span><span style="color: light-dark(#DF8E1D, #F9E2AF);font-style: italic;">PlaceholderError</span><span style="color: light-dark(#7C7F93, #9399B2);">)</span><span style="color: light-dark(#7C7F93, #9399B2);">,</span></span>
+<span class="giallo-l"><span style="color: light-dark(#7C7F93, #9399B2);">        }</span></span>
+<span class="giallo-l"><span style="color: light-dark(#7C7F93, #9399B2);">    }</span></span>
+<span class="giallo-l"><span style="color: light-dark(#7C7F93, #9399B2);">}</span></span></code></pre>
+<p>Here, we implemented the <code>Parameter</code> trait.
+What this means is that when sending a channel state to the instrument,
+a <code>"0"</code> or a <code>"1"</code> would be sent (as a byte).
+When reading from the instrument, i.e., getting the state of a channel,
+the instrument in this case would send back a <code>"0"</code> or a <code>"1"</code>.
+Since we could get a bogus answer from the instrument as well,
+we implement a <code>try_from_writable</code> that can fail gracefully.</p>
+</li>
+<li>
+<p>The same functionality could also be implemented by defining that
+<code>Channel</code> on and off can be set with a <code>bool</code>, e.g.,
+<code>true</code> for on and <code>false</code> for off.
+This is not the most idiomatic way, but let's just take it as an example.
+In this case, the driver author would implement the following:</p>
+<pre class="giallo" style="color-scheme: light dark; color: light-dark(#4C4F69, #CDD6F4); background-color: light-dark(#EFF1F5, #1E1E2E);"><code data-lang="rust"><span class="giallo-l"><span style="color: light-dark(#8839EF, #CBA6F7);">impl</span><span style="color: light-dark(#DF8E1D, #F9E2AF);font-style: italic;"> Parameter</span><span style="color: light-dark(#04A5E5, #89DCEB);">&lt;</span><span style="color: light-dark(#DF8E1D, #F9E2AF);font-style: italic;">String</span><span style="color: light-dark(#04A5E5, #89DCEB);">&gt;</span><span style="color: light-dark(#8839EF, #CBA6F7);"> for</span><span style="color: light-dark(#DF8E1D, #F9E2AF);font-style: italic;"> bool</span><span style="color: light-dark(#7C7F93, #9399B2);"> {</span></span>
+<span class="giallo-l"><span style="color: light-dark(#8839EF, #CBA6F7);">    fn</span><span style="color: light-dark(#1E66F5, #89B4FA);font-style: italic;"> to_writable</span><span style="color: light-dark(#7C7F93, #9399B2);">(</span><span style="color: light-dark(#179299, #94E2D5);">&amp;</span><span style="color: light-dark(#D20F39, #F38BA8);">self</span><span style="color: light-dark(#7C7F93, #9399B2);">)</span><span style="color: light-dark(#179299, #94E2D5);"> -&gt;</span><span style="color: light-dark(#DF8E1D, #F9E2AF);font-style: italic;"> String</span><span style="color: light-dark(#7C7F93, #9399B2);"> {</span></span>
+<span class="giallo-l"><span style="color: light-dark(#8839EF, #CBA6F7);">        if</span><span style="color: light-dark(#179299, #94E2D5);"> *</span><span style="color: light-dark(#D20F39, #F38BA8);">self</span><span style="color: light-dark(#7C7F93, #9399B2);"> {</span></span>
+<span class="giallo-l"><span style="color: light-dark(#40A02B, #A6E3A1);">            &quot;</span><span style="color: light-dark(#40A02B, #A6E3A1);">1</span><span style="color: light-dark(#40A02B, #A6E3A1);">&quot;</span><span style="color: light-dark(#179299, #94E2D5);">.</span><span style="color: light-dark(#1E66F5, #89B4FA);font-style: italic;">to_string</span><span style="color: light-dark(#7C7F93, #9399B2);">(</span><span style="color: light-dark(#7C7F93, #9399B2);">)</span></span>
+<span class="giallo-l"><span style="color: light-dark(#7C7F93, #9399B2);">        }</span><span style="color: light-dark(#8839EF, #CBA6F7);"> else</span><span style="color: light-dark(#7C7F93, #9399B2);"> {</span></span>
+<span class="giallo-l"><span style="color: light-dark(#40A02B, #A6E3A1);">            &quot;</span><span style="color: light-dark(#40A02B, #A6E3A1);">0</span><span style="color: light-dark(#40A02B, #A6E3A1);">&quot;</span><span style="color: light-dark(#179299, #94E2D5);">.</span><span style="color: light-dark(#1E66F5, #89B4FA);font-style: italic;">to_string</span><span style="color: light-dark(#7C7F93, #9399B2);">(</span><span style="color: light-dark(#7C7F93, #9399B2);">)</span></span>
+<span class="giallo-l"><span style="color: light-dark(#7C7F93, #9399B2);">        }</span></span>
+<span class="giallo-l"><span style="color: light-dark(#7C7F93, #9399B2);">    }</span></span>
+<span class="giallo-l"></span>
+<span class="giallo-l"><span style="color: light-dark(#8839EF, #CBA6F7);">    fn</span><span style="color: light-dark(#1E66F5, #89B4FA);font-style: italic;"> try_from_writable</span><span style="color: light-dark(#7C7F93, #9399B2);">(</span><span style="color: light-dark(#E64553, #EBA0AC);">val</span><span style="color: light-dark(#179299, #94E2D5);">:</span><span style="color: light-dark(#DF8E1D, #F9E2AF);font-style: italic;"> String</span><span style="color: light-dark(#7C7F93, #9399B2);">)</span><span style="color: light-dark(#179299, #94E2D5);"> -&gt;</span><span style="color: light-dark(#DF8E1D, #F9E2AF);font-style: italic;"> Result</span><span style="color: light-dark(#04A5E5, #89DCEB);">&lt;</span><span style="color: light-dark(#D20F39, #F38BA8);">Self</span><span style="color: light-dark(#7C7F93, #9399B2);">,</span><span style="color: light-dark(#DF8E1D, #F9E2AF);font-style: italic;"> InstrumentRsError</span><span style="color: light-dark(#04A5E5, #89DCEB);">&gt;</span><span style="color: light-dark(#7C7F93, #9399B2);"> {</span></span>
+<span class="giallo-l"><span style="color: light-dark(#8839EF, #CBA6F7);">        match</span><span> val</span><span style="color: light-dark(#179299, #94E2D5);">.</span><span style="color: light-dark(#1E66F5, #89B4FA);font-style: italic;">trim</span><span style="color: light-dark(#7C7F93, #9399B2);">(</span><span style="color: light-dark(#7C7F93, #9399B2);">)</span><span style="color: light-dark(#7C7F93, #9399B2);"> {</span></span>
+<span class="giallo-l"><span style="color: light-dark(#40A02B, #A6E3A1);">            &quot;</span><span style="color: light-dark(#40A02B, #A6E3A1);">0</span><span style="color: light-dark(#40A02B, #A6E3A1);">&quot;</span><span style="color: light-dark(#179299, #94E2D5);"> =&gt;</span><span style="color: light-dark(#DF8E1D, #F9E2AF);font-style: italic;"> Ok</span><span style="color: light-dark(#7C7F93, #9399B2);">(</span><span style="color: light-dark(#D20F39, #F38BA8);">false</span><span style="color: light-dark(#7C7F93, #9399B2);">)</span><span style="color: light-dark(#7C7F93, #9399B2);">,</span></span>
+<span class="giallo-l"><span style="color: light-dark(#40A02B, #A6E3A1);">            &quot;</span><span style="color: light-dark(#40A02B, #A6E3A1);">1</span><span style="color: light-dark(#40A02B, #A6E3A1);">&quot;</span><span style="color: light-dark(#179299, #94E2D5);"> =&gt;</span><span style="color: light-dark(#DF8E1D, #F9E2AF);font-style: italic;"> Ok</span><span style="color: light-dark(#7C7F93, #9399B2);">(</span><span style="color: light-dark(#D20F39, #F38BA8);">true</span><span style="color: light-dark(#7C7F93, #9399B2);">)</span><span style="color: light-dark(#7C7F93, #9399B2);">,</span></span>
+<span class="giallo-l"><span>            _</span><span style="color: light-dark(#179299, #94E2D5);"> =&gt;</span><span style="color: light-dark(#DF8E1D, #F9E2AF);font-style: italic;"> Err</span><span style="color: light-dark(#7C7F93, #9399B2);">(</span><span style="color: light-dark(#DF8E1D, #F9E2AF);font-style: italic;">InstrumentRsError</span><span style="color: light-dark(#179299, #94E2D5);">::</span><span style="color: light-dark(#DF8E1D, #F9E2AF);font-style: italic;">PlaceholderError</span><span style="color: light-dark(#7C7F93, #9399B2);">)</span><span style="color: light-dark(#7C7F93, #9399B2);">,</span></span>
+<span class="giallo-l"><span style="color: light-dark(#7C7F93, #9399B2);">        }</span></span>
+<span class="giallo-l"><span style="color: light-dark(#7C7F93, #9399B2);">    }</span></span>
+<span class="giallo-l"><span style="color: light-dark(#7C7F93, #9399B2);">}</span></span></code></pre>
+<p>Of course, this also limits every <code>bool</code> now to be sent with these
+specific patterns, however,
+this is generally the case when certain settings on an instrument
+take <code>true</code> or <code>false</code>.
+This example however demonstrates why the <code>Parameter</code> trait
+must be implemented in the instrument driver itself.
+Defining it in <code>instrumentRs</code> would only allow a driver author
+to implement it on their own new types due to the <a rel="external" href="https://doc.rust-lang.org/book/ch10-02-traits.html#implementing-a-trait-on-a-type">orphan rule</a>.</p>
+</li>
+</ol>
+<p>Note that in these examples,
+<code>Parameter</code> is implemented with an owned <code>String</code> as the writable type.
+The reason for this is that the bytes that come back in a query
+are parsed into a <code>String</code> before being passed on.
+More on this in the <a href="https://blog.galactic-forensics.space/blog/07-instrumentrs2/#transport">transport section</a>.</p>
+<h3 id="transport">Transport</h3>
+<p>The transport is how the commands get written to the instrument.
+Various implementations exist, from simple <a rel="external" href="https://en.wikipedia.org/wiki/Standard_Commands_for_Programmable_Instruments">SCPI</a> instruments
+to <a rel="external" href="https://en.wikipedia.org/wiki/Modbus">MODBUS</a> communication protocols.
+We want to be flexible!
+I have even seen instruments that pack the bytes in a predefined structure
+but mix the <a rel="external" href="https://en.wikipedia.org/wiki/Endianness">endianness</a> depending on where in the command we are at.
+Also, often some type of checksum is used that needs to be calculated
+once the data package is assembled
+and then added to the package before sending it.</p>
+<p>Generally, we have two types of commands: <code>sendcmd</code> and <code>query</code>.
+In the <code>sendcmd</code> case we usually want to just send a command
+to the instrument and maybe check for an acknowledgment.
+The <code>query</code> command generally first sends a command to request data
+and then reads the interface to receive the data.
+Generally, a driver author will need to implement the
+<code>Transport</code> trait for their instrument.
+This trait is fairly simple
+and in the current <code>v0.2.0</code> implementation looks like this:</p>
+<pre class="giallo" style="color-scheme: light dark; color: light-dark(#4C4F69, #CDD6F4); background-color: light-dark(#EFF1F5, #1E1E2E);"><code data-lang="rust"><span class="giallo-l"><span style="color: light-dark(#8839EF, #CBA6F7);">pub</span><span style="color: light-dark(#8839EF, #CBA6F7);"> trait</span><span style="color: light-dark(#DF8E1D, #F9E2AF);font-style: italic;"> Transport</span><span style="color: light-dark(#04A5E5, #89DCEB);">&lt;</span><span style="color: light-dark(#DF8E1D, #F9E2AF);font-style: italic;">W</span><span style="color: light-dark(#179299, #94E2D5);">:</span><span style="color: light-dark(#DF8E1D, #F9E2AF);font-style: italic;"> Writable</span><span style="color: light-dark(#7C7F93, #9399B2);">,</span><span style="color: light-dark(#FE640B, #FAB387);"> WR</span><span style="color: light-dark(#179299, #94E2D5);">:</span><span style="color: light-dark(#DF8E1D, #F9E2AF);font-style: italic;"> Writable</span><span style="color: light-dark(#04A5E5, #89DCEB);">&gt;</span><span style="color: light-dark(#7C7F93, #9399B2);"> {</span></span>
+<span class="giallo-l"><span style="color: light-dark(#7C7F93, #9399B2);font-style: italic;">    ///</span><span style="color: light-dark(#7C7F93, #9399B2);font-style: italic;"> The send command that you need to implement.</span></span>
+<span class="giallo-l"><span style="color: light-dark(#8839EF, #CBA6F7);">    fn</span><span style="color: light-dark(#1E66F5, #89B4FA);font-style: italic;"> sendcmd</span><span style="color: light-dark(#7C7F93, #9399B2);">(</span></span>
+<span class="giallo-l"><span style="color: light-dark(#179299, #94E2D5);">        &amp;</span><span style="color: light-dark(#8839EF, #CBA6F7);">mut</span><span style="color: light-dark(#D20F39, #F38BA8);"> self</span><span style="color: light-dark(#7C7F93, #9399B2);">,</span></span>
+<span class="giallo-l"><span style="color: light-dark(#E64553, #EBA0AC);">        cmd</span><span style="color: light-dark(#179299, #94E2D5);">:</span><span style="color: light-dark(#DF8E1D, #F9E2AF);font-style: italic;"> W</span><span style="color: light-dark(#7C7F93, #9399B2);">,</span></span>
+<span class="giallo-l"><span style="color: light-dark(#E64553, #EBA0AC);">        idx</span><span style="color: light-dark(#179299, #94E2D5);">:</span><span style="color: light-dark(#DF8E1D, #F9E2AF);font-style: italic;"> Option</span><span style="color: light-dark(#04A5E5, #89DCEB);">&lt;</span><span style="color: light-dark(#8839EF, #CBA6F7);">usize</span><span style="color: light-dark(#04A5E5, #89DCEB);">&gt;</span><span style="color: light-dark(#7C7F93, #9399B2);">,</span></span>
+<span class="giallo-l"><span style="color: light-dark(#E64553, #EBA0AC);">        args</span><span style="color: light-dark(#179299, #94E2D5);">:</span><span style="color: light-dark(#DF8E1D, #F9E2AF);font-style: italic;"> Option</span><span style="color: light-dark(#04A5E5, #89DCEB);">&lt;</span><span style="color: light-dark(#179299, #94E2D5);">&amp;</span><span style="color: light-dark(#7C7F93, #9399B2);">[</span><span style="color: light-dark(#DF8E1D, #F9E2AF);font-style: italic;">W</span><span style="color: light-dark(#7C7F93, #9399B2);">]</span><span style="color: light-dark(#04A5E5, #89DCEB);">&gt;</span><span style="color: light-dark(#7C7F93, #9399B2);">,</span></span>
+<span class="giallo-l"><span style="color: light-dark(#7C7F93, #9399B2);">    )</span><span style="color: light-dark(#179299, #94E2D5);"> -&gt;</span><span style="color: light-dark(#DF8E1D, #F9E2AF);font-style: italic;"> Result</span><span style="color: light-dark(#04A5E5, #89DCEB);">&lt;</span><span style="color: light-dark(#7C7F93, #9399B2);">(</span><span style="color: light-dark(#7C7F93, #9399B2);">)</span><span style="color: light-dark(#7C7F93, #9399B2);">,</span><span style="color: light-dark(#DF8E1D, #F9E2AF);font-style: italic;"> InstrumentRsError</span><span style="color: light-dark(#04A5E5, #89DCEB);">&gt;</span><span style="color: light-dark(#7C7F93, #9399B2);">;</span></span>
+<span class="giallo-l"></span>
+<span class="giallo-l"><span style="color: light-dark(#7C7F93, #9399B2);font-style: italic;">    ///</span><span style="color: light-dark(#7C7F93, #9399B2);font-style: italic;"> The query command that you need to implement.</span></span>
+<span class="giallo-l"><span style="color: light-dark(#8839EF, #CBA6F7);">    fn</span><span style="color: light-dark(#1E66F5, #89B4FA);font-style: italic;"> query</span><span style="color: light-dark(#7C7F93, #9399B2);">(</span><span style="color: light-dark(#179299, #94E2D5);">&amp;</span><span style="color: light-dark(#8839EF, #CBA6F7);">mut</span><span style="color: light-dark(#D20F39, #F38BA8);"> self</span><span style="color: light-dark(#7C7F93, #9399B2);">,</span><span style="color: light-dark(#E64553, #EBA0AC);"> cmd</span><span style="color: light-dark(#179299, #94E2D5);">:</span><span style="color: light-dark(#DF8E1D, #F9E2AF);font-style: italic;"> W</span><span style="color: light-dark(#7C7F93, #9399B2);">,</span><span style="color: light-dark(#E64553, #EBA0AC);"> idx</span><span style="color: light-dark(#179299, #94E2D5);">:</span><span style="color: light-dark(#DF8E1D, #F9E2AF);font-style: italic;"> Option</span><span style="color: light-dark(#04A5E5, #89DCEB);">&lt;</span><span style="color: light-dark(#8839EF, #CBA6F7);">usize</span><span style="color: light-dark(#04A5E5, #89DCEB);">&gt;</span><span style="color: light-dark(#7C7F93, #9399B2);">)</span><span style="color: light-dark(#179299, #94E2D5);"> -&gt;</span><span style="color: light-dark(#DF8E1D, #F9E2AF);font-style: italic;"> Result</span><span style="color: light-dark(#04A5E5, #89DCEB);">&lt;</span><span style="color: light-dark(#DF8E1D, #F9E2AF);font-style: italic;">WR</span><span style="color: light-dark(#7C7F93, #9399B2);">,</span><span style="color: light-dark(#DF8E1D, #F9E2AF);font-style: italic;"> InstrumentRsError</span><span style="color: light-dark(#04A5E5, #89DCEB);">&gt;</span><span style="color: light-dark(#7C7F93, #9399B2);">;</span></span>
+<span class="giallo-l"><span style="color: light-dark(#7C7F93, #9399B2);">}</span></span></code></pre>
+<p>The arguments that <code>sendcmd</code> and <code>query</code> require are as following:</p>
+<ul>
+<li><code>cmd: W</code>: The command (property) that we want to write to.</li>
+<li><code>idx: Option&lt;usize&gt;</code>: Optionally gives the channel index if this is a channel
+specific setting.</li>
+<li><code>args: Option&lt;&amp;[W]&gt;</code> A slice of the parameters that are necessary to
+assemble the final command that is sent to the instrument.
+These arguments are, e.g., the actual voltage we want to set to a channel.</li>
+</ul>
+<p>The <code>sendcmd</code> function has to assemble the package, i.e., the whole command
+that will be sent to the instrument including the terminator,
+and then sends it to the instrument via the interface.
+Upon success, it will return an <code>Ok(())</code> or an error upon failure.
+Similarly, the <code>query</code> function will send a "give me this data" command to the instrument
+and then return the result.</p>
+<p>You might have noted that there are two generics in this trait,
+both of which implement the <code>Writable</code> trait.
+Why is this the case?</p>
+<p>The <code>Writable</code> trait itself is in fact simply a very small helper trait
+that allows us to accept various different ways of defining
+what can be sent to an instrument.
+It looks as following:</p>
+<pre class="giallo" style="color-scheme: light dark; color: light-dark(#4C4F69, #CDD6F4); background-color: light-dark(#EFF1F5, #1E1E2E);"><code data-lang="rust"><span class="giallo-l"><span style="color: light-dark(#8839EF, #CBA6F7);">pub</span><span style="color: light-dark(#8839EF, #CBA6F7);"> trait</span><span style="color: light-dark(#DF8E1D, #F9E2AF);font-style: italic;"> Writable</span><span style="color: light-dark(#7C7F93, #9399B2);"> {</span></span>
+<span class="giallo-l"><span style="color: light-dark(#8839EF, #CBA6F7);">    fn</span><span style="color: light-dark(#1E66F5, #89B4FA);font-style: italic;"> to_byte_slice</span><span style="color: light-dark(#7C7F93, #9399B2);">(</span><span style="color: light-dark(#179299, #94E2D5);">&amp;</span><span style="color: light-dark(#D20F39, #F38BA8);">self</span><span style="color: light-dark(#7C7F93, #9399B2);">)</span><span style="color: light-dark(#179299, #94E2D5);"> -&gt;</span><span style="color: light-dark(#179299, #94E2D5);"> &amp;</span><span style="color: light-dark(#7C7F93, #9399B2);">[</span><span style="color: light-dark(#8839EF, #CBA6F7);">u8</span><span style="color: light-dark(#7C7F93, #9399B2);">]</span><span style="color: light-dark(#7C7F93, #9399B2);">;</span></span>
+<span class="giallo-l"><span style="color: light-dark(#7C7F93, #9399B2);">}</span></span></code></pre>
+<p>All we have to expect from a type that can be sent to an instrument
+is that we can represent it as a byte slice.</p>
+<p>The reason that the <code>Transport</code> trait defines <code>W</code> for the to-send
+types and <code>WR</code> for the return types is that
+we are allowed to send borrowed values, e.g., <code>&amp;str</code> to an instrument,
+however, we need to return an owned value, e.g., <code>String</code>.
+<code>instrumentRs</code> will already implement the <code>Writable</code> trait
+for all necessary basic types.</p>
+<p>Finally, <code>instrumentRs</code> also provides helper functions for the driver author.
+These are used to simplify standard ways of sending to and querying the interface.
+For example, the following helper function reads a reply byte by byte
+until the terminator is detected and then returns a <code>Vec&lt;u8&gt;</code> of this byte.
+How this <code>Vec&lt;u8&gt;</code> is then parsed is instrument dependent
+and thus it will be up to the driver author to decide.
+If no terminator is detected, the loop will generally break
+due to some type of a time out error from the interface.</p>
+<pre class="giallo" style="color-scheme: light dark; color: light-dark(#4C4F69, #CDD6F4); background-color: light-dark(#EFF1F5, #1E1E2E);"><code data-lang="rust"><span class="giallo-l"><span style="color: light-dark(#8839EF, #CBA6F7);">pub</span><span style="color: light-dark(#8839EF, #CBA6F7);"> fn</span><span style="color: light-dark(#1E66F5, #89B4FA);font-style: italic;"> read_until_terminator</span><span style="color: light-dark(#04A5E5, #89DCEB);">&lt;</span><span style="color: light-dark(#DF8E1D, #F9E2AF);font-style: italic;">I</span><span style="color: light-dark(#179299, #94E2D5);">:</span><span style="color: light-dark(#DF8E1D, #F9E2AF);font-style: italic;"> Read</span><span style="color: light-dark(#04A5E5, #89DCEB);">&gt;</span><span style="color: light-dark(#7C7F93, #9399B2);">(</span></span>
+<span class="giallo-l"><span style="color: light-dark(#E64553, #EBA0AC);">    interface</span><span style="color: light-dark(#179299, #94E2D5);">:</span><span style="color: light-dark(#179299, #94E2D5);"> &amp;</span><span style="color: light-dark(#8839EF, #CBA6F7);">mut</span><span style="color: light-dark(#DF8E1D, #F9E2AF);font-style: italic;"> I</span><span style="color: light-dark(#7C7F93, #9399B2);">,</span></span>
+<span class="giallo-l"><span style="color: light-dark(#E64553, #EBA0AC);">    terminator</span><span style="color: light-dark(#179299, #94E2D5);">:</span><span style="color: light-dark(#179299, #94E2D5);"> &amp;</span><span style="color: light-dark(#7C7F93, #9399B2);">[</span><span style="color: light-dark(#8839EF, #CBA6F7);">u8</span><span style="color: light-dark(#7C7F93, #9399B2);">]</span><span style="color: light-dark(#7C7F93, #9399B2);">,</span></span>
+<span class="giallo-l"><span style="color: light-dark(#7C7F93, #9399B2);">)</span><span style="color: light-dark(#179299, #94E2D5);"> -&gt;</span><span style="color: light-dark(#DF8E1D, #F9E2AF);font-style: italic;"> Result</span><span style="color: light-dark(#04A5E5, #89DCEB);">&lt;</span><span style="color: light-dark(#DF8E1D, #F9E2AF);font-style: italic;">Vec</span><span style="color: light-dark(#04A5E5, #89DCEB);">&lt;</span><span style="color: light-dark(#8839EF, #CBA6F7);">u8</span><span style="color: light-dark(#04A5E5, #89DCEB);">&gt;</span><span style="color: light-dark(#7C7F93, #9399B2);">,</span><span style="color: light-dark(#DF8E1D, #F9E2AF);font-style: italic;"> InstrumentRsError</span><span style="color: light-dark(#04A5E5, #89DCEB);">&gt;</span><span style="color: light-dark(#7C7F93, #9399B2);"> {</span></span>
+<span class="giallo-l"><span style="color: light-dark(#8839EF, #CBA6F7);">    let</span><span style="color: light-dark(#8839EF, #CBA6F7);"> mut</span><span> ret</span><span style="color: light-dark(#179299, #94E2D5);"> =</span><span style="color: light-dark(#1E66F5, #89B4FA);font-style: italic;"> vec!</span><span style="color: light-dark(#7C7F93, #9399B2);">[</span><span style="color: light-dark(#7C7F93, #9399B2);">]</span><span style="color: light-dark(#7C7F93, #9399B2);">;</span></span>
+<span class="giallo-l"></span>
+<span class="giallo-l"><span style="color: light-dark(#8839EF, #CBA6F7);">    let</span><span style="color: light-dark(#8839EF, #CBA6F7);"> mut</span><span> buf</span><span style="color: light-dark(#179299, #94E2D5);"> =</span><span style="color: light-dark(#7C7F93, #9399B2);"> [</span><span style="color: light-dark(#FE640B, #FAB387);">0</span><span style="color: light-dark(#8839EF, #CBA6F7);">u8</span><span style="color: light-dark(#7C7F93, #9399B2);">]</span><span style="color: light-dark(#7C7F93, #9399B2);">;</span></span>
+<span class="giallo-l"><span style="color: light-dark(#8839EF, #CBA6F7);">    loop</span><span style="color: light-dark(#7C7F93, #9399B2);"> {</span></span>
+<span class="giallo-l"><span>        interface</span><span style="color: light-dark(#179299, #94E2D5);">.</span><span style="color: light-dark(#1E66F5, #89B4FA);font-style: italic;">read_exact</span><span style="color: light-dark(#7C7F93, #9399B2);">(</span><span style="color: light-dark(#179299, #94E2D5);">&amp;</span><span style="color: light-dark(#8839EF, #CBA6F7);">mut</span><span> buf</span><span style="color: light-dark(#7C7F93, #9399B2);">)</span><span style="color: light-dark(#179299, #94E2D5);">.</span><span style="color: light-dark(#1E66F5, #89B4FA);font-style: italic;">unwrap</span><span style="color: light-dark(#7C7F93, #9399B2);">(</span><span style="color: light-dark(#7C7F93, #9399B2);">)</span><span style="color: light-dark(#7C7F93, #9399B2);">;</span></span>
+<span class="giallo-l"><span>        ret</span><span style="color: light-dark(#179299, #94E2D5);">.</span><span style="color: light-dark(#1E66F5, #89B4FA);font-style: italic;">push</span><span style="color: light-dark(#7C7F93, #9399B2);">(</span><span>buf</span><span style="color: light-dark(#7C7F93, #9399B2);">[</span><span style="color: light-dark(#FE640B, #FAB387);">0</span><span style="color: light-dark(#7C7F93, #9399B2);">]</span><span style="color: light-dark(#7C7F93, #9399B2);">)</span><span style="color: light-dark(#7C7F93, #9399B2);">;</span></span>
+<span class="giallo-l"></span>
+<span class="giallo-l"><span style="color: light-dark(#8839EF, #CBA6F7);">        if</span><span> ret</span><span style="color: light-dark(#179299, #94E2D5);">.</span><span style="color: light-dark(#1E66F5, #89B4FA);font-style: italic;">len</span><span style="color: light-dark(#7C7F93, #9399B2);">(</span><span style="color: light-dark(#7C7F93, #9399B2);">)</span><span style="color: light-dark(#179299, #94E2D5);"> &gt;=</span><span> terminator</span><span style="color: light-dark(#179299, #94E2D5);">.</span><span style="color: light-dark(#1E66F5, #89B4FA);font-style: italic;">len</span><span style="color: light-dark(#7C7F93, #9399B2);">(</span><span style="color: light-dark(#7C7F93, #9399B2);">)</span></span>
+<span class="giallo-l"><span style="color: light-dark(#179299, #94E2D5);">            &amp;&amp;</span><span> ret</span><span style="color: light-dark(#179299, #94E2D5);">.</span><span style="color: light-dark(#1E66F5, #89B4FA);font-style: italic;">get</span><span style="color: light-dark(#7C7F93, #9399B2);">(</span><span>ret</span><span style="color: light-dark(#179299, #94E2D5);">.</span><span style="color: light-dark(#1E66F5, #89B4FA);font-style: italic;">len</span><span style="color: light-dark(#7C7F93, #9399B2);">(</span><span style="color: light-dark(#7C7F93, #9399B2);">)</span><span style="color: light-dark(#179299, #94E2D5);"> -</span><span> terminator</span><span style="color: light-dark(#179299, #94E2D5);">.</span><span style="color: light-dark(#1E66F5, #89B4FA);font-style: italic;">len</span><span style="color: light-dark(#7C7F93, #9399B2);">(</span><span style="color: light-dark(#7C7F93, #9399B2);">)</span><span style="color: light-dark(#179299, #94E2D5);">..</span><span>ret</span><span style="color: light-dark(#179299, #94E2D5);">.</span><span style="color: light-dark(#1E66F5, #89B4FA);font-style: italic;">len</span><span style="color: light-dark(#7C7F93, #9399B2);">(</span><span style="color: light-dark(#7C7F93, #9399B2);">)</span><span style="color: light-dark(#7C7F93, #9399B2);">)</span><span style="color: light-dark(#179299, #94E2D5);">.</span><span style="color: light-dark(#1E66F5, #89B4FA);font-style: italic;">unwrap</span><span style="color: light-dark(#7C7F93, #9399B2);">(</span><span style="color: light-dark(#7C7F93, #9399B2);">)</span><span style="color: light-dark(#179299, #94E2D5);"> ==</span><span> terminator</span></span>
+<span class="giallo-l"><span style="color: light-dark(#7C7F93, #9399B2);">        {</span></span>
+<span class="giallo-l"><span style="color: light-dark(#8839EF, #CBA6F7);">            break</span><span style="color: light-dark(#7C7F93, #9399B2);">;</span></span>
+<span class="giallo-l"><span style="color: light-dark(#7C7F93, #9399B2);">        }</span></span>
+<span class="giallo-l"><span style="color: light-dark(#7C7F93, #9399B2);">    }</span></span>
+<span class="giallo-l"><span style="color: light-dark(#DF8E1D, #F9E2AF);font-style: italic;">    Ok</span><span style="color: light-dark(#7C7F93, #9399B2);">(</span><span>ret</span><span style="color: light-dark(#7C7F93, #9399B2);">)</span></span>
+<span class="giallo-l"><span style="color: light-dark(#7C7F93, #9399B2);">}</span></span></code></pre>
+<p>Note: The <code>unwrap</code>s here will be replaced with proper error handling.
+Furthermore, <code>InsrumentRs</code> should also provide appropriate <code>async</code> helper functions,
+more on that below.</p>
+<p>In this manner, the transport implementation can be as complex or simple as needed
+for communicating with the instrument.
+The driver author is responsible for the implementation,
+but the boilerplate code for a whole instrument can be generated automatically.</p>
+<h3 id="interface">Interface</h3>
+<p>Finally, the interface is something that the driver author does not have to supply.
+The end user of the driver simply chooses what interface the instrument supports
+and then constructs the specific instrument with this interface.</p>
+<h2 id="errors">Errors</h2>
+<p>An additional benefit of this approach for the driver author is
+that <code>instrumentRs</code> takes care of all the error handling.
+These <code>InstrumentRsError</code>s should be publicly re-exported in the driver itself via</p>
+<pre class="giallo" style="color-scheme: light dark; color: light-dark(#4C4F69, #CDD6F4); background-color: light-dark(#EFF1F5, #1E1E2E);"><code data-lang="rust"><span class="giallo-l"><span style="color: light-dark(#8839EF, #CBA6F7);">pub</span><span style="color: light-dark(#8839EF, #CBA6F7);"> use</span><span style="color: light-dark(#DF8E1D, #F9E2AF);"> instrumentrs</span><span style="color: light-dark(#179299, #94E2D5);">::</span><span style="color: light-dark(#DF8E1D, #F9E2AF);font-style: italic;">InstrumentRsError</span><span style="color: light-dark(#7C7F93, #9399B2);">;</span></span></code></pre>
+<p>Note: Error handling is not yet properly implemented in the first test version.
+Thus, you see <code>InstrumentRsError::PlaceholderError</code>
+in some of the code snippets above.</p>
+<h2 id="the-end-user-experience">The end user experience</h2>
+<p>Let's see how this will look from the end user experience.
+The test repo currently contains a driver for my <a rel="external" href="https://github.com/galactic-forensics/digoutbox">DigOutBox</a>.
+For all intent and purposes, this box is a simple <a rel="external" href="https://en.wikipedia.org/wiki/Standard_Commands_for_Programmable_Instruments">SCPI</a>-inspired
+instrument that I built some time ago and, most importantly,
+stands on my office desk for testing.</p>
+<p>The following example shows how to setup and query
+the name of the connected <a rel="external" href="https://github.com/galactic-forensics/digoutbox">DigOutBox</a> from the end user's perspective.</p>
+<pre class="giallo" style="color-scheme: light dark; color: light-dark(#4C4F69, #CDD6F4); background-color: light-dark(#EFF1F5, #1E1E2E);"><code data-lang="rust"><span class="giallo-l"><span style="color: light-dark(#8839EF, #CBA6F7);">use</span><span style="color: light-dark(#DF8E1D, #F9E2AF);"> digoutbox</span><span style="color: light-dark(#179299, #94E2D5);">::</span><span style="color: light-dark(#DF8E1D, #F9E2AF);font-style: italic;">DigOutBox</span><span style="color: light-dark(#7C7F93, #9399B2);">;</span></span>
+<span class="giallo-l"></span>
+<span class="giallo-l"><span style="color: light-dark(#8839EF, #CBA6F7);">pub</span><span style="color: light-dark(#8839EF, #CBA6F7);"> fn</span><span style="color: light-dark(#1E66F5, #89B4FA);font-style: italic;"> main</span><span style="color: light-dark(#7C7F93, #9399B2);">(</span><span style="color: light-dark(#7C7F93, #9399B2);">)</span><span style="color: light-dark(#7C7F93, #9399B2);"> {</span></span>
+<span class="giallo-l"><span style="color: light-dark(#8839EF, #CBA6F7);">    let</span><span> port</span><span style="color: light-dark(#179299, #94E2D5);"> =</span><span style="color: light-dark(#40A02B, #A6E3A1);"> &quot;</span><span style="color: light-dark(#40A02B, #A6E3A1);">/dev/ttyACM0</span><span style="color: light-dark(#40A02B, #A6E3A1);">&quot;</span><span style="color: light-dark(#7C7F93, #9399B2);">;</span></span>
+<span class="giallo-l"><span style="color: light-dark(#8839EF, #CBA6F7);">    let</span><span> baud</span><span style="color: light-dark(#179299, #94E2D5);"> =</span><span style="color: light-dark(#FE640B, #FAB387);"> 9600</span><span style="color: light-dark(#7C7F93, #9399B2);">;</span></span>
+<span class="giallo-l"></span>
+<span class="giallo-l"><span style="color: light-dark(#8839EF, #CBA6F7);">    let</span><span style="color: light-dark(#8839EF, #CBA6F7);"> mut</span><span> interface</span><span style="color: light-dark(#179299, #94E2D5);"> =</span><span style="color: light-dark(#DF8E1D, #F9E2AF);"> serialport</span><span style="color: light-dark(#179299, #94E2D5);">::</span><span style="color: light-dark(#1E66F5, #89B4FA);font-style: italic;">new</span><span style="color: light-dark(#7C7F93, #9399B2);">(</span><span>port</span><span style="color: light-dark(#7C7F93, #9399B2);">,</span><span> baud</span><span style="color: light-dark(#7C7F93, #9399B2);">)</span><span style="color: light-dark(#179299, #94E2D5);">.</span><span style="color: light-dark(#1E66F5, #89B4FA);font-style: italic;">open</span><span style="color: light-dark(#7C7F93, #9399B2);">(</span><span style="color: light-dark(#7C7F93, #9399B2);">)</span><span style="color: light-dark(#179299, #94E2D5);">.</span><span style="color: light-dark(#1E66F5, #89B4FA);font-style: italic;">unwrap</span><span style="color: light-dark(#7C7F93, #9399B2);">(</span><span style="color: light-dark(#7C7F93, #9399B2);">)</span><span style="color: light-dark(#7C7F93, #9399B2);">;</span></span>
+<span class="giallo-l"><span>    interface</span><span style="color: light-dark(#179299, #94E2D5);">.</span><span style="color: light-dark(#1E66F5, #89B4FA);font-style: italic;">set_timeout</span><span style="color: light-dark(#7C7F93, #9399B2);">(</span><span style="color: light-dark(#DF8E1D, #F9E2AF);">Duration</span><span style="color: light-dark(#179299, #94E2D5);">::</span><span style="color: light-dark(#1E66F5, #89B4FA);font-style: italic;">from_secs</span><span style="color: light-dark(#7C7F93, #9399B2);">(</span><span style="color: light-dark(#FE640B, #FAB387);">3</span><span style="color: light-dark(#7C7F93, #9399B2);">)</span><span style="color: light-dark(#7C7F93, #9399B2);">)</span><span style="color: light-dark(#179299, #94E2D5);">.</span><span style="color: light-dark(#1E66F5, #89B4FA);font-style: italic;">unwrap</span><span style="color: light-dark(#7C7F93, #9399B2);">(</span><span style="color: light-dark(#7C7F93, #9399B2);">)</span><span style="color: light-dark(#7C7F93, #9399B2);">;</span></span>
+<span class="giallo-l"></span>
+<span class="giallo-l"><span style="color: light-dark(#8839EF, #CBA6F7);">    let</span><span style="color: light-dark(#8839EF, #CBA6F7);"> mut</span><span> inst</span><span style="color: light-dark(#179299, #94E2D5);"> =</span><span style="color: light-dark(#DF8E1D, #F9E2AF);font-style: italic;"> DigOutBox</span><span style="color: light-dark(#179299, #94E2D5);">::</span><span style="color: light-dark(#1E66F5, #89B4FA);font-style: italic;">new</span><span style="color: light-dark(#7C7F93, #9399B2);">(</span><span>interface</span><span style="color: light-dark(#7C7F93, #9399B2);">)</span><span style="color: light-dark(#7C7F93, #9399B2);">;</span></span>
+<span class="giallo-l"></span>
+<span class="giallo-l"><span style="color: light-dark(#1E66F5, #89B4FA);font-style: italic;">    println!</span><span style="color: light-dark(#7C7F93, #9399B2);">(</span><span style="color: light-dark(#40A02B, #A6E3A1);">&quot;</span><span style="color: light-dark(#7C7F93, #9399B2);">{</span><span style="color: light-dark(#40A02B, #A6E3A1);">:?</span><span style="color: light-dark(#7C7F93, #9399B2);">}</span><span style="color: light-dark(#40A02B, #A6E3A1);">&quot;</span><span style="color: light-dark(#7C7F93, #9399B2);">,</span><span> inst</span><span style="color: light-dark(#179299, #94E2D5);">.</span><span style="color: light-dark(#1E66F5, #89B4FA);font-style: italic;">get_name</span><span style="color: light-dark(#7C7F93, #9399B2);">(</span><span style="color: light-dark(#7C7F93, #9399B2);">)</span><span style="color: light-dark(#7C7F93, #9399B2);">)</span><span style="color: light-dark(#7C7F93, #9399B2);">;</span></span>
+<span class="giallo-l"><span style="color: light-dark(#7C7F93, #9399B2);">}</span></span></code></pre>
+<p>We first specify the address and baud rate of the instrument
+and then use the <a rel="external" href="https://docs.rs/serialport/latest/serialport/">serialport</a> crate to create and open the interface.
+We can now simply create a new <code>DigOutBox</code> instrument
+by providing the interface to the constructor.
+No we are all set to interact with the instrument.
+We can for example print out
+the name of the instrument using the implemented routine.</p>
+<h2 id="what-remains-to-be-defined">What remains to be defined?</h2>
+<h3 id="testing">Testing</h3>
+<p>So far, we have only touched on how instrument drivers should look.
+However, once a driver is written,
+we also want to make sure that they are properly tested!
+Thus, <code>instrumentRs</code> must supply a Mock interface
+that allows straight-forward testing of a given instrument driver.
+This will allow, e.g., for refactoring of code
+without having access to the physical instrument.
+Once drivers are implemented with tests, this will also help
+with testing future developments of <code>instrumentRs</code>
+as these drivers can serve as a test suite to avoid accidentally breaking functionality.</p>
+<h3 id="macro-and-dsl-implementation">Macro and DSL implementation</h3>
+<p>While I have thought a lot about the design on how it should look,
+I have spent almost no time on how the DSL or the macros
+will look for automatically generating the core code.
+It will be very important to also allow in the DSL to properly document
+the various commands that are possible,
+as documentation generation is one of the great parts of Rust.</p>
+<p>Furthermore, it would be nice to have a procedural macro
+that allows deriving the <code>Parameter</code> trait implementation
+for your new types.</p>
+<p>Generally on this topic, I have a lot to learn here.
+But what better way to learn than by having an actual project.</p>
+<h3 id="bound-checks-and-unitfulness">Bound checks and unitfulness</h3>
+<p>Arguments that are sent to an instrument should
+(1) allow for bound checks (ideally in the DSL)
+and (2) be unitful.
+Bound checks will prevent an end user from sending
+illegal values, e.g., by accidentally setting an output channel
+to <code>f64::MAX</code> volts.</p>
+<p>Unitfulness is also very important as many instruments
+will only accept certain values as integers or floats and assume certain units.
+The end users should not be plagued by having to remember
+to send values in the right units.
+Instead, they should be given a type that can be created with a unit
+that will then be converted to the unit the instrument expects.
+The plan here is to use the <a rel="external" href="https://docs.rs/measurements/latest/measurements/">measurements</a> crate,
+a lightweight dependency that enables dealing with physical units.
+However, this decision is ultimately left to the driver author.
+In the end, we want to avoid another "unit-incident"
+as was the case for the <a rel="external" href="https://en.wikipedia.org/wiki/Mars_Climate_Orbiter">Mars Climate Orbiter</a>.</p>
+<h3 id="async-support">Async support</h3>
+<p>Version <code>v0.1.0</code> of <code>instrumentRs</code> only considers blocking interfaces.
+One of the reasons for this is discussed in this <a rel="external" href="https://github.com/trappitsch/instrumentRs/issues/9">going async issue</a>.
+However, <a rel="external" href="https://docs.rs/serialport/latest/serialport/">serialport</a> has a PR with recent and active discussion to
+<a rel="external" href="https://github.com/serialport/serialport-rs/pull/331">add async support</a>.
+<code>instrumentRs</code> should thus be able to generate <code>async</code> drivers
+without much additional overhead for the developer.</p>
+<p>One idea here is that the macro implements two instrument,
+one for blocking and one for asynchronous interactions.
+These instruments would either take a <code>&lt;I: Read + Write&gt;</code>
+or an <code>&lt;IA: AsyncRead + AsyncWrite&gt;</code> generic interface.
+The driver author then will need to add <code>async</code> support
+by implementing a <code>TransportAsync</code> trait (to be defined).
+This should not be too much work as the hardest part
+of the transport definition is how to assemble the command package.
+This assembly can take place outside the <code>sendcmd</code> and <code>query</code>
+functions.
+The <code>sendcmd</code> and <code>query</code> functions then need to be implemented
+for blocking and asynchronous interfaces,
+however, this implementation can hopefully take full advantage
+of helper functions in the <code>instrumentRs</code> transport module.</p>
+<p>Every instrument driver should ultimately have a
+<code>blocking</code> and an <code>async</code> feature,
+where the default is <code>blocking</code>.
+This will allow the end user to choose what they want
+without putting a lot of additional burden on the driver author.</p>
+<p>One question that is still very open in my mind
+is how to implement the <code>AsyncRead</code> and <code>AsyncWrite</code> traits
+in a runtime agnostic way.
+However, the <a rel="external" href="https://github.com/serialport/serialport-rs/pull/331">add async support</a> PR on <a rel="external" href="https://docs.rs/serialport/latest/serialport/">serialport</a>
+might have some hints on how to accomplish this.</p>
+<h3 id="additional-channels-for-e-g-math-functions">Additional channels for, e.g., math functions</h3>
+<p>Oscilloscopes for example have channels but can also have additional
+virtual channels that can be set up.
+For example, a user can display the signal measured on channel 1
+and display some math function that is performed on this signal.
+In <a rel="external" href="https://github.com/instrumentkit/instrumentkit">instrumentkit</a>, e.g., this <a rel="external" href="https://github.com/instrumentkit/InstrumentKit/blob/main/src/instruments/teledyne/maui.py">MAUI driver</a>,
+the math channel is integrated as every other channel but has its own
+access structure.
+How such a case should be handled in <code>instrumentRs</code> remains to be defined.</p>
+<h3 id="repositories">Repositories</h3>
+<p>Currently, the <code>v0.1.0</code> <a rel="external" href="https://github.com/trappitsch/instrumentRs">instrumentRs repo</a>
+contains the <code>instrumentRs v0.1.0</code> crate
+as well as some drivers that I created using it.
+Drivers that are currently hosted there
+should probably move to their own repo, maybe named
+<code>instrumentRs-drivers</code>.
+This way, driver management and toolbox development
+will be properly separated.</p>
+<p>If you are curious on where I am with <code>v0.2.0</code>,
+go to <a rel="external" href="https://github.com/trappitsch/instrumentrs2">instrumentRs2 on GitHub</a>.
+This is only intended as a sandbox repo and,
+once it is in a state that I'm happy with,
+will be merged into the <code>instrumentRs</code> repo.</p>
+<h3 id="documentation">Documentation</h3>
+<p><code>instrumentRs</code> will be properly documented as a crate.
+In addition, a book is planned to discuss details in depth
+and give newcomers pointers on how to start writing an instrument.
+Over the years I have written many drivers and my approach
+by now on how to start a new driver is kind of standardized.
+I think such a document might help some people to get into writing
+their own Rust-based instrument drivers.</p>
+<h2 id="next-steps">Next steps</h2>
+<p>So what's next?
+First of course I want to finish the <code>v0.2.0</code> implementation
+and add proper error handling.
+I also want to implement a Mock interface
+that allows author drivers to easily set up tests.
+This Mock interface will likely be heavily inspired by <a rel="external" href="https://github.com/instrumentkit/instrumentkit">instrumentkit</a>,
+where the commands that are passed back and forth are tested.
+Finally, I also want to play with an <code>async</code> implementation
+to see how simply it would be to implement both interface types
+for device authors.</p>
+<p>I also have access to instruments that require more complex transport handling.
+These instruments require packing bytes properly,
+return acknowledgments for every sent command, etc.
+Implementing more drivers by hand and without macros should
+give me invaluable hints if this current design idea is feasible or not.
+Having access to instruments will also allow lab testing,
+i.e., actually connecting the instrument and giving it a spin.
+Is the designed interface ergonomic?
+What are the friction points?</p>
+<p>More blogposts are to come.
+These posts are a good way for me to focus my thoughts
+by writing the design ideas down.
+Furthermore, these posts allow me to hopefully gather some input
+from you!</p>
+<h2 id="comments-questions-ideas">Comments, questions, ideas?</h2>
+<p>If you have comments or questions,
+please get in touch with me.
+You can do so via <a rel="external" href="https://github.com/trappitsch/instrumentrs2">instrumentRs2 on GitHub</a>,
+<a href="mailto:reto@galactic-forensics.space">e-mail</a>,
+<a rel="external" href="https://bsky.app/profile/galactic-forensics.space">Bluesky</a>,
+or <a rel="external" href="https://matrix.to/@trappits:epfl.ch#/@trappits:epfl.ch">Matrix</a>.
+I'm excited to hear your ideas!</p>
+
+  </div>
+  
+
+  <footer class="post-footer">
+      
+      <ul class="post-tags">
+          
+          
+          <li><a href="https:&#x2F;&#x2F;blog.galactic-forensics.space&#x2F;tags&#x2F;rust&#x2F;">Rust</a></li>
+          
+          
+          <li><a href="https:&#x2F;&#x2F;blog.galactic-forensics.space&#x2F;tags&#x2F;instrumentrs&#x2F;">instrumentRs</a></li>
+          
+      </ul>
+      
+
+    
+    
+
+
+<nav class="paginav">
+    
+    <a class="prev" href="https:&#x2F;&#x2F;blog.galactic-forensics.space&#x2F;blog&#x2F;06-box-why&#x2F;">
+        <span class="title">« Prev</span>
+        <br>
+        <span>Simplify sharing your python application</span>
+    </a>
+    
+    
+    <a class="next" href="https:&#x2F;&#x2F;blog.galactic-forensics.space&#x2F;blog&#x2F;08-instrumentrs2-mock-interface&#x2F;">
+        <span class="title">Next »</span>
+        <br>
+        <span>Testing drivers in instrumentRs v0.2.0</span>
+    </a>
+    
+</nav>
+
+    
+  </footer>
+
+</article>
+
+</main>
+
+<footer class="footer">
+  <div class="footer-credits">
+    
+    <span>&copy; 2026 <a href="https:&#x2F;&#x2F;blog.galactic-forensics.space">trappitsch</a></span>
+    
+    <span>
+        Powered by
+        <a href="https://www.getzola.org/" rel="noopener noreferrer" target="_blank">Zola</a> &
+        <a href="https://github.com/edwardzcn-decade/cela" rel="noopener" target="_blank">Cela</a>
+    </span>
+  </div>
+  <div class="footer-scheme">
+    <select id="scheme-select" title="Color scheme" aria-label="Color scheme">
+      <option value="catppuccin-latte">Latte</option>
+      <option value="catppuccin-macchiato">Macchiato</option>
+      <option value="rose-pine">Rosé Pine</option>
+      <option value="nord">Nord</option>
+    </select>
+  </div>
+</footer>
+
+
+<a href="#top" aria-label="go to top" title="Go to Top (Alt + G)" class="top-link" id="top-link" accesskey="g">
+  <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 12 6" fill="currentColor">
+      <path d="M12 6H0l6-6z" />
+  </svg>
+</a>
+
+
+
+
+
+
+
+
+<div id="search-toggle-box" class="hidden">
+  <div class="search-toggle-modal">
+    <input type="text" id="search-toggle-input" placeholder="Type to search..." />
+    <button id="search-toggle-button">Search</button>
+  </div>
+</div>
+
+
+
+<script src="https://blog.galactic-forensics.space/js/site-ui.js"></script>
+<script src="https://blog.galactic-forensics.space/js/search-ui.js"></script>
+<script src="https://blog.galactic-forensics.space/js/home-effects.js"></script>
+
+
+</body>
+
+</html>

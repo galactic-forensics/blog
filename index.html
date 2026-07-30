@@ -1,0 +1,910 @@
+<!DOCTYPE html>
+<html lang="en" dir="ltr">
+
+<head>
+<meta charset="utf-8">
+<meta http-equiv="X-UA-Compatible" content="IE=edge">
+<meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
+<meta name="robots" content="index, follow">
+
+
+
+
+<title>Mind bytes</title>
+
+
+
+
+<meta name="keywords" content="Galactic Forensics, Reto Trappitsch, Mind Bytes">
+
+
+
+
+<meta name="description" content="Thoughts and ideas...">
+
+
+
+<meta name="author" content="trappitsch">
+
+
+
+
+
+
+
+  <link rel="canonical" href="https:&#x2F;&#x2F;blog.galactic-forensics.space&#x2F;">
+
+
+<link rel="stylesheet" href="https://blog.galactic-forensics.space/css/theme-runtime.css">
+<link rel="stylesheet" href="https://blog.galactic-forensics.space/css/theme.css">
+<link rel="icon" href="https://blog.galactic-forensics.space/favicon.ico">
+<link rel="icon" type="image/png" sizes="16x16" href="https://blog.galactic-forensics.space/favicon-16x16.png">
+<link rel="icon" type="image/png" sizes="32x32" href="https://blog.galactic-forensics.space/favicon-32x32.png">
+<link rel="apple-touch-icon" href="https://blog.galactic-forensics.space/apple-touch-icon.png">
+<meta name="theme-color" content="#2e2e33">
+<meta name="msapplication-TileColor" content="#2e2e33">
+
+
+
+<link rel="alternate" type="application/atom+xml" title="RSS" href="https://blog.galactic-forensics.space/atom.xml">
+
+
+
+<noscript>
+    <style>
+        #theme-toggle,
+        .top-link {
+            display: none;
+        }
+    </style>
+    
+    <style>
+        @media (prefers-color-scheme: dark) {
+            :root {
+                --theme-bg: rgb(24, 25, 38);
+                --surface-bg: rgb(36, 39, 58);
+                --surface-muted: rgb(54, 58, 79);
+                --surface-strong: rgb(68, 71, 90);
+                --text-main: rgb(202, 211, 245);
+                --text-muted: rgb(165, 173, 203);
+                --content-text: rgb(184, 192, 224);
+                --highlight-bg: rgb(54, 58, 79);
+                --code-bg: rgb(30, 32, 48);
+                --border-color: rgb(68, 71, 90);
+                --accent-color: rgb(138, 173, 244);
+                --accent-strong: rgb(125, 196, 228);
+                --accent-soft: rgba(138, 173, 244, 0.18);
+                --focus-ring: rgba(138, 173, 244, 0.32);
+                --overlay-backdrop: rgba(17, 17, 27, 0.72);
+                --hero-glow: radial-gradient(circle at top, rgba(138, 173, 244, 0.18), transparent 55%);
+            }
+
+            .list {
+                background: var(--theme-bg);
+            }
+
+            .list:not(.dark)::-webkit-scrollbar-track {
+                background: 0 0;
+            }
+
+            .list:not(.dark)::-webkit-scrollbar-thumb {
+                border-color: var(--theme-bg);
+            }
+        }
+
+    </style>
+    
+</noscript>
+
+
+  
+
+
+<link rel="stylesheet" href="https://blog.galactic-forensics.space/css/code-theme-overrides.css">
+
+</head>
+
+<body
+class="list"
+id="top"
+data-show-code-copy-buttons="true"
+data-show-theme-toggle="true"
+data-remember-choice="true"
+data-search-page-url="https://blog.galactic-forensics.space/search"
+data-search-index-json-url="https://blog.galactic-forensics.space/search_index.en.json"
+data-search-index-js-url="https://blog.galactic-forensics.space/search_index.en.js">
+<script>document.documentElement.classList.add("js");</script>
+<script>
+  (function () {
+    var scheme;
+    var darkSchemes = ["catppuccin-macchiato", "rose-pine", "nord"];
+    scheme = localStorage.getItem("pref-scheme");
+    if (!scheme) {
+      scheme = "catppuccin-macchiato";
+      }
+    document.documentElement.setAttribute("data-scheme", scheme);
+    if (darkSchemes.indexOf(scheme) !== -1) {
+      document.documentElement.classList.add("dark");
+      document.body.classList.add("dark");
+    }
+    localStorage.setItem("pref-scheme", scheme);
+    })();
+</script>
+<header class="header">
+  <nav class="nav">
+    <div class="logo">
+      <a
+        href="https:&#x2F;&#x2F;blog.galactic-forensics.space"
+        accesskey="h"
+        title="Mind Bytes (Alt + H)"
+      >
+        
+        
+      </a>
+      <div class="logo-switches">
+        <button id="theme-toggle" accesskey="t" title="(Alt + T)">
+          <svg
+            id="moon"
+            xmlns="http://www.w3.org/2000/svg"
+            width="24"
+            height="18"
+            viewBox="0 0 24 24"
+            fill="none"
+            stroke="currentColor"
+            stroke-width="2"
+            stroke-linecap="round"
+            stroke-linejoin="round"
+          >
+            <path d="M21 12.79A9 9 0 1 1 11.21 3 7 7 0 0 0 21 12.79z"></path>
+          </svg>
+          <svg
+            id="sun"
+            xmlns="http://www.w3.org/2000/svg"
+            width="24"
+            height="18"
+            viewBox="0 0 24 24"
+            fill="none"
+            stroke="currentColor"
+            stroke-width="2"
+            stroke-linecap="round"
+            stroke-linejoin="round"
+          >
+            <circle cx="12" cy="12" r="5"></circle>
+            <line x1="12" y1="1" x2="12" y2="3"></line>
+            <line x1="12" y1="21" x2="12" y2="23"></line>
+            <line x1="4.22" y1="4.22" x2="5.64" y2="5.64"></line>
+            <line x1="18.36" y1="18.36" x2="19.78" y2="19.78"></line>
+            <line x1="1" y1="12" x2="3" y2="12"></line>
+            <line x1="21" y1="12" x2="23" y2="12"></line>
+            <line x1="4.22" y1="19.78" x2="5.64" y2="18.36"></line>
+            <line x1="18.36" y1="5.64" x2="19.78" y2="4.22"></line>
+          </svg>
+        </button>
+        
+        
+      </div>
+    </div>
+    
+    <ul id="menu">
+      
+        
+        
+        
+        
+        
+        
+          
+        
+
+        
+        
+        
+        
+        
+      <li>
+        <a href="https:&#x2F;&#x2F;blog.galactic-forensics.space" title="Home"
+          
+          >
+          <span class="active">Home</span></a>
+      </li>
+      
+        
+        
+        
+        
+        
+        
+          
+
+          
+          
+            
+            
+              
+            
+          
+            
+            
+          
+
+          
+            
+            
+            
+              
+            
+          
+        
+
+        
+        
+        
+        
+        
+      <li>
+        <a href="https:&#x2F;&#x2F;blog.galactic-forensics.space&#x2F;tags&#x2F;" title="Tags"
+          
+          >
+          <span>Tags</span></a>
+      </li>
+      
+        
+        
+        
+        
+        
+        
+          
+
+          
+          
+            
+            
+          
+            
+            
+              
+            
+          
+
+          
+            
+            
+            
+              
+            
+          
+        
+
+        
+        
+        
+        
+        
+      <li>
+        <a href="https:&#x2F;&#x2F;blog.galactic-forensics.space&#x2F;categories&#x2F;" title="Categories"
+          
+          >
+          <span>Categories</span></a>
+      </li>
+      
+        
+        
+        
+        
+        
+        
+          
+        
+
+        
+        
+        
+        
+        
+      <li>
+        <a href="#" title="Search"
+          data-search-toggle="true"
+          >
+          <span>Search</span></a>
+      </li>
+      
+    </ul>
+    
+  </nav>
+</header>
+
+<main class="main">
+
+<article class="first-entry home-info home-hero reveal-on-scroll">
+    <header class="entry-header">
+        <h1>Mind Bytes</h1>
+    </header>
+    <div class="entry-content">
+        Welcome to a collection of some thoughts, ideas, tutorials, learnings... some of these are surely half-baked, but they are there to read anyway.
+    </div>
+    <footer class="entry-footer">
+        
+            <div class="social-icons home-social-icons">
+    
+    
+    
+    
+    
+    <a href="https:&#x2F;&#x2F;github.com&#x2F;trappitsch" target="_blank" rel="noopener noreferrer me" title="GitHub">
+        
+
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"
+    stroke-linecap="round" stroke-linejoin="round">
+    <path
+        d="M9 19c-5 1.5-5-2.5-7-3m14 6v-3.87a3.37 3.37 0 0 0-.94-2.61c3.14-.35 6.44-1.54 6.44-7A5.44 5.44 0 0 0 20 4.77 5.07 5.07 0 0 0 19.91 1S18.73.65 16 2.48a13.38 13.38 0 0 0-7 0C6.27.65 5.09 1 5.09 1A5.07 5.07 0 0 0 5 4.77a5.44 5.44 0 0 0-1.5 3.78c0 5.42 3.3 6.61 6.44 7A3.37 3.37 0 0 0 9 18.13V22">
+    </path>
+</svg>
+
+
+    </a>
+    
+    
+    
+    
+    
+    <a href="https:&#x2F;&#x2F;matrix.to&#x2F;%40trappits:epfl.ch#&#x2F;%40trappits:epfl.ch" target="_blank" rel="noopener noreferrer me" title="Matrix">
+        
+
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="currentColor">
+    <path
+        d="M.632.55v22.9H2.28V24H0V0h2.28v.55zm7.043 7.26v1.157h.033c.309-.443.683-.784 1.117-1.024.433-.245.936-.365 1.5-.365.54 0 1.033.107 1.481.314.448.208.785.582 1.02 1.108.254-.374.6-.706 1.034-.992.434-.287.95-.43 1.546-.43.453 0 .872.056 1.26.167.388.11.716.286.993.53.276.245.489.559.646.951.152.392.23.863.23 1.417v5.728h-2.349V11.52c0-.286-.01-.559-.032-.812a1.755 1.755 0 0 0-.18-.66 1.106 1.106 0 0 0-.438-.448c-.194-.11-.457-.166-.785-.166-.332 0-.6.064-.803.189a1.38 1.38 0 0 0-.48.499 1.946 1.946 0 0 0-.231.696 5.56 5.56 0 0 0-.06.785v4.768h-2.35v-4.8c0-.254-.004-.503-.018-.752a2.074 2.074 0 0 0-.143-.688 1.052 1.052 0 0 0-.415-.503c-.194-.125-.476-.19-.854-.19-.111 0-.259.024-.439.074-.18.051-.36.143-.53.282-.171.138-.319.337-.439.595-.12.259-.18.6-.18 1.02v4.966H5.46V7.81zm15.693 15.64V.55H21.72V0H24v24h-2.28v-.55z" />
+</svg>
+
+
+    </a>
+    
+    
+    
+    
+    
+    <a href="https:&#x2F;&#x2F;bsky.app&#x2F;profile&#x2F;galactic-forensics.space" target="_blank" rel="noopener noreferrer me" title="Bluesky">
+        
+
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 360 320" fill="currentColor">
+    <path
+        d="M180 141.964C163.699 110.262 119.308 51.1817 78.0347 22.044C38.4971 -5.86834 23.414 -1.03207 13.526 3.43594C2.08093 8.60755 0 26.1785 0 36.5164C0 46.8542 5.66748 121.272 9.36416 133.694C21.5786 174.738 65.0603 188.607 105.104 184.156C107.151 183.852 109.227 183.572 111.329 183.312C109.267 183.642 107.19 183.924 105.104 184.156C46.4204 192.847 -5.69621 214.233 62.6582 290.33C137.848 368.18 165.705 273.637 180 225.702C194.295 273.637 210.76 364.771 295.995 290.33C360 225.702 313.58 192.85 254.896 184.158C252.81 183.926 250.733 183.645 248.671 183.315C250.773 183.574 252.849 183.855 254.896 184.158C294.94 188.61 338.421 174.74 350.636 133.697C354.333 121.275 360 46.8568 360 36.519C360 26.1811 357.919 8.61012 346.474 3.43851C336.586 -1.02949 321.503 -5.86576 281.965 22.0466C240.692 51.1843 196.301 110.262 180 141.964Z" />
+</svg>
+
+
+
+
+    </a>
+    
+    
+    
+    
+    
+    <a href="https:&#x2F;&#x2F;scholar.google.com&#x2F;citations?user=nuqrAOUAAAAJ&amp;hl" target="_blank" rel="noopener noreferrer me" title="Google Scholar">
+        
+
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 25" fill="none" stroke="currentColor" stroke-width="2"
+    stroke-linecap="round" stroke-linejoin="round">
+    <path
+        d="M5.242 13.769L0.5 9.5 12 1l11.5 9-5.242 3.769C17.548 11.249 14.978 9.5 12 9.5c-2.977 0-5.548 1.748-6.758 4.269zM12 10a7 7 0 1 0 0 14 7 7 0 0 0 0-14z" />
+</svg>
+
+
+    </a>
+    
+    
+    
+    
+    
+    <a href="https:&#x2F;&#x2F;blog.galactic-forensics.space&#x2F;atom.xml" target="_blank" rel="noopener noreferrer me" title="RSS">
+        
+
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"
+    stroke-linecap="round" stroke-linejoin="round">
+    <path d="M4 11a9 9 0 0 1 9 9" />
+    <path d="M4 4a16 16 0 0 1 16 16" />
+    <circle cx="5" cy="19" r="1" />
+</svg>
+
+
+    </a>
+    
+</div>
+
+        
+    </footer>
+</article>
+
+
+
+  
+
+
+
+
+
+
+  
+
+<!-- Add home section pages (and transparent subsection pages)-->
+
+
+
+<h1 class="home-year reveal-on-scroll">2026</h1>
+
+
+
+<article class="post-entry reveal-on-scroll">
+  <header class="entry-header">
+    <h2>InstrumentRs: #[derive(Parameter)]</h2>
+  </header>
+  
+  <div class="entry-content">
+    <p><p>As promised in the <a rel="external" href="https://blog.galactic-forensics.space/blog/09-instrumentrs2-lakeshore336/">last blog post</a>,
+I spent some time developing a derive macro
+that allows deriving how new types will be written to
+and read from an instrument.
+This blog post is about these changes,
+how they work,
+and how they still need to be improved.</p></p>
+  </div>
+  
+  <footer class="entry-footer">
+    
+    
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+<span title="2026-07-30 00:00:00 +0000">2026-07-30</span>&nbsp;·&nbsp;11 min&nbsp;·&nbsp;2025 words&nbsp;·&nbsp;trappitsch
+
+  </footer>
+  <a class="entry-link" aria-label="post link to InstrumentRs: #[derive(Parameter)]" href="https:&#x2F;&#x2F;blog.galactic-forensics.space&#x2F;blog&#x2F;10-derive-macro&#x2F;"></a>
+</article>
+
+
+
+
+<article class="post-entry reveal-on-scroll">
+  <header class="entry-header">
+    <h2>Lakeshore 336 Temperature Controller Driver with instrumentRs v0.2.0</h2>
+  </header>
+  
+  <div class="entry-content">
+    <p><p>It has been a few weeks since my last post.
+Since then I have focused on the async interface,
+a note on this at the end of this blog post,
+and on integrating a new instrument
+using <a rel="external" href="https://github.com/trappitsch/instrumentRs2">instrumentRs v0.2.0</a>.
+Here are my findings on writing a more complex driver.</p></p>
+  </div>
+  
+  <footer class="entry-footer">
+    
+    
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+<span title="2026-07-17 00:00:00 +0000">2026-07-17</span>&nbsp;·&nbsp;12 min&nbsp;·&nbsp;2357 words&nbsp;·&nbsp;trappitsch
+
+  </footer>
+  <a class="entry-link" aria-label="post link to Lakeshore 336 Temperature Controller Driver with instrumentRs v0.2.0" href="https:&#x2F;&#x2F;blog.galactic-forensics.space&#x2F;blog&#x2F;09-instrumentrs2-lakeshore336&#x2F;"></a>
+</article>
+
+
+
+
+<article class="post-entry reveal-on-scroll">
+  <header class="entry-header">
+    <h2>Testing drivers in instrumentRs v0.2.0</h2>
+  </header>
+  
+  <div class="entry-content">
+    <p><p>In the <a href="/blog/07-instrumentrs2">last blogpost</a>
+we discussed design ideas for <code>instrumentRs v0.2.0</code>.
+Here, I will mainly focus on
+the mock interface for testing instruments drivers
+developed using <code>instrumenRs v0.2.0</code>.
+If you haven't already done so,
+it is highly recommended that you read the <a href="/blog/07-instrumentrs2">last blogpost</a> first
+for context.</p></p>
+  </div>
+  
+  <footer class="entry-footer">
+    
+    
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+<span title="2026-06-19 00:00:00 +0000">2026-06-19</span>&nbsp;·&nbsp;12 min&nbsp;·&nbsp;2296 words&nbsp;·&nbsp;trappitsch
+
+  </footer>
+  <a class="entry-link" aria-label="post link to Testing drivers in instrumentRs v0.2.0" href="https:&#x2F;&#x2F;blog.galactic-forensics.space&#x2F;blog&#x2F;08-instrumentrs2-mock-interface&#x2F;"></a>
+</article>
+
+
+
+
+<article class="post-entry reveal-on-scroll">
+  <header class="entry-header">
+    <h2>instrumentRs v0.2.0 design ideas</h2>
+  </header>
+  
+  <div class="entry-content">
+    <p><p>Over the years I have written many drivers
+to control scientific equipment.
+These were mostly in python
+using the wonderful <a rel="external" href="https://github.com/instrumentkit/instrumentkit">instrumentkit</a>.
+As my tech stack has mostly moved to Rust however,
+I have missed a consistent, simple-to-use way
+to write instrument drivers.</p>
+<p>This post discusses a very rough idea
+on how such an improved driver kit might look like in Rust.
+In addition to inspiration from <a rel="external" href="https://github.com/instrumentkit/instrumentkit">instrumentkit</a>,
+a lot of inspiration is also taken from the fantastic <a rel="external" href="https://github.com/diondokter/device-driver">device-driver</a> tool.</p></p>
+  </div>
+  
+  <footer class="entry-footer">
+    
+    
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+<span title="2026-06-10 00:00:00 +0000">2026-06-10</span>&nbsp;·&nbsp;15 min&nbsp;·&nbsp;2956 words&nbsp;·&nbsp;trappitsch
+
+  </footer>
+  <a class="entry-link" aria-label="post link to instrumentRs v0.2.0 design ideas" href="https:&#x2F;&#x2F;blog.galactic-forensics.space&#x2F;blog&#x2F;07-instrumentrs2&#x2F;"></a>
+</article>
+
+
+
+<h1 class="home-year reveal-on-scroll">2024</h1>
+
+
+
+<article class="post-entry reveal-on-scroll">
+  <header class="entry-header">
+    <h2>Simplify sharing your python application</h2>
+  </header>
+  
+  <div class="entry-content">
+    <p><p>The python ecosystem has changed a lot over the last year,
+especially with respect to tooling.
+The usage of <a rel="external" href="https://rust-lang.org">Rust</a> has opened new, very fast,
+and by now very popular tools
+that aid in linting (<a rel="external" href="https://astral.sh/ruff">ruff</a>) and
+package management (<a rel="external" href="https://astral.sh/uv">uv</a>, <a rel="external" href="https://rye.astral.sh">rye</a>).
+But what tools are there if you want to share your python applications
+with colleagues that do not use python?</p></p>
+  </div>
+  
+  <footer class="entry-footer">
+    
+    
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+<span title="2024-09-24 00:00:00 +0000">2024-09-24</span>&nbsp;·&nbsp;10 min&nbsp;·&nbsp;1804 words&nbsp;·&nbsp;trappitsch
+
+  </footer>
+  <a class="entry-link" aria-label="post link to Simplify sharing your python application" href="https:&#x2F;&#x2F;blog.galactic-forensics.space&#x2F;blog&#x2F;06-box-why&#x2F;"></a>
+</article>
+
+
+
+
+<article class="post-entry reveal-on-scroll">
+  <header class="entry-header">
+    <h2>Seven in a row</h2>
+  </header>
+  
+  <div class="entry-content">
+    <p><p>One of my favorite radio shows is <a rel="external" href="https://radiolab.org/">Radiolab</a>, which always presents the listener with an interesting scientific question from across the board. In a recent rerun, Radiolab discussed <a rel="external" href="https://radiolab.org/podcast/91684-stochasticity/transcript">Stochasticity</a>. Something struck me as odd...</p></p>
+  </div>
+  
+  <footer class="entry-footer">
+    
+    
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+<span title="2024-03-01 00:00:00 +0000">2024-03-01</span>&nbsp;·&nbsp;6 min&nbsp;·&nbsp;1031 words&nbsp;·&nbsp;trappitsch
+
+  </footer>
+  <a class="entry-link" aria-label="post link to Seven in a row" href="https:&#x2F;&#x2F;blog.galactic-forensics.space&#x2F;blog&#x2F;05-radiolab-stochasticity&#x2F;"></a>
+</article>
+
+
+
+<h1 class="home-year reveal-on-scroll">2023</h1>
+
+
+
+<article class="post-entry reveal-on-scroll">
+  <header class="entry-header">
+    <h2>Writing an Abstract</h2>
+  </header>
+  
+  <div class="entry-content">
+    <p><p>Writing is an important part of everybody's scientific work.
+I have taken several writing courses over the years.
+My approach to writing has been shaped by these courses
+with some additional experience.
+Is it great now? Surely not, but better than it used to be!
+Here are some of my pointers.</p></p>
+  </div>
+  
+  <footer class="entry-footer">
+    
+    
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+<span title="2023-11-23 00:00:00 +0000">2023-11-23</span>&nbsp;·&nbsp;2 min&nbsp;·&nbsp;331 words&nbsp;·&nbsp;trappitsch
+
+  </footer>
+  <a class="entry-link" aria-label="post link to Writing an Abstract" href="https:&#x2F;&#x2F;blog.galactic-forensics.space&#x2F;blog&#x2F;04-writing-an-abstract&#x2F;"></a>
+</article>
+
+
+
+
+<article class="post-entry reveal-on-scroll">
+  <header class="entry-header">
+    <h2>The day the Earth stood still</h2>
+  </header>
+  
+  <div class="entry-content">
+    <p><p>Assume the following thought experiment:
+The Earth circling the Sun at a cozy distance of 1 AU (around 150 million km)
+suddenly stands still and doesn't move anymore.
+The only force left on the Earth is now the Sun's gravitational pull.
+How long will it be until we crash into the Sun?</p></p>
+  </div>
+  
+  <footer class="entry-footer">
+    
+    
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+<span title="2023-09-06 00:00:00 +0000">2023-09-06</span>&nbsp;·&nbsp;5 min&nbsp;·&nbsp;958 words&nbsp;·&nbsp;trappitsch
+
+  </footer>
+  <a class="entry-link" aria-label="post link to The day the Earth stood still" href="https:&#x2F;&#x2F;blog.galactic-forensics.space&#x2F;blog&#x2F;03-suncrash&#x2F;"></a>
+</article>
+
+
+
+<h1 class="home-year reveal-on-scroll">2022</h1>
+
+
+
+<article class="post-entry reveal-on-scroll">
+  <header class="entry-header">
+    <h2>The number of atoms in a SiC stardust grain</h2>
+  </header>
+  
+  <div class="entry-content">
+    <p><p>Let's calculate how many atoms are in a SiC stardust grain and use python to do so!</p></p>
+  </div>
+  
+  <footer class="entry-footer">
+    
+    
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+<span title="2022-03-26 00:00:00 +0000">2022-03-26</span>&nbsp;·&nbsp;3 min&nbsp;·&nbsp;588 words&nbsp;·&nbsp;trappitsch
+
+  </footer>
+  <a class="entry-link" aria-label="post link to The number of atoms in a SiC stardust grain" href="https:&#x2F;&#x2F;blog.galactic-forensics.space&#x2F;blog&#x2F;02-atoms-in-sic-grain&#x2F;"></a>
+</article>
+
+
+
+
+<article class="post-entry reveal-on-scroll">
+  <header class="entry-header">
+    <h2>Resources for Programming</h2>
+  </header>
+  
+  <div class="entry-content">
+    <p><p>Sooner or later, most scientist have to automate certain tasks.
+It is generally advisable to leave such repetitive things that can be
+automated to the computer. Here we have a look at tools that might help with
+this task.</p></p>
+  </div>
+  
+  <footer class="entry-footer">
+    
+    
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+<span title="2022-01-27 00:00:00 +0000">2022-01-27</span>&nbsp;·&nbsp;7 min&nbsp;·&nbsp;1367 words&nbsp;·&nbsp;trappitsch
+
+  </footer>
+  <a class="entry-link" aria-label="post link to Resources for Programming" href="https:&#x2F;&#x2F;blog.galactic-forensics.space&#x2F;blog&#x2F;01-resources-programming&#x2F;"></a>
+</article>
+
+
+
+
+
+
+
+
+</main>
+
+<footer class="footer">
+  <div class="footer-credits">
+    
+    <span>&copy; 2026 <a href="https:&#x2F;&#x2F;blog.galactic-forensics.space">trappitsch</a></span>
+    
+    <span>
+        Powered by
+        <a href="https://www.getzola.org/" rel="noopener noreferrer" target="_blank">Zola</a> &
+        <a href="https://github.com/edwardzcn-decade/cela" rel="noopener" target="_blank">Cela</a>
+    </span>
+  </div>
+  <div class="footer-scheme">
+    <select id="scheme-select" title="Color scheme" aria-label="Color scheme">
+      <option value="catppuccin-latte">Latte</option>
+      <option value="catppuccin-macchiato">Macchiato</option>
+      <option value="rose-pine">Rosé Pine</option>
+      <option value="nord">Nord</option>
+    </select>
+  </div>
+</footer>
+
+
+<a href="#top" aria-label="go to top" title="Go to Top (Alt + G)" class="top-link" id="top-link" accesskey="g">
+  <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 12 6" fill="currentColor">
+      <path d="M12 6H0l6-6z" />
+  </svg>
+</a>
+
+
+
+
+
+
+
+
+<div id="search-toggle-box" class="hidden">
+  <div class="search-toggle-modal">
+    <input type="text" id="search-toggle-input" placeholder="Type to search..." />
+    <button id="search-toggle-button">Search</button>
+  </div>
+</div>
+
+
+
+<script src="https://blog.galactic-forensics.space/js/site-ui.js"></script>
+<script src="https://blog.galactic-forensics.space/js/search-ui.js"></script>
+<script src="https://blog.galactic-forensics.space/js/home-effects.js"></script>
+
+
+</body>
+
+</html>

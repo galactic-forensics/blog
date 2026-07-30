@@ -1,0 +1,137 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<feed xmlns="http://www.w3.org/2005/Atom" xml:lang="en">
+    <title>Mind bytes - Rust</title>
+    <subtitle>Thoughts and ideas...</subtitle>
+    <link rel="self" type="application/atom+xml" href="https://blog.galactic-forensics.space/tags/rust/atom.xml"/>
+    <link rel="alternate" type="text/html" href="https://blog.galactic-forensics.space"/>
+    <generator uri="https://www.getzola.org/">Zola</generator>
+    <updated>2026-07-30T00:00:00+00:00</updated>
+    <id>https://blog.galactic-forensics.space/tags/rust/atom.xml</id>
+    <entry xml:lang="en">
+        <title>InstrumentRs: #[derive(Parameter)]</title>
+        <published>2026-07-30T00:00:00+00:00</published>
+        <updated>2026-07-30T00:00:00+00:00</updated>
+        
+        <author>
+          <name>
+            
+              trappitsch
+            
+          </name>
+        </author>
+        
+        <link rel="alternate" type="text/html" href="https://blog.galactic-forensics.space/blog/10-derive-macro/"/>
+        <id>https://blog.galactic-forensics.space/blog/10-derive-macro/</id>
+        
+        <summary type="html">&lt;p&gt;As promised in the &lt;a rel=&quot;external&quot; href=&quot;https:&#x2F;&#x2F;blog.galactic-forensics.space&#x2F;blog&#x2F;09-instrumentrs2-lakeshore336&#x2F;&quot;&gt;last blog post&lt;&#x2F;a&gt;,
+I spent some time developing a derive macro
+that allows deriving how new types will be written to
+and read from an instrument.
+This blog post is about these changes,
+how they work,
+and how they still need to be improved.&lt;&#x2F;p&gt;</summary>
+        
+    </entry>
+    <entry xml:lang="en">
+        <title>Lakeshore 336 Temperature Controller Driver with instrumentRs v0.2.0</title>
+        <published>2026-07-17T00:00:00+00:00</published>
+        <updated>2026-07-17T00:00:00+00:00</updated>
+        
+        <author>
+          <name>
+            
+              trappitsch
+            
+          </name>
+        </author>
+        
+        <link rel="alternate" type="text/html" href="https://blog.galactic-forensics.space/blog/09-instrumentrs2-lakeshore336/"/>
+        <id>https://blog.galactic-forensics.space/blog/09-instrumentrs2-lakeshore336/</id>
+        
+        <summary type="html">&lt;p&gt;It has been a few weeks since my last post.
+Since then I have focused on the async interface,
+a note on this at the end of this blog post,
+and on integrating a new instrument
+using &lt;a rel=&quot;external&quot; href=&quot;https:&#x2F;&#x2F;github.com&#x2F;trappitsch&#x2F;instrumentRs2&quot;&gt;instrumentRs v0.2.0&lt;&#x2F;a&gt;.
+Here are my findings on writing a more complex driver.&lt;&#x2F;p&gt;</summary>
+        
+    </entry>
+    <entry xml:lang="en">
+        <title>Testing drivers in instrumentRs v0.2.0</title>
+        <published>2026-06-19T00:00:00+00:00</published>
+        <updated>2026-06-19T00:00:00+00:00</updated>
+        
+        <author>
+          <name>
+            
+              trappitsch
+            
+          </name>
+        </author>
+        
+        <link rel="alternate" type="text/html" href="https://blog.galactic-forensics.space/blog/08-instrumentrs2-mock-interface/"/>
+        <id>https://blog.galactic-forensics.space/blog/08-instrumentrs2-mock-interface/</id>
+        
+        <summary type="html">&lt;p&gt;In the &lt;a href=&quot;&#x2F;blog&#x2F;07-instrumentrs2&quot;&gt;last blogpost&lt;&#x2F;a&gt;
+we discussed design ideas for &lt;code&gt;instrumentRs v0.2.0&lt;&#x2F;code&gt;.
+Here, I will mainly focus on
+the mock interface for testing instruments drivers
+developed using &lt;code&gt;instrumenRs v0.2.0&lt;&#x2F;code&gt;.
+If you haven&#x27;t already done so,
+it is highly recommended that you read the &lt;a href=&quot;&#x2F;blog&#x2F;07-instrumentrs2&quot;&gt;last blogpost&lt;&#x2F;a&gt; first
+for context.&lt;&#x2F;p&gt;</summary>
+        
+    </entry>
+    <entry xml:lang="en">
+        <title>instrumentRs v0.2.0 design ideas</title>
+        <published>2026-06-10T00:00:00+00:00</published>
+        <updated>2026-06-10T00:00:00+00:00</updated>
+        
+        <author>
+          <name>
+            
+              trappitsch
+            
+          </name>
+        </author>
+        
+        <link rel="alternate" type="text/html" href="https://blog.galactic-forensics.space/blog/07-instrumentrs2/"/>
+        <id>https://blog.galactic-forensics.space/blog/07-instrumentrs2/</id>
+        
+        <summary type="html">&lt;p&gt;Over the years I have written many drivers
+to control scientific equipment.
+These were mostly in python
+using the wonderful &lt;a rel=&quot;external&quot; href=&quot;https:&#x2F;&#x2F;github.com&#x2F;instrumentkit&#x2F;instrumentkit&quot;&gt;instrumentkit&lt;&#x2F;a&gt;.
+As my tech stack has mostly moved to Rust however,
+I have missed a consistent, simple-to-use way
+to write instrument drivers.&lt;&#x2F;p&gt;
+&lt;p&gt;This post discusses a very rough idea
+on how such an improved driver kit might look like in Rust.
+In addition to inspiration from &lt;a rel=&quot;external&quot; href=&quot;https:&#x2F;&#x2F;github.com&#x2F;instrumentkit&#x2F;instrumentkit&quot;&gt;instrumentkit&lt;&#x2F;a&gt;,
+a lot of inspiration is also taken from the fantastic &lt;a rel=&quot;external&quot; href=&quot;https:&#x2F;&#x2F;github.com&#x2F;diondokter&#x2F;device-driver&quot;&gt;device-driver&lt;&#x2F;a&gt; tool.&lt;&#x2F;p&gt;</summary>
+        
+    </entry>
+    <entry xml:lang="en">
+        <title>The day the Earth stood still</title>
+        <published>2023-09-06T00:00:00+00:00</published>
+        <updated>2023-09-06T00:00:00+00:00</updated>
+        
+        <author>
+          <name>
+            
+              trappitsch
+            
+          </name>
+        </author>
+        
+        <link rel="alternate" type="text/html" href="https://blog.galactic-forensics.space/blog/03-suncrash/"/>
+        <id>https://blog.galactic-forensics.space/blog/03-suncrash/</id>
+        
+        <summary type="html">&lt;p&gt;Assume the following thought experiment:
+The Earth circling the Sun at a cozy distance of 1 AU (around 150 million km)
+suddenly stands still and doesn&#x27;t move anymore.
+The only force left on the Earth is now the Sun&#x27;s gravitational pull.
+How long will it be until we crash into the Sun?&lt;&#x2F;p&gt;</summary>
+        
+    </entry>
+</feed>

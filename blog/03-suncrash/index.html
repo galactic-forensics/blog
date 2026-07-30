@@ -1,0 +1,721 @@
+<!DOCTYPE html>
+<html lang="en" dir="ltr">
+
+<head>
+<meta charset="utf-8">
+<meta http-equiv="X-UA-Compatible" content="IE=edge">
+<meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
+<meta name="robots" content="index, follow">
+
+
+
+
+<title>The day the Earth stood still</title>
+
+
+
+
+
+<meta name="keywords" content="Physics, Python, Rust">
+
+
+
+
+<meta name="description" content="Thoughts and ideas...">
+
+
+
+<meta name="author" content="trappitsch">
+
+
+
+
+
+
+
+  <link rel="canonical" href="https:&#x2F;&#x2F;blog.galactic-forensics.space&#x2F;blog&#x2F;03-suncrash&#x2F;">
+
+
+<link rel="stylesheet" href="https://blog.galactic-forensics.space/css/theme-runtime.css">
+<link rel="stylesheet" href="https://blog.galactic-forensics.space/css/theme.css">
+<link rel="icon" href="https://blog.galactic-forensics.space/favicon.ico">
+<link rel="icon" type="image/png" sizes="16x16" href="https://blog.galactic-forensics.space/favicon-16x16.png">
+<link rel="icon" type="image/png" sizes="32x32" href="https://blog.galactic-forensics.space/favicon-32x32.png">
+<link rel="apple-touch-icon" href="https://blog.galactic-forensics.space/apple-touch-icon.png">
+<meta name="theme-color" content="#2e2e33">
+<meta name="msapplication-TileColor" content="#2e2e33">
+
+
+
+<link rel="alternate" type="application/atom+xml" title="RSS" href="https://blog.galactic-forensics.space/atom.xml">
+
+
+
+<noscript>
+    <style>
+        #theme-toggle,
+        .top-link {
+            display: none;
+        }
+    </style>
+    
+    <style>
+        @media (prefers-color-scheme: dark) {
+            :root {
+                --theme-bg: rgb(24, 25, 38);
+                --surface-bg: rgb(36, 39, 58);
+                --surface-muted: rgb(54, 58, 79);
+                --surface-strong: rgb(68, 71, 90);
+                --text-main: rgb(202, 211, 245);
+                --text-muted: rgb(165, 173, 203);
+                --content-text: rgb(184, 192, 224);
+                --highlight-bg: rgb(54, 58, 79);
+                --code-bg: rgb(30, 32, 48);
+                --border-color: rgb(68, 71, 90);
+                --accent-color: rgb(138, 173, 244);
+                --accent-strong: rgb(125, 196, 228);
+                --accent-soft: rgba(138, 173, 244, 0.18);
+                --focus-ring: rgba(138, 173, 244, 0.32);
+                --overlay-backdrop: rgba(17, 17, 27, 0.72);
+                --hero-glow: radial-gradient(circle at top, rgba(138, 173, 244, 0.18), transparent 55%);
+            }
+
+            .list {
+                background: var(--theme-bg);
+            }
+
+            .list:not(.dark)::-webkit-scrollbar-track {
+                background: 0 0;
+            }
+
+            .list:not(.dark)::-webkit-scrollbar-thumb {
+                border-color: var(--theme-bg);
+            }
+        }
+
+    </style>
+    
+</noscript>
+
+
+  
+  <script>
+    window.MathJax = {
+      tex: {
+        inlineMath: [['$', '$'], ['\\(', '\\)']],
+        displayMath: [['$$', '$$'], ['\\[', '\\]']]
+      },
+      options: {
+        ignoreHtmlClass: "no-mathjax",
+        processHtmlClass: "mathjax"
+      }
+    };
+  </script>
+  <script async src="https://cdn.jsdelivr.net/npm/mathjax@3/es5/tex-mml-chtml.js"></script>
+  
+
+
+<link rel="stylesheet" href="https://blog.galactic-forensics.space/css/code-theme-overrides.css">
+
+</head>
+
+<body
+class=""
+id="top"
+data-show-code-copy-buttons="true"
+data-show-theme-toggle="true"
+data-remember-choice="true"
+data-search-page-url="https://blog.galactic-forensics.space/search"
+data-search-index-json-url="https://blog.galactic-forensics.space/search_index.en.json"
+data-search-index-js-url="https://blog.galactic-forensics.space/search_index.en.js">
+<script>document.documentElement.classList.add("js");</script>
+<script>
+  (function () {
+    var scheme;
+    var darkSchemes = ["catppuccin-macchiato", "rose-pine", "nord"];
+    scheme = localStorage.getItem("pref-scheme");
+    if (!scheme) {
+      scheme = "catppuccin-macchiato";
+      }
+    document.documentElement.setAttribute("data-scheme", scheme);
+    if (darkSchemes.indexOf(scheme) !== -1) {
+      document.documentElement.classList.add("dark");
+      document.body.classList.add("dark");
+    }
+    localStorage.setItem("pref-scheme", scheme);
+    })();
+</script>
+<header class="header">
+  <nav class="nav">
+    <div class="logo">
+      <a
+        href="https:&#x2F;&#x2F;blog.galactic-forensics.space"
+        accesskey="h"
+        title="Mind Bytes (Alt + H)"
+      >
+        
+        
+      </a>
+      <div class="logo-switches">
+        <button id="theme-toggle" accesskey="t" title="(Alt + T)">
+          <svg
+            id="moon"
+            xmlns="http://www.w3.org/2000/svg"
+            width="24"
+            height="18"
+            viewBox="0 0 24 24"
+            fill="none"
+            stroke="currentColor"
+            stroke-width="2"
+            stroke-linecap="round"
+            stroke-linejoin="round"
+          >
+            <path d="M21 12.79A9 9 0 1 1 11.21 3 7 7 0 0 0 21 12.79z"></path>
+          </svg>
+          <svg
+            id="sun"
+            xmlns="http://www.w3.org/2000/svg"
+            width="24"
+            height="18"
+            viewBox="0 0 24 24"
+            fill="none"
+            stroke="currentColor"
+            stroke-width="2"
+            stroke-linecap="round"
+            stroke-linejoin="round"
+          >
+            <circle cx="12" cy="12" r="5"></circle>
+            <line x1="12" y1="1" x2="12" y2="3"></line>
+            <line x1="12" y1="21" x2="12" y2="23"></line>
+            <line x1="4.22" y1="4.22" x2="5.64" y2="5.64"></line>
+            <line x1="18.36" y1="18.36" x2="19.78" y2="19.78"></line>
+            <line x1="1" y1="12" x2="3" y2="12"></line>
+            <line x1="21" y1="12" x2="23" y2="12"></line>
+            <line x1="4.22" y1="19.78" x2="5.64" y2="18.36"></line>
+            <line x1="18.36" y1="5.64" x2="19.78" y2="4.22"></line>
+          </svg>
+        </button>
+        
+        
+      </div>
+    </div>
+    
+    <ul id="menu">
+      
+        
+        
+        
+        
+        
+        
+          
+        
+
+        
+        
+        
+        
+        
+      <li>
+        <a href="https:&#x2F;&#x2F;blog.galactic-forensics.space" title="Home"
+          
+          >
+          <span>Home</span></a>
+      </li>
+      
+        
+        
+        
+        
+        
+        
+          
+
+          
+          
+            
+            
+              
+            
+          
+            
+            
+          
+
+          
+            
+            
+            
+              
+            
+          
+        
+
+        
+        
+        
+        
+        
+      <li>
+        <a href="https:&#x2F;&#x2F;blog.galactic-forensics.space&#x2F;tags&#x2F;" title="Tags"
+          
+          >
+          <span>Tags</span></a>
+      </li>
+      
+        
+        
+        
+        
+        
+        
+          
+
+          
+          
+            
+            
+          
+            
+            
+              
+            
+          
+
+          
+            
+            
+            
+              
+            
+          
+        
+
+        
+        
+        
+        
+        
+      <li>
+        <a href="https:&#x2F;&#x2F;blog.galactic-forensics.space&#x2F;categories&#x2F;" title="Categories"
+          
+          >
+          <span>Categories</span></a>
+      </li>
+      
+        
+        
+        
+        
+        
+        
+          
+        
+
+        
+        
+        
+        
+        
+      <li>
+        <a href="#" title="Search"
+          data-search-toggle="true"
+          >
+          <span>Search</span></a>
+      </li>
+      
+    </ul>
+    
+  </nav>
+</header>
+
+<main class="main">
+
+
+
+
+
+
+
+
+
+<article class="post-single">
+  <header class="post-header">
+      <nav class="breadcrumbs" aria-label="breadcrumb">
+          <a href="https://blog.galactic-forensics.space">Home</a>&nbsp;»&nbsp;
+          
+          <a href="https:&#x2F;&#x2F;blog.galactic-forensics.space&#x2F;blog&#x2F;">Posts</a>&nbsp;»&nbsp;
+          
+          <a href="https:&#x2F;&#x2F;blog.galactic-forensics.space&#x2F;blog&#x2F;03-suncrash&#x2F;">The day the Earth stood still</a>
+      </nav>
+      <h1 class="post-title">The day the Earth stood still</h1>
+      
+      
+      <div class="post-meta">
+      
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+<span title="2023-09-06 00:00:00 +0000">2023-09-06</span>&nbsp;·&nbsp;5 min&nbsp;·&nbsp;958 words&nbsp;·&nbsp;trappitsch
+
+      
+      </div>
+      
+  </header>
+
+  
+  
+
+<div class="toc">
+  <details >
+    <summary accesskey="c" title="(Alt + C)">
+      <span class="details">Table of Contents</span>
+    </summary>
+
+    <div class="inner">
+      <ul>
+        
+        <li>
+          <a href="#an-analytical-solution" aria-label="An analytical solution">An analytical solution</a>
+          
+        </li>
+        
+        <li>
+          <a href="#kepler-s-third-law" aria-label="Kepler&#x27;s third law">Kepler&#x27;s third law</a>
+          
+        </li>
+        
+        <li>
+          <a href="#a-numerical-solution" aria-label="A numerical solution">A numerical solution</a>
+          
+          <ul>
+            
+            <li>
+              <a href="#an-implementation-in-python" aria-label="An implementation in Python">An implementation in Python</a>
+              
+            </li>
+            
+            <li>
+              <a href="#a-faster-implementation-in-python-using-numba" aria-label="A faster implementation in Python using numba">A faster implementation in Python using numba</a>
+              
+            </li>
+            
+            <li>
+              <a href="#a-comparison-with-rust" aria-label="A comparison with Rust">A comparison with Rust</a>
+              
+            </li>
+            
+            <li>
+              <a href="#source-code" aria-label="Source code">Source code</a>
+              
+            </li>
+            
+            <li>
+              <a href="#resources" aria-label="Resources">Resources</a>
+              
+            </li>
+            
+          </ul>
+          
+        </li>
+        
+      </ul>
+    </div>
+  </details>
+</div>
+
+  
+
+  
+  <div class="post-content">
+      <p>Assume the following thought experiment:
+The Earth circling the Sun at a cozy distance of 1 AU (around 150 million km)
+suddenly stands still and doesn't move anymore.
+The only force left on the Earth is now the Sun's gravitational pull.
+How long will it be until we crash into the Sun?</p>
+<span id="continue-reading"></span><h2 id="an-analytical-solution">An analytical solution</h2>
+<p>The Sun with mass $m_s$ and the Earth with mass $m_e$ are located at distance $r$ from each other.
+In this scenario (an leaving all vector arrows away since everything takes place in one dimension here),
+the gravitational force between the two bodies can be written as</p>
+<p>\begin{equation}
+F = G \frac{m_s m_e}{r^{2}}.
+\end{equation}</p>
+<p>The force and acceleration the Earth is feeling is</p>
+<p>\begin{equation}
+F = m_e a
+\end{equation}</p>
+<p>and setting both equations equal we get</p>
+<p>\begin{equation}
+a = \ddot{r} = G \frac{m_s}{r^2}.
+\end{equation}</p>
+<p>Note that the mass of the Earth dropped out of the equation.
+We now have a differential equation that we could solve in order to determine the free fall time.
+The solution when solving for the time as a function of position can be seen,
+e.g., on <a rel="external" href="https://en.wikipedia.org/wiki/Free_fall#Inverse-square_law_gravitational_field">Wikipedia</a>.</p>
+<h2 id="kepler-s-third-law">Kepler's third law</h2>
+<p>A common way to solve this problem in astronomy is
+by using
+<a rel="external" href="https://en.wikipedia.org/wiki/Kepler%27s_laws_of_planetary_motion">Kepler's third law</a>
+of planetary motions,
+which states that the square of a planet's orbital period
+is proportional to the cube of the length of the semi-major axis of the planet's orbit.
+Let us assume that the Earth's orbit is a circle
+(which is close to reality).
+The semi-major axis is therefore simply twice the previously defined distance $r$.
+Furthermore, the orbital period of the Earth is 1 year (or 365.24 days).</p>
+<p>The free fall time $t$ can be calculated by imagining that the Earth travels around the Sun
+in a degenerate elliptic orbit,
+such that it travels radially inward towards it and then on the same line back out again.
+Using Kepler's third law allows us to write the following equation:</p>
+<p>\begin{equation}
+\frac{(2t)^2}{r^3} = \frac{p_e^2}{(2r)^3}
+\end{equation}</p>
+<p>Here, $p_e$ is the orbital period of the Earth,
+i.e., 1 year.
+Solving this equation for $t$ results in</p>
+<p>\begin{equation}
+t = \sqrt{\frac{p_e^2}{32}} = 64.52\,\mathrm{d}.
+\end{equation}</p>
+<h2 id="a-numerical-solution">A numerical solution</h2>
+<p>If we do not know about Kepler's third law and do not want to solve the differential equation,
+we can still solve this problem numerically.
+The difficulty we need to keep in mind is that the acceleration of Earth is not constant
+but depends on the distance $r$.
+We can split the distance between the Sun and the Earth into small segments $dr$.
+Within such a segment, we can assume that the acceleration is constant.
+This allows us to apply the equation for distance traveled under constant acceleration:</p>
+<p>\begin{equation}
+dr = \frac{a}{2} dt^2 + v_0 dt
+\end{equation}</p>
+<p>Here, $v_0$ is the initial velocity of the Earth at the beginning of the segment under consideration
+and is zero for the first step (see the title of this post).
+The time it takes to traverse segment $dr$ is $dt$.
+Rewriting above equation and solving for the time $dt$ results in</p>
+<p>\begin{align}
+\frac{a}{2} dt^2 + v_0 dt - dr &amp;= 0 \\
+dt_{1,2} &amp;= \frac{-v_0 \pm \sqrt{v_0^2 + 2 a dr}}{a}.
+\end{align}</p>
+<p>Clearly, only the positive solution is of interest here
+since it is the only one that results in a positive time $t$.</p>
+<p>To calculate the time it takes for the Earth to crash into the Sun
+we can now simply sum over all segments $dr_i$,
+calculate the time $dt_i$ it takes to cross segment $i$,
+and then calculate the total time $t$ as:</p>
+<p>\begin{equation}
+t = \sum dt_i.
+\end{equation}</p>
+<h3 id="an-implementation-in-python">An implementation in Python</h3>
+<p>The following Python code implements this algorithm:</p>
+<pre class="giallo" style="color-scheme: light dark; color: light-dark(#4C4F69, #CDD6F4); background-color: light-dark(#EFF1F5, #1E1E2E);"><code data-lang="python"><span class="giallo-l"><span style="color: light-dark(#8839EF, #CBA6F7);">import</span><span> time</span></span>
+<span class="giallo-l"></span>
+<span class="giallo-l"><span style="color: light-dark(#8839EF, #CBA6F7);">import</span><span> numpy</span><span style="color: light-dark(#8839EF, #CBA6F7);"> as</span><span> np</span></span>
+<span class="giallo-l"></span>
+<span class="giallo-l"><span style="color: light-dark(#7C7F93, #9399B2);font-style: italic;">#</span><span style="color: light-dark(#7C7F93, #9399B2);font-style: italic;"> Constants</span></span>
+<span class="giallo-l"><span>GRAV</span><span style="color: light-dark(#179299, #94E2D5);"> =</span><span style="color: light-dark(#FE640B, #FAB387);"> 6.67408e-11</span><span style="color: light-dark(#7C7F93, #9399B2);font-style: italic;"> #</span><span style="color: light-dark(#7C7F93, #9399B2);font-style: italic;"> m^3 kg^-1 s^-2</span></span>
+<span class="giallo-l"><span>M_SUN</span><span style="color: light-dark(#179299, #94E2D5);"> =</span><span style="color: light-dark(#FE640B, #FAB387);"> 1.98847e30</span><span style="color: light-dark(#7C7F93, #9399B2);font-style: italic;"> #</span><span style="color: light-dark(#7C7F93, #9399B2);font-style: italic;"> kg</span></span>
+<span class="giallo-l"><span>R_START</span><span style="color: light-dark(#179299, #94E2D5);"> =</span><span style="color: light-dark(#FE640B, #FAB387);"> 1.495979e11</span><span style="color: light-dark(#7C7F93, #9399B2);font-style: italic;"> #</span><span style="color: light-dark(#7C7F93, #9399B2);font-style: italic;"> m</span></span>
+<span class="giallo-l"></span>
+<span class="giallo-l"><span style="color: light-dark(#7C7F93, #9399B2);font-style: italic;">#</span><span style="color: light-dark(#7C7F93, #9399B2);font-style: italic;"> Step size</span></span>
+<span class="giallo-l"><span>dr</span><span style="color: light-dark(#179299, #94E2D5);"> =</span><span style="color: light-dark(#FE640B, #FAB387);"> 1e3</span><span style="color: light-dark(#7C7F93, #9399B2);font-style: italic;">  #</span><span style="color: light-dark(#7C7F93, #9399B2);font-style: italic;"> m</span></span>
+<span class="giallo-l"></span>
+<span class="giallo-l"><span style="color: light-dark(#8839EF, #CBA6F7);">def</span><span style="color: light-dark(#1E66F5, #89B4FA);font-style: italic;"> total_time</span><span style="color: light-dark(#7C7F93, #9399B2);">(</span><span style="color: light-dark(#E64553, #EBA0AC);font-style: italic;">dr</span><span style="color: light-dark(#7C7F93, #9399B2);">)</span><span style="color: light-dark(#7C7F93, #9399B2);">:</span></span>
+<span class="giallo-l"><span style="color: light-dark(#7C7F93, #9399B2);font-style: italic;">    #</span><span style="color: light-dark(#7C7F93, #9399B2);font-style: italic;"> Initial conditions</span></span>
+<span class="giallo-l"><span>    t_total</span><span style="color: light-dark(#179299, #94E2D5);"> =</span><span style="color: light-dark(#FE640B, #FAB387);"> 0</span><span style="color: light-dark(#7C7F93, #9399B2);font-style: italic;">  #</span><span style="color: light-dark(#7C7F93, #9399B2);font-style: italic;"> s: total time</span></span>
+<span class="giallo-l"><span>    v_curr</span><span style="color: light-dark(#179299, #94E2D5);"> =</span><span style="color: light-dark(#FE640B, #FAB387);"> 0</span><span style="color: light-dark(#7C7F93, #9399B2);font-style: italic;">  #</span><span style="color: light-dark(#7C7F93, #9399B2);font-style: italic;"> m/s: initial velocity</span></span>
+<span class="giallo-l"><span>    r_curr</span><span style="color: light-dark(#179299, #94E2D5);"> =</span><span> R_START</span><span style="color: light-dark(#7C7F93, #9399B2);font-style: italic;">  #</span><span style="color: light-dark(#7C7F93, #9399B2);font-style: italic;"> m: initial distance</span></span>
+<span class="giallo-l"></span>
+<span class="giallo-l"><span style="color: light-dark(#7C7F93, #9399B2);font-style: italic;">    #</span><span style="color: light-dark(#7C7F93, #9399B2);font-style: italic;"> Calculate time until Earth crashes into the Sun</span></span>
+<span class="giallo-l"><span style="color: light-dark(#8839EF, #CBA6F7);">    while</span><span> r_curr</span><span style="color: light-dark(#179299, #94E2D5);"> &gt;</span><span style="color: light-dark(#FE640B, #FAB387);"> 0</span><span style="color: light-dark(#7C7F93, #9399B2);">:</span></span>
+<span class="giallo-l"><span style="color: light-dark(#7C7F93, #9399B2);font-style: italic;">        #</span><span style="color: light-dark(#7C7F93, #9399B2);font-style: italic;"> Calculate acceleration</span></span>
+<span class="giallo-l"><span>        a_curr</span><span style="color: light-dark(#179299, #94E2D5);"> =</span><span> GRAV</span><span style="color: light-dark(#179299, #94E2D5);"> *</span><span> M_SUN</span><span style="color: light-dark(#179299, #94E2D5);"> /</span><span> r_curr</span><span style="color: light-dark(#179299, #94E2D5);">**</span><span style="color: light-dark(#FE640B, #FAB387);">2</span></span>
+<span class="giallo-l"></span>
+<span class="giallo-l"><span style="color: light-dark(#7C7F93, #9399B2);font-style: italic;">        #</span><span style="color: light-dark(#7C7F93, #9399B2);font-style: italic;"> Calculate time it takes to travel dr</span></span>
+<span class="giallo-l"><span>        t_curr</span><span style="color: light-dark(#179299, #94E2D5);"> =</span><span style="color: light-dark(#7C7F93, #9399B2);"> (</span><span style="color: light-dark(#179299, #94E2D5);">-</span><span>v_curr</span><span style="color: light-dark(#179299, #94E2D5);"> +</span><span> np</span><span style="color: light-dark(#7C7F93, #9399B2);">.</span><span style="color: light-dark(#1E66F5, #89B4FA);">sqrt</span><span style="color: light-dark(#7C7F93, #9399B2);">(</span><span>v_curr</span><span style="color: light-dark(#179299, #94E2D5);">**</span><span style="color: light-dark(#FE640B, #FAB387);">2</span><span style="color: light-dark(#179299, #94E2D5);"> +</span><span style="color: light-dark(#FE640B, #FAB387);"> 2</span><span style="color: light-dark(#179299, #94E2D5);"> *</span><span> a_curr</span><span style="color: light-dark(#179299, #94E2D5);"> *</span><span> dr</span><span style="color: light-dark(#7C7F93, #9399B2);">)</span><span style="color: light-dark(#7C7F93, #9399B2);">)</span><span style="color: light-dark(#179299, #94E2D5);"> /</span><span> a_curr</span></span>
+<span class="giallo-l"></span>
+<span class="giallo-l"><span style="color: light-dark(#7C7F93, #9399B2);font-style: italic;">        #</span><span style="color: light-dark(#7C7F93, #9399B2);font-style: italic;"> Update total time</span></span>
+<span class="giallo-l"><span>        t_total</span><span style="color: light-dark(#179299, #94E2D5);"> +=</span><span> t_curr</span></span>
+<span class="giallo-l"></span>
+<span class="giallo-l"><span style="color: light-dark(#7C7F93, #9399B2);font-style: italic;">        #</span><span style="color: light-dark(#7C7F93, #9399B2);font-style: italic;"> Update velocity</span></span>
+<span class="giallo-l"><span>        v_curr</span><span style="color: light-dark(#179299, #94E2D5);"> +=</span><span> a_curr</span><span style="color: light-dark(#179299, #94E2D5);"> *</span><span> t_curr</span></span>
+<span class="giallo-l"></span>
+<span class="giallo-l"><span style="color: light-dark(#7C7F93, #9399B2);font-style: italic;">        #</span><span style="color: light-dark(#7C7F93, #9399B2);font-style: italic;"> Update distance</span></span>
+<span class="giallo-l"><span>        r_curr</span><span style="color: light-dark(#179299, #94E2D5);"> -=</span><span> dr</span></span>
+<span class="giallo-l"><span>    </span></span>
+<span class="giallo-l"><span style="color: light-dark(#8839EF, #CBA6F7);">    return</span><span> t_total</span></span>
+<span class="giallo-l"></span>
+<span class="giallo-l"><span style="color: light-dark(#7C7F93, #9399B2);font-style: italic;">#</span><span style="color: light-dark(#7C7F93, #9399B2);font-style: italic;"> Print result</span></span>
+<span class="giallo-l"></span>
+<span class="giallo-l"><span>tic</span><span style="color: light-dark(#179299, #94E2D5);"> =</span><span> time</span><span style="color: light-dark(#7C7F93, #9399B2);">.</span><span style="color: light-dark(#1E66F5, #89B4FA);">time</span><span style="color: light-dark(#7C7F93, #9399B2);">(</span><span style="color: light-dark(#7C7F93, #9399B2);">)</span></span>
+<span class="giallo-l"><span>t_total</span><span style="color: light-dark(#179299, #94E2D5);"> =</span><span style="color: light-dark(#1E66F5, #89B4FA);"> total_time</span><span style="color: light-dark(#7C7F93, #9399B2);">(</span><span>dr</span><span style="color: light-dark(#7C7F93, #9399B2);">)</span></span>
+<span class="giallo-l"><span>toc</span><span style="color: light-dark(#179299, #94E2D5);"> =</span><span> time</span><span style="color: light-dark(#7C7F93, #9399B2);">.</span><span style="color: light-dark(#1E66F5, #89B4FA);">time</span><span style="color: light-dark(#7C7F93, #9399B2);">(</span><span style="color: light-dark(#7C7F93, #9399B2);">)</span></span>
+<span class="giallo-l"><span style="color: light-dark(#FE640B, #FAB387);font-style: italic;">print</span><span style="color: light-dark(#7C7F93, #9399B2);">(</span><span style="color: light-dark(#40A02B, #A6E3A1);font-style: italic;">f</span><span style="color: light-dark(#40A02B, #A6E3A1);">&quot;</span><span style="color: light-dark(#40A02B, #A6E3A1);">Time until Earth crashes into the Sun: </span><span style="color: light-dark(#EA76CB, #F5C2E7);">{</span><span>t_total</span><span style="color: light-dark(#179299, #94E2D5);"> /</span><span style="color: light-dark(#FE640B, #FAB387);"> 3600</span><span style="color: light-dark(#179299, #94E2D5);"> /</span><span style="color: light-dark(#FE640B, #FAB387);"> 24</span><span style="color: light-dark(#8839EF, #CBA6F7);">:.2f</span><span style="color: light-dark(#EA76CB, #F5C2E7);">}</span><span style="color: light-dark(#40A02B, #A6E3A1);"> days</span><span style="color: light-dark(#40A02B, #A6E3A1);">&quot;</span><span style="color: light-dark(#7C7F93, #9399B2);">)</span></span>
+<span class="giallo-l"><span style="color: light-dark(#FE640B, #FAB387);font-style: italic;">print</span><span style="color: light-dark(#7C7F93, #9399B2);">(</span><span style="color: light-dark(#40A02B, #A6E3A1);font-style: italic;">f</span><span style="color: light-dark(#40A02B, #A6E3A1);">&quot;</span><span style="color: light-dark(#40A02B, #A6E3A1);">Computation time: </span><span style="color: light-dark(#EA76CB, #F5C2E7);">{</span><span>toc</span><span style="color: light-dark(#179299, #94E2D5);"> -</span><span> tic</span><span style="color: light-dark(#8839EF, #CBA6F7);">:.2f</span><span style="color: light-dark(#EA76CB, #F5C2E7);">}</span><span style="color: light-dark(#40A02B, #A6E3A1);"> seconds</span><span style="color: light-dark(#40A02B, #A6E3A1);">&quot;</span><span style="color: light-dark(#7C7F93, #9399B2);">)</span></span></code></pre>
+<p>Here we wrote the actual calculation into a little function,
+which makes it easier to time it.
+Running this routine on my computer results in the following output:</p>
+<pre class="giallo" style="color-scheme: light dark; color: light-dark(#4C4F69, #CDD6F4); background-color: light-dark(#EFF1F5, #1E1E2E);"><code data-lang="plain"><span class="giallo-l"><span>Time until Earth crashes into the Sun: 64.57 days</span></span>
+<span class="giallo-l"><span>Computation time: 136.57 seconds</span></span></code></pre>
+<p>While we get the correct answer,
+the computation time is over two minutes.
+Let's see if we can speed this up a bit.</p>
+<h3 id="a-faster-implementation-in-python-using-numba">A faster implementation in Python using <a rel="external" href="https://numba.pydata.org/"><code>numba</code></a></h3>
+<p>The
+<a rel="external" href="https://numba.pydata.org/"><code>numba</code></a>
+package allows us to take the function <code>total_time(dr)</code>
+and compile it to machine code before running it.
+Here, just-in-time compilation is used,
+which means that the compilation happens at runtime when the function is used for the first time.</p>
+<p>The only thing we need to change is to import the package
+and add a decorator to the function:</p>
+<pre class="giallo" style="color-scheme: light dark; color: light-dark(#4C4F69, #CDD6F4); background-color: light-dark(#EFF1F5, #1E1E2E);"><code data-lang="python"><span class="giallo-l"><span>...</span></span>
+<span class="giallo-l"></span>
+<span class="giallo-l"><span style="color: light-dark(#8839EF, #CBA6F7);">from</span><span> numba</span><span style="color: light-dark(#8839EF, #CBA6F7);"> import</span><span> njit</span></span>
+<span class="giallo-l"></span>
+<span class="giallo-l"><span>...</span></span>
+<span class="giallo-l"></span>
+<span class="giallo-l"><span style="color: light-dark(#FE640B, #FAB387);font-style: italic;">@</span><span style="color: light-dark(#FE640B, #FAB387);font-style: italic;">njit</span></span>
+<span class="giallo-l"><span style="color: light-dark(#8839EF, #CBA6F7);">def</span><span style="color: light-dark(#1E66F5, #89B4FA);font-style: italic;"> total_time</span><span style="color: light-dark(#7C7F93, #9399B2);">(</span><span style="color: light-dark(#E64553, #EBA0AC);font-style: italic;">dr</span><span style="color: light-dark(#7C7F93, #9399B2);">)</span><span style="color: light-dark(#7C7F93, #9399B2);">:</span></span>
+<span class="giallo-l"><span>    ...</span></span></code></pre>
+<p>Three dots in above example indicate that the rest of the code is unchanged.
+Running the code again results in the following output:</p>
+<pre class="giallo" style="color-scheme: light dark; color: light-dark(#4C4F69, #CDD6F4); background-color: light-dark(#EFF1F5, #1E1E2E);"><code data-lang="plain"><span class="giallo-l"><span>Time until Earth crashes into the Sun: 64.57 days</span></span>
+<span class="giallo-l"><span>Computation time: 1.84 seconds</span></span></code></pre>
+<p>The computation time is now only 1.84 seconds,
+which is a speedup of a factor of 74!</p>
+<p>We can ask the question how long it actually took to compile the function.
+To find out, we can simply run the calculation twice and only measure the time for the second run:
+The output from this is:</p>
+<pre class="giallo" style="color-scheme: light dark; color: light-dark(#4C4F69, #CDD6F4); background-color: light-dark(#EFF1F5, #1E1E2E);"><code data-lang="plain"><span class="giallo-l"><span>Time until Earth crashes into the Sun: 64.57 days</span></span>
+<span class="giallo-l"><span>Computation time: 1.57 seconds</span></span></code></pre>
+<p>Just-in-time compilation thus took around 250 ms.</p>
+<h3 id="a-comparison-with-rust">A comparison with Rust</h3>
+<p>Just as a comparison, here is the output when implementing the same algorithm in Rust
+and building the code with the <code>--release</code> flag:</p>
+<pre class="giallo" style="color-scheme: light dark; color: light-dark(#4C4F69, #CDD6F4); background-color: light-dark(#EFF1F5, #1E1E2E);"><code data-lang="plain"><span class="giallo-l"><span>Time until Earth crashes into the Sun: 64.56 days</span></span>
+<span class="giallo-l"><span>Computation time: 1.58s.</span></span></code></pre>
+<p>The computation time is basically identical to the
+<a rel="external" href="https://numba.pydata.org/"><code>numba</code></a>
+implementation in Python.</p>
+<p>This clearly shows the power of
+<a rel="external" href="https://numba.pydata.org/"><code>numba</code></a>
+and just-in-time compilation.</p>
+<h3 id="source-code">Source code</h3>
+<p>The final python and Rust source code can be found
+<a rel="external" href="https://gist.github.com/trappitsch/35d04ef43a8a53a2bd9ea513032da61a">here on GitHub</a>.</p>
+<h3 id="resources">Resources</h3>
+<ul>
+<li><a rel="external" href="https://numba.pydata.org/">Website for <code>numba</code></a></li>
+<li><a rel="external" href="https://numba.readthedocs.io/en/stable/user/index.html">Documentation for <code>numba</code></a></li>
+</ul>
+
+  </div>
+  
+
+  <footer class="post-footer">
+      
+      <ul class="post-tags">
+          
+          
+          <li><a href="https:&#x2F;&#x2F;blog.galactic-forensics.space&#x2F;tags&#x2F;physics&#x2F;">Physics</a></li>
+          
+          
+          <li><a href="https:&#x2F;&#x2F;blog.galactic-forensics.space&#x2F;tags&#x2F;python&#x2F;">Python</a></li>
+          
+          
+          <li><a href="https:&#x2F;&#x2F;blog.galactic-forensics.space&#x2F;tags&#x2F;rust&#x2F;">Rust</a></li>
+          
+      </ul>
+      
+
+    
+    
+
+
+<nav class="paginav">
+    
+    <a class="prev" href="https:&#x2F;&#x2F;blog.galactic-forensics.space&#x2F;blog&#x2F;02-atoms-in-sic-grain&#x2F;">
+        <span class="title">« Prev</span>
+        <br>
+        <span>The number of atoms in a SiC stardust grain</span>
+    </a>
+    
+    
+    <a class="next" href="https:&#x2F;&#x2F;blog.galactic-forensics.space&#x2F;blog&#x2F;04-writing-an-abstract&#x2F;">
+        <span class="title">Next »</span>
+        <br>
+        <span>Writing an Abstract</span>
+    </a>
+    
+</nav>
+
+    
+  </footer>
+
+</article>
+
+</main>
+
+<footer class="footer">
+  <div class="footer-credits">
+    
+    <span>&copy; 2026 <a href="https:&#x2F;&#x2F;blog.galactic-forensics.space">trappitsch</a></span>
+    
+    <span>
+        Powered by
+        <a href="https://www.getzola.org/" rel="noopener noreferrer" target="_blank">Zola</a> &
+        <a href="https://github.com/edwardzcn-decade/cela" rel="noopener" target="_blank">Cela</a>
+    </span>
+  </div>
+  <div class="footer-scheme">
+    <select id="scheme-select" title="Color scheme" aria-label="Color scheme">
+      <option value="catppuccin-latte">Latte</option>
+      <option value="catppuccin-macchiato">Macchiato</option>
+      <option value="rose-pine">Rosé Pine</option>
+      <option value="nord">Nord</option>
+    </select>
+  </div>
+</footer>
+
+
+<a href="#top" aria-label="go to top" title="Go to Top (Alt + G)" class="top-link" id="top-link" accesskey="g">
+  <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 12 6" fill="currentColor">
+      <path d="M12 6H0l6-6z" />
+  </svg>
+</a>
+
+
+
+
+
+
+
+
+<div id="search-toggle-box" class="hidden">
+  <div class="search-toggle-modal">
+    <input type="text" id="search-toggle-input" placeholder="Type to search..." />
+    <button id="search-toggle-button">Search</button>
+  </div>
+</div>
+
+
+
+<script src="https://blog.galactic-forensics.space/js/site-ui.js"></script>
+<script src="https://blog.galactic-forensics.space/js/search-ui.js"></script>
+<script src="https://blog.galactic-forensics.space/js/home-effects.js"></script>
+
+
+</body>
+
+</html>

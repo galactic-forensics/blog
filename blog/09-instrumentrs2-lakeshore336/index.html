@@ -1,0 +1,910 @@
+<!DOCTYPE html>
+<html lang="en" dir="ltr">
+
+<head>
+<meta charset="utf-8">
+<meta http-equiv="X-UA-Compatible" content="IE=edge">
+<meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
+<meta name="robots" content="index, follow">
+
+
+
+
+<title>Lakeshore 336 Temperature Controller Driver with instrumentRs v0.2.0</title>
+
+
+
+
+
+<meta name="keywords" content="Rust, instrumentRs">
+
+
+
+
+<meta name="description" content="Thoughts and ideas...">
+
+
+
+<meta name="author" content="trappitsch">
+
+
+
+
+
+
+
+  <link rel="canonical" href="https:&#x2F;&#x2F;blog.galactic-forensics.space&#x2F;blog&#x2F;09-instrumentrs2-lakeshore336&#x2F;">
+
+
+<link rel="stylesheet" href="https://blog.galactic-forensics.space/css/theme-runtime.css">
+<link rel="stylesheet" href="https://blog.galactic-forensics.space/css/theme.css">
+<link rel="icon" href="https://blog.galactic-forensics.space/favicon.ico">
+<link rel="icon" type="image/png" sizes="16x16" href="https://blog.galactic-forensics.space/favicon-16x16.png">
+<link rel="icon" type="image/png" sizes="32x32" href="https://blog.galactic-forensics.space/favicon-32x32.png">
+<link rel="apple-touch-icon" href="https://blog.galactic-forensics.space/apple-touch-icon.png">
+<meta name="theme-color" content="#2e2e33">
+<meta name="msapplication-TileColor" content="#2e2e33">
+
+
+
+<link rel="alternate" type="application/atom+xml" title="RSS" href="https://blog.galactic-forensics.space/atom.xml">
+
+
+
+<noscript>
+    <style>
+        #theme-toggle,
+        .top-link {
+            display: none;
+        }
+    </style>
+    
+    <style>
+        @media (prefers-color-scheme: dark) {
+            :root {
+                --theme-bg: rgb(24, 25, 38);
+                --surface-bg: rgb(36, 39, 58);
+                --surface-muted: rgb(54, 58, 79);
+                --surface-strong: rgb(68, 71, 90);
+                --text-main: rgb(202, 211, 245);
+                --text-muted: rgb(165, 173, 203);
+                --content-text: rgb(184, 192, 224);
+                --highlight-bg: rgb(54, 58, 79);
+                --code-bg: rgb(30, 32, 48);
+                --border-color: rgb(68, 71, 90);
+                --accent-color: rgb(138, 173, 244);
+                --accent-strong: rgb(125, 196, 228);
+                --accent-soft: rgba(138, 173, 244, 0.18);
+                --focus-ring: rgba(138, 173, 244, 0.32);
+                --overlay-backdrop: rgba(17, 17, 27, 0.72);
+                --hero-glow: radial-gradient(circle at top, rgba(138, 173, 244, 0.18), transparent 55%);
+            }
+
+            .list {
+                background: var(--theme-bg);
+            }
+
+            .list:not(.dark)::-webkit-scrollbar-track {
+                background: 0 0;
+            }
+
+            .list:not(.dark)::-webkit-scrollbar-thumb {
+                border-color: var(--theme-bg);
+            }
+        }
+
+    </style>
+    
+</noscript>
+
+
+  
+
+
+<link rel="stylesheet" href="https://blog.galactic-forensics.space/css/code-theme-overrides.css">
+
+</head>
+
+<body
+class=""
+id="top"
+data-show-code-copy-buttons="true"
+data-show-theme-toggle="true"
+data-remember-choice="true"
+data-search-page-url="https://blog.galactic-forensics.space/search"
+data-search-index-json-url="https://blog.galactic-forensics.space/search_index.en.json"
+data-search-index-js-url="https://blog.galactic-forensics.space/search_index.en.js">
+<script>document.documentElement.classList.add("js");</script>
+<script>
+  (function () {
+    var scheme;
+    var darkSchemes = ["catppuccin-macchiato", "rose-pine", "nord"];
+    scheme = localStorage.getItem("pref-scheme");
+    if (!scheme) {
+      scheme = "catppuccin-macchiato";
+      }
+    document.documentElement.setAttribute("data-scheme", scheme);
+    if (darkSchemes.indexOf(scheme) !== -1) {
+      document.documentElement.classList.add("dark");
+      document.body.classList.add("dark");
+    }
+    localStorage.setItem("pref-scheme", scheme);
+    })();
+</script>
+<header class="header">
+  <nav class="nav">
+    <div class="logo">
+      <a
+        href="https:&#x2F;&#x2F;blog.galactic-forensics.space"
+        accesskey="h"
+        title="Mind Bytes (Alt + H)"
+      >
+        
+        
+      </a>
+      <div class="logo-switches">
+        <button id="theme-toggle" accesskey="t" title="(Alt + T)">
+          <svg
+            id="moon"
+            xmlns="http://www.w3.org/2000/svg"
+            width="24"
+            height="18"
+            viewBox="0 0 24 24"
+            fill="none"
+            stroke="currentColor"
+            stroke-width="2"
+            stroke-linecap="round"
+            stroke-linejoin="round"
+          >
+            <path d="M21 12.79A9 9 0 1 1 11.21 3 7 7 0 0 0 21 12.79z"></path>
+          </svg>
+          <svg
+            id="sun"
+            xmlns="http://www.w3.org/2000/svg"
+            width="24"
+            height="18"
+            viewBox="0 0 24 24"
+            fill="none"
+            stroke="currentColor"
+            stroke-width="2"
+            stroke-linecap="round"
+            stroke-linejoin="round"
+          >
+            <circle cx="12" cy="12" r="5"></circle>
+            <line x1="12" y1="1" x2="12" y2="3"></line>
+            <line x1="12" y1="21" x2="12" y2="23"></line>
+            <line x1="4.22" y1="4.22" x2="5.64" y2="5.64"></line>
+            <line x1="18.36" y1="18.36" x2="19.78" y2="19.78"></line>
+            <line x1="1" y1="12" x2="3" y2="12"></line>
+            <line x1="21" y1="12" x2="23" y2="12"></line>
+            <line x1="4.22" y1="19.78" x2="5.64" y2="18.36"></line>
+            <line x1="18.36" y1="5.64" x2="19.78" y2="4.22"></line>
+          </svg>
+        </button>
+        
+        
+      </div>
+    </div>
+    
+    <ul id="menu">
+      
+        
+        
+        
+        
+        
+        
+          
+        
+
+        
+        
+        
+        
+        
+      <li>
+        <a href="https:&#x2F;&#x2F;blog.galactic-forensics.space" title="Home"
+          
+          >
+          <span>Home</span></a>
+      </li>
+      
+        
+        
+        
+        
+        
+        
+          
+
+          
+          
+            
+            
+              
+            
+          
+            
+            
+          
+
+          
+            
+            
+            
+              
+            
+          
+        
+
+        
+        
+        
+        
+        
+      <li>
+        <a href="https:&#x2F;&#x2F;blog.galactic-forensics.space&#x2F;tags&#x2F;" title="Tags"
+          
+          >
+          <span>Tags</span></a>
+      </li>
+      
+        
+        
+        
+        
+        
+        
+          
+
+          
+          
+            
+            
+          
+            
+            
+              
+            
+          
+
+          
+            
+            
+            
+              
+            
+          
+        
+
+        
+        
+        
+        
+        
+      <li>
+        <a href="https:&#x2F;&#x2F;blog.galactic-forensics.space&#x2F;categories&#x2F;" title="Categories"
+          
+          >
+          <span>Categories</span></a>
+      </li>
+      
+        
+        
+        
+        
+        
+        
+          
+        
+
+        
+        
+        
+        
+        
+      <li>
+        <a href="#" title="Search"
+          data-search-toggle="true"
+          >
+          <span>Search</span></a>
+      </li>
+      
+    </ul>
+    
+  </nav>
+</header>
+
+<main class="main">
+
+
+
+
+
+
+
+
+
+<article class="post-single">
+  <header class="post-header">
+      <nav class="breadcrumbs" aria-label="breadcrumb">
+          <a href="https://blog.galactic-forensics.space">Home</a>&nbsp;»&nbsp;
+          
+          <a href="https:&#x2F;&#x2F;blog.galactic-forensics.space&#x2F;blog&#x2F;">Posts</a>&nbsp;»&nbsp;
+          
+          <a href="https:&#x2F;&#x2F;blog.galactic-forensics.space&#x2F;blog&#x2F;09-instrumentrs2-lakeshore336&#x2F;">Lakeshore 336 Temperature Controller Driver with instrumentRs v0.2.0</a>
+      </nav>
+      <h1 class="post-title">Lakeshore 336 Temperature Controller Driver with instrumentRs v0.2.0</h1>
+      
+      
+      <div class="post-meta">
+      
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+<span title="2026-07-17 00:00:00 +0000">2026-07-17</span>&nbsp;·&nbsp;12 min&nbsp;·&nbsp;2357 words&nbsp;·&nbsp;trappitsch
+
+      
+      </div>
+      
+  </header>
+
+  
+  
+
+<div class="toc">
+  <details >
+    <summary accesskey="c" title="(Alt + C)">
+      <span class="details">Table of Contents</span>
+    </summary>
+
+    <div class="inner">
+      <ul>
+        
+        <li>
+          <a href="#the-lakeshore-336-temperature-controller" aria-label="The Lakeshore 336 temperature controller">The Lakeshore 336 temperature controller</a>
+          
+        </li>
+        
+        <li>
+          <a href="#extensions-to-instrumentrs-v0-2-0" aria-label="Extensions to instrumentRs v0.2.0">Extensions to instrumentRs v0.2.0</a>
+          
+          <ul>
+            
+            <li>
+              <a href="#error-handling" aria-label="Error handling">Error handling</a>
+              
+            </li>
+            
+            <li>
+              <a href="#handling-multiple-types-of-channels" aria-label="Handling multiple types of Channels">Handling multiple types of Channels</a>
+              
+            </li>
+            
+            <li>
+              <a href="#query-now-also-takes-arguments" aria-label="Query now also takes arguments">Query now also takes arguments</a>
+              
+            </li>
+            
+            <li>
+              <a href="#wrapping-a-command-in-a-char" aria-label="Wrapping a command in a char">Wrapping a command in a char</a>
+              
+            </li>
+            
+          </ul>
+          
+        </li>
+        
+        <li>
+          <a href="#towards-a-cargo-generate-template" aria-label="Towards a cargo-generate template">Towards a cargo-generate template</a>
+          
+          <ul>
+            
+            <li>
+              <a href="#features" aria-label="Features">Features</a>
+              
+            </li>
+            
+            <li>
+              <a href="#mock-interface-testing" aria-label="Mock interface testing">Mock interface testing</a>
+              
+            </li>
+            
+          </ul>
+          
+        </li>
+        
+        <li>
+          <a href="#next-steps" aria-label="Next steps">Next steps</a>
+          
+          <ul>
+            
+            <li>
+              <a href="#housekeeping" aria-label="Housekeeping">Housekeeping</a>
+              
+            </li>
+            
+            <li>
+              <a href="#derive-macro-for-parameter-trait-implementations" aria-label="Derive macro for Parameter trait implementations">Derive macro for Parameter trait implementations</a>
+              
+            </li>
+            
+            <li>
+              <a href="#implement-more-drivers" aria-label="Implement more drivers">Implement more drivers</a>
+              
+            </li>
+            
+            <li>
+              <a href="#async-instrument-drivers" aria-label="Async instrument drivers">Async instrument drivers</a>
+              
+            </li>
+            
+          </ul>
+          
+        </li>
+        
+        <li>
+          <a href="#comments-questions-ideas" aria-label="Comments, questions, ideas?">Comments, questions, ideas?</a>
+          
+        </li>
+        
+      </ul>
+    </div>
+  </details>
+</div>
+
+  
+
+  
+  <div class="post-content">
+      <p>It has been a few weeks since my last post.
+Since then I have focused on the async interface,
+a note on this at the end of this blog post,
+and on integrating a new instrument
+using <a rel="external" href="https://github.com/trappitsch/instrumentRs2">instrumentRs v0.2.0</a>.
+Here are my findings on writing a more complex driver.</p>
+<span id="continue-reading"></span>
+<p>If you are reading this and have no idea what I'm talking about,
+take a look at the <a rel="external" href="https://blog.galactic-forensics.space/tags/instrumentrs/">previous blog posts</a> that discuss <a rel="external" href="https://github.com/trappitsch/instrumentRs2">instrumentRs v0.2.0</a>.</p>
+<h2 id="the-lakeshore-336-temperature-controller">The Lakeshore 336 temperature controller</h2>
+<p>The <a rel="external" href="https://www.lakeshore.com/products/categories/overview/temperature-products/cryogenic-temperature-controllers/model-336-cryogenic-temperature-controller">Lakeshore 336</a> cryogenic temperature controller
+is an instrument that allows the user to connect up to four thermocouples
+and read their temperatures
+and connect up to four outputs to regulate the read temperature,
+e.g., by using heaters.
+I needed a new driver for this instrument for our
+<a rel="external" href="https://github.com/trappitsch/cryostorage">cryostorage project</a>.
+A blog post on this project will hopefully come soon.
+As a side note: The <a rel="external" href="https://github.com/trappitsch/cryostorage">cryostorage project</a>
+was the original reason I started with instrumentRs.</p>
+<p>I created a new repository for instrumentRs specific drivers called
+<a rel="external" href="https://github.com/trappitsch/instrumentRs-drivers">instrumentRs-drivers</a>.
+This repository is coupled to the <code>v0.2.0</code> development.
+The goal is to move all previous drivers over here after <code>v0.2.0</code>
+is released and has moved into the <a rel="external" href="https://github.com/trappitsch/instrumentRs">main <code>instrumentRs</code> repo</a>
+and after existing drivers have been updated to <code>v0.2.0</code>.</p>
+<p>If you want to see the whole Lakeshore 336 driver,
+you can currently find it in the <a rel="external" href="https://github.com/trappitsch/instrumentRs-drivers/tree/lakeshore336"><code>lakeshore336</code> branch</a>
+of the <a rel="external" href="https://github.com/trappitsch/instrumentRs-drivers">instrumentRs-drivers</a> repo.
+If you read this later
+it might have already been merged into main.
+Note that documentation is still lacking
+in the current draft.
+Furthermore, not all functions of the instrument are implemented.
+However, enough functionality is there
+to run this driver for the <a rel="external" href="https://github.com/trappitsch/cryostorage">cryostorage project</a>
+and to learn how my original idea for instrumentRs
+needs to be extended.</p>
+<h2 id="extensions-to-instrumentrs-v0-2-0">Extensions to <a rel="external" href="https://github.com/trappitsch/instrumentRs2">instrumentRs v0.2.0</a></h2>
+<p>This section discusses several extensions to what <a rel="external" href="https://github.com/trappitsch/instrumentRs2">instrumentRs v0.2.0</a>
+will need to provide to a driver author
+and what changes are necessary to smoothly implement the Lakeshore 336 driver
+into the current framework.
+The discussion focuses on the major changes.
+Some minor details have also been adopted:
+You can find a full diff in <a rel="external" href="https://github.com/trappitsch/instrumentRs2/pull/1">this instrumentRs PR</a> (now merged).</p>
+<h3 id="error-handling">Error handling</h3>
+<p>First off, the errors that instrumentRs provides were renamed
+to <code>InstrumentError</code>.
+This way, a driver can simply publicly reexport this error type
+and end users can see a reasonable error name.
+Of course, this public reexport could be translated into more useful name,
+e.g., <code>Lakeshore336Error</code>, however,
+for now we keep it at <code>InstrumentError</code>.</p>
+<p>Errors in <a rel="external" href="https://github.com/trappitsch/instrumentRs2">instrumentRs v0.2.0</a> have also been extended with the following:</p>
+<ul>
+<li><strong><code>ParseIntError</code> and <code>ParseFloatError</code></strong>:
+When parsing returned values from an instrument
+to an integer or float, this error from <code>std::num</code> can now also be returned
+as an <code>InstrumentError</code>.
+This was crucial to get the Lakeshore 336 instrument working.</li>
+<li><strong>Out-of-range errors</strong>: Several out-of-range errors were implemented.
+These can be used when range checking is done
+while setting a specific property of a driver.
+All the out-of-range errors take the value the user entered,
+as well as the minimum and maximum values that are allowed
+for the specific range,
+and return an adequate error message.
+The following out-of-range error types
+are now available to a driver author:
+<ul>
+<li><code>UnitfulValueOutOfRange</code>: This error takes the numeric value
+of the unitful quantity that is out of range as an <code>f64</code>.
+Additionally, the unit is provided as a string.
+This allows displaying the unitful quantity and
+accepted range
+for displaying an out-of-range error.
+This is specifically kept generic
+as instrumentRs should not dictate a unit-handling crate.</li>
+<li><code>FloatValueOutOfRange</code>: An <code>f64</code> is out of range.</li>
+<li><code>IIntOutOfRange</code>: A signed integer is out of range.
+This takes values as types of <code>isize</code>.</li>
+<li><code>UIntOutOfRange</code>: An unsigned integer is out of range.
+This takes values as types of <code>usize</code>.</li>
+</ul>
+</li>
+<li><strong><code>Other</code></strong>: Any other error types that a driver author might want to return.
+This error takes a <code>String</code> to display a driver-author-chosen
+error message.
+The <code>Other</code> error should generally be avoided as <code>InstrumentRs</code> should contain
+specific errors for a broad range of cases.
+However, this could still be useful in certain cases
+and is inspired by <a rel="external" href="https://doc.rust-lang.org/std/io/enum.ErrorKind.html"><code>std::io::ErrorKind::Other</code></a>.
+If you find yourself writing an instrument driver
+and need to reach often to the <code>Other</code> error type,
+you should raise an issue and report this,
+as likely a more specific error is missing in <code>InstrumentError</code>.</li>
+</ul>
+<p>In general, <code>InstrumentError</code> is labeled with <code>#[non_exhaustive]</code>,
+which will allow adding additional errors as they come along.
+While Rust crates typically implement their own error types,
+<a rel="external" href="https://github.com/trappitsch/instrumentRs2">instrumentRs v0.2.0</a> will differ here a bit from the norm
+in order to make it simple to write instrument drivers.
+This is especially useful as most of the instrument driver code
+will be macro generated.</p>
+<h3 id="handling-multiple-types-of-channels">Handling multiple types of <code>Channels</code></h3>
+<p>The <a rel="external" href="https://github.com/galactic-forensics/digoutbox">DigOutBox</a> example that we used in <a rel="external" href="https://blog.galactic-forensics.space/tags/instrumentrs/">previous blog posts</a>
+had one major down side that was recognized immediately
+when starting to write the Lakeshore 336 driver:
+General instruments can have more than one type of channel.
+In this instrument we have <code>Input</code> channels where sensors are connected
+and <code>Output</code> channels where, e.g., a heater might be hooked up.
+The previous idea for <a rel="external" href="https://github.com/trappitsch/instrumentRs2">instrumentRs v0.2.0</a> only allowed
+for one type of channel.</p>
+<p>To alleviate this issue, the <code>Transport</code> trait,
+which is part of the <a href="/blog/07-instrumentrs2/#transport">transport module</a>, was generalized
+as following (highlighted parts show the changes):</p>
+<pre class="giallo" style="color-scheme: light dark; color: light-dark(#4C4F69, #CDD6F4); background-color: light-dark(#EFF1F5, #1E1E2E);"><code data-lang="rust"><span class="giallo-l"><span style="color: light-dark(#8839EF, #CBA6F7);">pub</span><span style="color: light-dark(#8839EF, #CBA6F7);"> trait</span><span style="color: light-dark(#DF8E1D, #F9E2AF);font-style: italic;"> Transport</span><span style="color: light-dark(#04A5E5, #89DCEB);">&lt;</span><span style="color: light-dark(#DF8E1D, #F9E2AF);font-style: italic;">W</span><span style="color: light-dark(#179299, #94E2D5);">:</span><span style="color: light-dark(#DF8E1D, #F9E2AF);font-style: italic;"> Writable</span><span style="color: light-dark(#7C7F93, #9399B2);">,</span><span style="color: light-dark(#FE640B, #FAB387);"> WR</span><span style="color: light-dark(#179299, #94E2D5);">:</span><span style="color: light-dark(#DF8E1D, #F9E2AF);font-style: italic;"> Writable</span><span style="color: light-dark(#04A5E5, #89DCEB);">&gt;</span><span style="color: light-dark(#7C7F93, #9399B2);"> {</span></span>
+<span class="giallo-l" style="background-color: light-dark(#4C4F6912, #CDD6F412);"><span style="color: light-dark(#8839EF, #CBA6F7);">    type</span><span style="color: light-dark(#DF8E1D, #F9E2AF);font-style: italic;"> Channel</span><span style="color: light-dark(#7C7F93, #9399B2);">;</span></span>
+<span class="giallo-l"><span style="color: light-dark(#7C7F93, #9399B2);font-style: italic;">    ///</span><span style="color: light-dark(#7C7F93, #9399B2);font-style: italic;"> The send command that you need to implement.</span></span>
+<span class="giallo-l"><span style="color: light-dark(#8839EF, #CBA6F7);">    fn</span><span style="color: light-dark(#1E66F5, #89B4FA);font-style: italic;"> sendcmd</span><span style="color: light-dark(#7C7F93, #9399B2);">(</span></span>
+<span class="giallo-l"><span style="color: light-dark(#179299, #94E2D5);">        &amp;</span><span style="color: light-dark(#8839EF, #CBA6F7);">mut</span><span style="color: light-dark(#D20F39, #F38BA8);"> self</span><span style="color: light-dark(#7C7F93, #9399B2);">,</span></span>
+<span class="giallo-l"><span style="color: light-dark(#E64553, #EBA0AC);">        cmd</span><span style="color: light-dark(#179299, #94E2D5);">:</span><span style="color: light-dark(#DF8E1D, #F9E2AF);font-style: italic;"> W</span><span style="color: light-dark(#7C7F93, #9399B2);">,</span></span>
+<span class="giallo-l" style="background-color: light-dark(#4C4F6912, #CDD6F412);"><span style="color: light-dark(#E64553, #EBA0AC);">        idx</span><span style="color: light-dark(#179299, #94E2D5);">:</span><span style="color: light-dark(#DF8E1D, #F9E2AF);font-style: italic;"> Option</span><span style="color: light-dark(#04A5E5, #89DCEB);">&lt;</span><span style="color: light-dark(#D20F39, #F38BA8);">Self</span><span style="color: light-dark(#179299, #94E2D5);">::</span><span style="color: light-dark(#DF8E1D, #F9E2AF);font-style: italic;">Channel</span><span style="color: light-dark(#04A5E5, #89DCEB);">&gt;</span><span style="color: light-dark(#7C7F93, #9399B2);">,</span></span>
+<span class="giallo-l"><span style="color: light-dark(#E64553, #EBA0AC);">        args</span><span style="color: light-dark(#179299, #94E2D5);">:</span><span style="color: light-dark(#DF8E1D, #F9E2AF);font-style: italic;"> Option</span><span style="color: light-dark(#04A5E5, #89DCEB);">&lt;</span><span style="color: light-dark(#179299, #94E2D5);">&amp;</span><span style="color: light-dark(#7C7F93, #9399B2);">[</span><span style="color: light-dark(#DF8E1D, #F9E2AF);font-style: italic;">W</span><span style="color: light-dark(#7C7F93, #9399B2);">]</span><span style="color: light-dark(#04A5E5, #89DCEB);">&gt;</span><span style="color: light-dark(#7C7F93, #9399B2);">,</span></span>
+<span class="giallo-l"><span style="color: light-dark(#7C7F93, #9399B2);">    )</span><span style="color: light-dark(#179299, #94E2D5);"> -&gt;</span><span style="color: light-dark(#DF8E1D, #F9E2AF);font-style: italic;"> Result</span><span style="color: light-dark(#04A5E5, #89DCEB);">&lt;</span><span style="color: light-dark(#7C7F93, #9399B2);">(</span><span style="color: light-dark(#7C7F93, #9399B2);">)</span><span style="color: light-dark(#7C7F93, #9399B2);">,</span><span style="color: light-dark(#DF8E1D, #F9E2AF);font-style: italic;"> InstrumentError</span><span style="color: light-dark(#04A5E5, #89DCEB);">&gt;</span><span style="color: light-dark(#7C7F93, #9399B2);">;</span></span>
+<span class="giallo-l"></span>
+<span class="giallo-l"><span style="color: light-dark(#7C7F93, #9399B2);font-style: italic;">    ///</span><span style="color: light-dark(#7C7F93, #9399B2);font-style: italic;"> The query command that you need to implement.</span></span>
+<span class="giallo-l"><span style="color: light-dark(#8839EF, #CBA6F7);">    fn</span><span style="color: light-dark(#1E66F5, #89B4FA);font-style: italic;"> query</span><span style="color: light-dark(#7C7F93, #9399B2);">(</span></span>
+<span class="giallo-l"><span style="color: light-dark(#179299, #94E2D5);">        &amp;</span><span style="color: light-dark(#8839EF, #CBA6F7);">mut</span><span style="color: light-dark(#D20F39, #F38BA8);"> self</span><span style="color: light-dark(#7C7F93, #9399B2);">,</span></span>
+<span class="giallo-l"><span style="color: light-dark(#E64553, #EBA0AC);">        cmd</span><span style="color: light-dark(#179299, #94E2D5);">:</span><span style="color: light-dark(#DF8E1D, #F9E2AF);font-style: italic;"> W</span><span style="color: light-dark(#7C7F93, #9399B2);">,</span></span>
+<span class="giallo-l" style="background-color: light-dark(#4C4F6912, #CDD6F412);"><span style="color: light-dark(#E64553, #EBA0AC);">        idx</span><span style="color: light-dark(#179299, #94E2D5);">:</span><span style="color: light-dark(#DF8E1D, #F9E2AF);font-style: italic;"> Option</span><span style="color: light-dark(#04A5E5, #89DCEB);">&lt;</span><span style="color: light-dark(#D20F39, #F38BA8);">Self</span><span style="color: light-dark(#179299, #94E2D5);">::</span><span style="color: light-dark(#DF8E1D, #F9E2AF);font-style: italic;">Channel</span><span style="color: light-dark(#04A5E5, #89DCEB);">&gt;</span><span style="color: light-dark(#7C7F93, #9399B2);">,</span></span>
+<span class="giallo-l" style="background-color: light-dark(#4C4F6912, #CDD6F412);"><span style="color: light-dark(#E64553, #EBA0AC);">        args</span><span style="color: light-dark(#179299, #94E2D5);">:</span><span style="color: light-dark(#DF8E1D, #F9E2AF);font-style: italic;"> Option</span><span style="color: light-dark(#04A5E5, #89DCEB);">&lt;</span><span style="color: light-dark(#179299, #94E2D5);">&amp;</span><span style="color: light-dark(#7C7F93, #9399B2);">[</span><span style="color: light-dark(#DF8E1D, #F9E2AF);font-style: italic;">W</span><span style="color: light-dark(#7C7F93, #9399B2);">]</span><span style="color: light-dark(#04A5E5, #89DCEB);">&gt;</span><span style="color: light-dark(#7C7F93, #9399B2);">,</span></span>
+<span class="giallo-l"><span style="color: light-dark(#7C7F93, #9399B2);">    )</span><span style="color: light-dark(#179299, #94E2D5);"> -&gt;</span><span style="color: light-dark(#DF8E1D, #F9E2AF);font-style: italic;"> Result</span><span style="color: light-dark(#04A5E5, #89DCEB);">&lt;</span><span style="color: light-dark(#DF8E1D, #F9E2AF);font-style: italic;">WR</span><span style="color: light-dark(#7C7F93, #9399B2);">,</span><span style="color: light-dark(#DF8E1D, #F9E2AF);font-style: italic;"> InstrumentError</span><span style="color: light-dark(#04A5E5, #89DCEB);">&gt;</span><span style="color: light-dark(#7C7F93, #9399B2);">;</span></span>
+<span class="giallo-l"><span style="color: light-dark(#7C7F93, #9399B2);">}</span></span></code></pre>
+<p>Here, channel identifier now takes a <code>Channel</code> type that must be defined
+in the instrument driver itself.</p>
+<p>For the Lakeshore 336 driver,
+a <code>Channel</code> type was defined as following:</p>
+<pre class="giallo" style="color-scheme: light dark; color: light-dark(#4C4F69, #CDD6F4); background-color: light-dark(#EFF1F5, #1E1E2E);"><code data-lang="rust"><span class="giallo-l"><span style="color: light-dark(#8839EF, #CBA6F7);">pub</span><span style="color: light-dark(#8839EF, #CBA6F7);"> enum</span><span style="color: light-dark(#DF8E1D, #F9E2AF);font-style: italic;"> Channel</span><span style="color: light-dark(#7C7F93, #9399B2);"> {</span></span>
+<span class="giallo-l"><span style="color: light-dark(#1E66F5, #89B4FA);font-style: italic;">    In</span><span style="color: light-dark(#7C7F93, #9399B2);">(</span><span style="color: light-dark(#DF8E1D, #F9E2AF);font-style: italic;">Input</span><span style="color: light-dark(#7C7F93, #9399B2);">)</span><span style="color: light-dark(#7C7F93, #9399B2);">,</span></span>
+<span class="giallo-l"><span style="color: light-dark(#1E66F5, #89B4FA);font-style: italic;">    Out</span><span style="color: light-dark(#7C7F93, #9399B2);">(</span><span style="color: light-dark(#DF8E1D, #F9E2AF);font-style: italic;">Output</span><span style="color: light-dark(#7C7F93, #9399B2);">)</span><span style="color: light-dark(#7C7F93, #9399B2);">,</span></span>
+<span class="giallo-l"><span style="color: light-dark(#7C7F93, #9399B2);">}</span></span></code></pre>
+<p>The specific input and output channels look as following:</p>
+<pre class="giallo" style="color-scheme: light dark; color: light-dark(#4C4F69, #CDD6F4); background-color: light-dark(#EFF1F5, #1E1E2E);"><code data-lang="rust"><span class="giallo-l"><span style="color: light-dark(#8839EF, #CBA6F7);">pub</span><span style="color: light-dark(#8839EF, #CBA6F7);"> enum</span><span style="color: light-dark(#DF8E1D, #F9E2AF);font-style: italic;"> Input</span><span style="color: light-dark(#7C7F93, #9399B2);"> {</span></span>
+<span class="giallo-l"><span style="color: light-dark(#DF8E1D, #F9E2AF);font-style: italic;">    InA</span><span style="color: light-dark(#7C7F93, #9399B2);">,</span></span>
+<span class="giallo-l"><span style="color: light-dark(#DF8E1D, #F9E2AF);font-style: italic;">    InB</span><span style="color: light-dark(#7C7F93, #9399B2);">,</span></span>
+<span class="giallo-l"><span style="color: light-dark(#DF8E1D, #F9E2AF);font-style: italic;">    InC</span><span style="color: light-dark(#7C7F93, #9399B2);">,</span></span>
+<span class="giallo-l"><span style="color: light-dark(#DF8E1D, #F9E2AF);font-style: italic;">    InD</span><span style="color: light-dark(#7C7F93, #9399B2);">,</span></span>
+<span class="giallo-l"><span style="color: light-dark(#7C7F93, #9399B2);">}</span></span>
+<span class="giallo-l"></span>
+<span class="giallo-l"><span style="color: light-dark(#8839EF, #CBA6F7);">pub</span><span style="color: light-dark(#8839EF, #CBA6F7);"> enum</span><span style="color: light-dark(#DF8E1D, #F9E2AF);font-style: italic;"> Output</span><span style="color: light-dark(#7C7F93, #9399B2);"> {</span></span>
+<span class="giallo-l"><span style="color: light-dark(#DF8E1D, #F9E2AF);font-style: italic;">    Out1</span><span style="color: light-dark(#7C7F93, #9399B2);">,</span></span>
+<span class="giallo-l"><span style="color: light-dark(#DF8E1D, #F9E2AF);font-style: italic;">    Out2</span><span style="color: light-dark(#7C7F93, #9399B2);">,</span></span>
+<span class="giallo-l"><span style="color: light-dark(#DF8E1D, #F9E2AF);font-style: italic;">    Out3</span><span style="color: light-dark(#7C7F93, #9399B2);">,</span></span>
+<span class="giallo-l"><span style="color: light-dark(#DF8E1D, #F9E2AF);font-style: italic;">    Out4</span><span style="color: light-dark(#7C7F93, #9399B2);">,</span></span>
+<span class="giallo-l"><span style="color: light-dark(#7C7F93, #9399B2);">}</span></span></code></pre>
+<p>This looks, at first glance, more complicated
+however, most of the complexity can be abstracted away for the user.
+Furthermore, this additional complexity has several advantages.
+First off, we can now easily distinguish in the driver specific transport implementation
+which kind of channel we are dealing with.
+The user would continue getting an input or output channel directly,
+from an instrument <code>inst</code> as:</p>
+<pre class="giallo" style="color-scheme: light dark; color: light-dark(#4C4F69, #CDD6F4); background-color: light-dark(#EFF1F5, #1E1E2E);"><code data-lang="rust"><span class="giallo-l"><span style="color: light-dark(#8839EF, #CBA6F7);">let</span><span> in_a</span><span style="color: light-dark(#179299, #94E2D5);"> =</span><span> inst</span><span style="color: light-dark(#179299, #94E2D5);">.</span><span style="color: light-dark(#1E66F5, #89B4FA);font-style: italic;">channel</span><span style="color: light-dark(#7C7F93, #9399B2);">(</span><span style="color: light-dark(#DF8E1D, #F9E2AF);">Input</span><span style="color: light-dark(#179299, #94E2D5);">::</span><span style="color: light-dark(#DF8E1D, #F9E2AF);font-style: italic;">InA</span><span style="color: light-dark(#7C7F93, #9399B2);">)</span><span style="color: light-dark(#7C7F93, #9399B2);">;</span></span>
+<span class="giallo-l"><span style="color: light-dark(#8839EF, #CBA6F7);">let</span><span> out_1</span><span style="color: light-dark(#179299, #94E2D5);"> =</span><span> inst</span><span style="color: light-dark(#179299, #94E2D5);">.</span><span style="color: light-dark(#1E66F5, #89B4FA);font-style: italic;">output</span><span style="color: light-dark(#7C7F93, #9399B2);">(</span><span style="color: light-dark(#DF8E1D, #F9E2AF);">Output</span><span style="color: light-dark(#179299, #94E2D5);">::</span><span style="color: light-dark(#DF8E1D, #F9E2AF);font-style: italic;">Out1</span><span style="color: light-dark(#7C7F93, #9399B2);">)</span><span style="color: light-dark(#7C7F93, #9399B2);">;</span></span></code></pre>
+<p>The beauty for the user now is that this does not return a <code>Result</code> anymore.
+Since we have fixed the possible input and output channels,
+we know that the channel cannot be out of range.
+Furthermore, the channels can be named identical or similar
+to what they are named on the actual instrument.
+The Lakeshore 336 temperature controller for examples uses
+channels A through D for temperature input sensors
+and channels 1 through 4 for output channels.</p>
+<p>The implementation on how to get a channel in the Lakeshore 336 driver
+looks now like this:</p>
+<pre class="giallo" style="color-scheme: light dark; color: light-dark(#4C4F69, #CDD6F4); background-color: light-dark(#EFF1F5, #1E1E2E);"><code data-lang="rust"><span class="giallo-l"><span style="color: light-dark(#8839EF, #CBA6F7);">impl</span><span style="color: light-dark(#04A5E5, #89DCEB);">&lt;</span><span style="color: light-dark(#DF8E1D, #F9E2AF);font-style: italic;">I</span><span style="color: light-dark(#179299, #94E2D5);">:</span><span style="color: light-dark(#DF8E1D, #F9E2AF);font-style: italic;"> Read</span><span style="color: light-dark(#179299, #94E2D5);"> +</span><span style="color: light-dark(#DF8E1D, #F9E2AF);font-style: italic;"> Write</span><span style="color: light-dark(#04A5E5, #89DCEB);">&gt;</span><span style="color: light-dark(#DF8E1D, #F9E2AF);font-style: italic;"> Lakeshore336</span><span style="color: light-dark(#04A5E5, #89DCEB);">&lt;</span><span style="color: light-dark(#DF8E1D, #F9E2AF);font-style: italic;">I</span><span style="color: light-dark(#04A5E5, #89DCEB);">&gt;</span><span style="color: light-dark(#7C7F93, #9399B2);"> {</span></span>
+<span class="giallo-l"><span style="color: light-dark(#8839EF, #CBA6F7);">    pub</span><span style="color: light-dark(#8839EF, #CBA6F7);"> fn</span><span style="color: light-dark(#1E66F5, #89B4FA);font-style: italic;"> channel</span><span style="color: light-dark(#7C7F93, #9399B2);">(</span><span style="color: light-dark(#179299, #94E2D5);">&amp;</span><span style="color: light-dark(#8839EF, #CBA6F7);">mut</span><span style="color: light-dark(#D20F39, #F38BA8);"> self</span><span style="color: light-dark(#7C7F93, #9399B2);">,</span><span style="color: light-dark(#E64553, #EBA0AC);"> idx</span><span style="color: light-dark(#179299, #94E2D5);">:</span><span style="color: light-dark(#DF8E1D, #F9E2AF);font-style: italic;"> Input</span><span style="color: light-dark(#7C7F93, #9399B2);">)</span><span style="color: light-dark(#179299, #94E2D5);"> -&gt;</span><span style="color: light-dark(#DF8E1D, #F9E2AF);font-style: italic;"> Lakeshore336Input</span><span style="color: light-dark(#04A5E5, #89DCEB);">&lt;</span><span style="color: light-dark(#7C7F93, #9399B2);">&#39;</span><span style="color: light-dark(#1E66F5, #89B4FA);font-style: italic;">_</span><span style="color: light-dark(#7C7F93, #9399B2);">,</span><span style="color: light-dark(#DF8E1D, #F9E2AF);font-style: italic;"> I</span><span style="color: light-dark(#04A5E5, #89DCEB);">&gt;</span><span style="color: light-dark(#7C7F93, #9399B2);"> {</span></span>
+<span class="giallo-l"><span style="color: light-dark(#DF8E1D, #F9E2AF);font-style: italic;">        Lakeshore336Input</span><span style="color: light-dark(#179299, #94E2D5);">::</span><span style="color: light-dark(#1E66F5, #89B4FA);font-style: italic;">new</span><span style="color: light-dark(#7C7F93, #9399B2);">(</span><span>idx</span><span style="color: light-dark(#7C7F93, #9399B2);">,</span><span style="color: light-dark(#D20F39, #F38BA8);"> self</span><span style="color: light-dark(#7C7F93, #9399B2);">)</span></span>
+<span class="giallo-l"><span style="color: light-dark(#7C7F93, #9399B2);">    }</span></span>
+<span class="giallo-l"></span>
+<span class="giallo-l"><span style="color: light-dark(#8839EF, #CBA6F7);">    pub</span><span style="color: light-dark(#8839EF, #CBA6F7);"> fn</span><span style="color: light-dark(#1E66F5, #89B4FA);font-style: italic;"> output</span><span style="color: light-dark(#7C7F93, #9399B2);">(</span><span style="color: light-dark(#179299, #94E2D5);">&amp;</span><span style="color: light-dark(#8839EF, #CBA6F7);">mut</span><span style="color: light-dark(#D20F39, #F38BA8);"> self</span><span style="color: light-dark(#7C7F93, #9399B2);">,</span><span style="color: light-dark(#E64553, #EBA0AC);"> idx</span><span style="color: light-dark(#179299, #94E2D5);">:</span><span style="color: light-dark(#DF8E1D, #F9E2AF);font-style: italic;"> Output</span><span style="color: light-dark(#7C7F93, #9399B2);">)</span><span style="color: light-dark(#179299, #94E2D5);"> -&gt;</span><span style="color: light-dark(#DF8E1D, #F9E2AF);font-style: italic;"> Lakeshore336Output</span><span style="color: light-dark(#04A5E5, #89DCEB);">&lt;</span><span style="color: light-dark(#7C7F93, #9399B2);">&#39;</span><span style="color: light-dark(#1E66F5, #89B4FA);font-style: italic;">_</span><span style="color: light-dark(#7C7F93, #9399B2);">,</span><span style="color: light-dark(#DF8E1D, #F9E2AF);font-style: italic;"> I</span><span style="color: light-dark(#04A5E5, #89DCEB);">&gt;</span><span style="color: light-dark(#7C7F93, #9399B2);"> {</span></span>
+<span class="giallo-l"><span style="color: light-dark(#DF8E1D, #F9E2AF);font-style: italic;">        Lakeshore336Output</span><span style="color: light-dark(#179299, #94E2D5);">::</span><span style="color: light-dark(#1E66F5, #89B4FA);font-style: italic;">new</span><span style="color: light-dark(#7C7F93, #9399B2);">(</span><span>idx</span><span style="color: light-dark(#7C7F93, #9399B2);">,</span><span style="color: light-dark(#D20F39, #F38BA8);"> self</span><span style="color: light-dark(#7C7F93, #9399B2);">)</span></span>
+<span class="giallo-l"><span style="color: light-dark(#7C7F93, #9399B2);">    }</span></span>
+<span class="giallo-l"><span style="color: light-dark(#7C7F93, #9399B2);">}</span></span></code></pre>
+<p>The private new methods for creating an input or output
+also take their respective <code>idx</code> types,
+however, they store internally the <code>Channel</code> type:</p>
+<pre class="giallo" style="color-scheme: light dark; color: light-dark(#4C4F69, #CDD6F4); background-color: light-dark(#EFF1F5, #1E1E2E);"><code data-lang="rust"><span class="giallo-l"><span style="color: light-dark(#8839EF, #CBA6F7);">pub</span><span style="color: light-dark(#8839EF, #CBA6F7);"> struct</span><span style="color: light-dark(#DF8E1D, #F9E2AF);font-style: italic;"> Lakeshore336Input</span><span style="color: light-dark(#04A5E5, #89DCEB);">&lt;</span><span style="color: light-dark(#7C7F93, #9399B2);">&#39;</span><span style="color: light-dark(#1E66F5, #89B4FA);font-style: italic;">a</span><span style="color: light-dark(#7C7F93, #9399B2);">,</span><span style="color: light-dark(#DF8E1D, #F9E2AF);font-style: italic;"> I</span><span style="color: light-dark(#179299, #94E2D5);">:</span><span style="color: light-dark(#DF8E1D, #F9E2AF);font-style: italic;"> Read</span><span style="color: light-dark(#179299, #94E2D5);"> +</span><span style="color: light-dark(#DF8E1D, #F9E2AF);font-style: italic;"> Write</span><span style="color: light-dark(#04A5E5, #89DCEB);">&gt;</span><span style="color: light-dark(#7C7F93, #9399B2);"> {</span></span>
+<span class="giallo-l"><span>    device</span><span style="color: light-dark(#179299, #94E2D5);">:</span><span style="color: light-dark(#179299, #94E2D5);"> &amp;</span><span style="color: light-dark(#7C7F93, #9399B2);">&#39;</span><span style="color: light-dark(#1E66F5, #89B4FA);font-style: italic;">a</span><span style="color: light-dark(#8839EF, #CBA6F7);"> mut</span><span style="color: light-dark(#DF8E1D, #F9E2AF);font-style: italic;"> Lakeshore336</span><span style="color: light-dark(#04A5E5, #89DCEB);">&lt;</span><span style="color: light-dark(#DF8E1D, #F9E2AF);font-style: italic;">I</span><span style="color: light-dark(#04A5E5, #89DCEB);">&gt;</span><span style="color: light-dark(#7C7F93, #9399B2);">,</span></span>
+<span class="giallo-l"><span>    idx</span><span style="color: light-dark(#179299, #94E2D5);">:</span><span style="color: light-dark(#DF8E1D, #F9E2AF);font-style: italic;"> Channel</span><span style="color: light-dark(#7C7F93, #9399B2);">,</span></span>
+<span class="giallo-l"><span style="color: light-dark(#7C7F93, #9399B2);">}</span></span></code></pre>
+<p>The channel identifier can then be used in the <code>Transport</code> trait
+to create the required command packages that will be sent to the instrument.
+Here, the driver author can now match on the <code>Channel</code> type itself
+to determine if an input or output channel is required.</p>
+<p>Overall, the instrument driver
+has become slightly more complicated for the driver author,
+however, with significant benefits downstream for the user.
+Furthermore, channel generation
+should all ultimately be part of the macro-generated driver.
+Thus, this extension to a generic <code>Channel</code> type
+should carry minimal overhead for the driver author.</p>
+<h3 id="query-now-also-takes-arguments">Query now also takes arguments</h3>
+<p>The <code>Transport</code> trait, as shown above, was further extended
+such that the <code>query</code> function now also take channels
+and arguments (both are optional).
+Thus, the signature of <code>sendcmd</code> and <code>query</code> in the trait are now identical.
+This change was required as the Lakeshore 336, e.g.,
+has query functions where user supplied arguments must be provided.</p>
+<h3 id="wrapping-a-command-in-a-char">Wrapping a command in a <code>char</code></h3>
+<p>To set the name of a channel in the Lakeshore 336,
+a given user string must be wrapped in <code>"</code>
+before sending it to the instrument.</p>
+<pre class="giallo" style="color-scheme: light dark; color: light-dark(#4C4F69, #CDD6F4); background-color: light-dark(#EFF1F5, #1E1E2E);"><code data-lang="rust"><span class="giallo-l"><span style="color: light-dark(#7C7F93, #9399B2);font-style: italic;">///</span><span style="color: light-dark(#7C7F93, #9399B2);font-style: italic;"> Set the name of a channel.</span></span>
+<span class="giallo-l"><span style="color: light-dark(#8839EF, #CBA6F7);">pub</span><span style="color: light-dark(#8839EF, #CBA6F7);"> fn</span><span style="color: light-dark(#1E66F5, #89B4FA);font-style: italic;"> set_channel_name</span><span style="color: light-dark(#7C7F93, #9399B2);">(</span><span style="color: light-dark(#179299, #94E2D5);">&amp;</span><span style="color: light-dark(#8839EF, #CBA6F7);">mut</span><span style="color: light-dark(#D20F39, #F38BA8);"> self</span><span style="color: light-dark(#7C7F93, #9399B2);">,</span><span style="color: light-dark(#E64553, #EBA0AC);"> channel_name</span><span style="color: light-dark(#179299, #94E2D5);">:</span><span style="color: light-dark(#179299, #94E2D5);"> &amp;</span><span style="color: light-dark(#DF8E1D, #F9E2AF);font-style: italic;">str</span><span style="color: light-dark(#7C7F93, #9399B2);">)</span><span style="color: light-dark(#179299, #94E2D5);"> -&gt;</span><span style="color: light-dark(#DF8E1D, #F9E2AF);font-style: italic;"> Result</span><span style="color: light-dark(#04A5E5, #89DCEB);">&lt;</span><span style="color: light-dark(#7C7F93, #9399B2);">(</span><span style="color: light-dark(#7C7F93, #9399B2);">)</span><span style="color: light-dark(#7C7F93, #9399B2);">,</span><span style="color: light-dark(#DF8E1D, #F9E2AF);font-style: italic;"> InstrumentError</span><span style="color: light-dark(#04A5E5, #89DCEB);">&gt;</span><span style="color: light-dark(#7C7F93, #9399B2);"> {</span></span>
+<span class="giallo-l"><span style="color: light-dark(#8839EF, #CBA6F7);">    let</span><span> wrapped</span><span style="color: light-dark(#179299, #94E2D5);"> =</span><span style="color: light-dark(#1E66F5, #89B4FA);font-style: italic;"> format!</span><span style="color: light-dark(#7C7F93, #9399B2);">(</span><span style="color: light-dark(#40A02B, #A6E3A1);">&quot;</span><span style="color: light-dark(#EA76CB, #F5C2E7);">\</span><span style="color: light-dark(#EA76CB, #F5C2E7);">&quot;</span><span style="color: light-dark(#7C7F93, #9399B2);">{</span><span style="color: light-dark(#7C7F93, #9399B2);">}</span><span style="color: light-dark(#EA76CB, #F5C2E7);">\</span><span style="color: light-dark(#EA76CB, #F5C2E7);">&quot;</span><span style="color: light-dark(#40A02B, #A6E3A1);">&quot;</span><span style="color: light-dark(#7C7F93, #9399B2);">,</span><span> channel_name</span><span style="color: light-dark(#7C7F93, #9399B2);">)</span><span style="color: light-dark(#7C7F93, #9399B2);">;</span></span>
+<span class="giallo-l"><span style="color: light-dark(#D20F39, #F38BA8);">    self</span><span style="color: light-dark(#179299, #94E2D5);">.</span><span>device</span></span>
+<span class="giallo-l"><span style="color: light-dark(#179299, #94E2D5);">        .</span><span style="color: light-dark(#1E66F5, #89B4FA);font-style: italic;">sendcmd</span><span style="color: light-dark(#7C7F93, #9399B2);">(</span><span style="color: light-dark(#40A02B, #A6E3A1);">&quot;</span><span style="color: light-dark(#40A02B, #A6E3A1);">INNAME</span><span style="color: light-dark(#40A02B, #A6E3A1);">&quot;</span><span style="color: light-dark(#7C7F93, #9399B2);">,</span><span style="color: light-dark(#DF8E1D, #F9E2AF);font-style: italic;"> Some</span><span style="color: light-dark(#7C7F93, #9399B2);">(</span><span style="color: light-dark(#D20F39, #F38BA8);">self</span><span style="color: light-dark(#179299, #94E2D5);">.</span><span style="color: light-dark(#1E66F5, #89B4FA);">idx</span><span style="color: light-dark(#7C7F93, #9399B2);">)</span><span style="color: light-dark(#7C7F93, #9399B2);">,</span><span style="color: light-dark(#DF8E1D, #F9E2AF);font-style: italic;"> Some</span><span style="color: light-dark(#7C7F93, #9399B2);">(</span><span style="color: light-dark(#179299, #94E2D5);">&amp;</span><span style="color: light-dark(#7C7F93, #9399B2);">[</span><span style="color: light-dark(#179299, #94E2D5);">&amp;</span><span>wrapped</span><span style="color: light-dark(#7C7F93, #9399B2);">]</span><span style="color: light-dark(#7C7F93, #9399B2);">)</span><span style="color: light-dark(#7C7F93, #9399B2);">)</span></span>
+<span class="giallo-l"><span style="color: light-dark(#7C7F93, #9399B2);">}</span></span></code></pre>
+<p>Above example shows the manual implementation.
+We first create a <code>wrapped</code> variable for which we simply wrap the command
+in <code>"</code>.
+This is then passed on to the <code>sendcmd</code> function.</p>
+<p>This feature should be provided in the driver-creation macro
+such that the driver author can specify a wrapping character if necessary.</p>
+<h2 id="towards-a-cargo-generate-template">Towards a <code>cargo-generate</code> template</h2>
+<p>As the crate structure for an instrument driver keeps on getting more complicated,
+providing a <a rel="external" href="https://github.com/cargo-generate/cargo-generate">cargo-generate</a> template becomes interesting and important.
+Such a template should:</p>
+<ul>
+<li>Add the specific instrumentRs dependencies and dev dependencies.</li>
+<li>Provide a simple structure on what must be set up with a simple instrument.</li>
+<li>Generate an appropriate <code>Cargo.toml</code>
+with the specific features listed that are recommended for a new driver.</li>
+<li>Set up the testing infrastructure using the mock interface.</li>
+</ul>
+<p>While a template is going to be fairly opinionated,
+it should significantly lower the activation energy to write an instrument driver.</p>
+<h3 id="features">Features</h3>
+<p>For the <a rel="external" href="https://github.com/trappitsch/cryostorage">cryostorage project</a> I require that instrument configurations
+can be de-/serialized.
+This allows loading/storing instrument configurations
+to a file.
+De-/serialization requires <a rel="external" href="https://docs.rs/serde/latest/serde/"><code>serde</code></a> as a dependency.
+This option was put behind a "serde" feature
+as not every user of the driver will need this functionality.</p>
+<p>InstrumentRs should provide such feature gated additions
+by default when generating a new driver structure from a <a rel="external" href="https://github.com/cargo-generate/cargo-generate">cargo-generate</a> template.</p>
+<p>Furthermore, sync and async versions should also be feature-gated
+in a default way by such a template to make drivers that use instrumentRs
+have a common feel to the end user.
+This will also require the implementation of a default feature.
+For example, a user adding a dependency on a new driver should,
+when default features are activated,
+get the blocking version of the driver.</p>
+<h3 id="mock-interface-testing">Mock interface testing</h3>
+<p>A template will also set up example tests
+that use the mock interface.
+This again should make it straightforward for the driver author
+to start writing tests for their instrument driver.</p>
+<h2 id="next-steps">Next steps</h2>
+<p>The next steps have slightly changed from the previous discussion,
+however, mostly the order is different.
+After implementing an instrument drivers,
+the following next steps will be taken on:</p>
+<h3 id="housekeeping">Housekeeping</h3>
+<p>First off, there is some necessary housekeeping work to do.
+There are several features by now and various tests
+that only run with specific features.
+Thus, a CI workflow probably a <a rel="external" href="https://nexte.st/">cargo-nextest</a> configuration will be set up.
+This should of course also include formatting checks,
+build checks against nightly, etc.;
+the standard bunch of CI runs.</p>
+<p>In preparation for the first macro to land,
+the whole project should also move into a workspace of its own.
+This will allow adding the upcoming proc macros
+in their respective crates
+while keeping the dependencies in sync.</p>
+<h3 id="derive-macro-for-parameter-trait-implementations">Derive macro for <code>Parameter</code> trait implementations</h3>
+<p>One thing I noticed while writing the Lakeshore 336 driver is
+that I had to repeat myself very often when implementing
+the driver's own <a rel="external" href="https://blog.galactic-forensics.space/blog/07-instrumentrs2/#the-instrument-instrumentchannel-structures-and-the-parameter-trait"><code>Parameter</code> trait</a> for new instrument types.
+Implementing especially <code>Parameter&lt;String&gt;</code> for newtypes
+should be possible with a derive macro,
+such that we can simply derive this implementation.
+This might in fact look similar to how <a rel="external" href="https://docs.rs/thiserror/latest/thiserror/"><code>thiserror</code></a>
+derives <code>Error</code> for a given <code>enum</code>.</p>
+<h3 id="implement-more-drivers">Implement more drivers</h3>
+<p>Having learned a lot from writing a Lakeshore 336 driver with the framework,
+more driver work is required to solidify the base.
+At least one instrument that requires command acknowledgment
+and an instrument that requires more complicated command packing
+should be implemented to find currently existing weak points
+in the <a rel="external" href="https://github.com/trappitsch/instrumentRs2">instrumentRs v0.2.0</a> idea.</p>
+<h3 id="async-instrument-drivers">Async instrument drivers</h3>
+<p>As you might have noticed,
+previous posts mentioned async interfaces in the next steps.
+I have in fact a functional async version available
+if you want to have a peek.
+It is available on the
+<a rel="external" href="https://github.com/trappitsch/instrumentRs2/tree/async_support">instrumentRs2 async_support branch</a>.
+This branch and its examples are currently fully functional.</p>
+<p>So why is this post not talking about it?
+In short: Because I don't yet fully understand if it is correct
+and why.
+When I started writing the async part, I had to read
+up on how to return <code>async fn</code> in traits<sup class="footnote-reference" id="fr-1-1"><a href="#fn-1">1</a></sup>
+and on <code>Pin</code> and <code>Unpin</code><sup class="footnote-reference" id="fr-2-1"><a href="#fn-2">2</a></sup>.
+The development also made ample use of clippy without always fully understanding
+(as of yet) why I had to, e.g., add <code>Unpin</code> where it's now at.
+As always, I'm letting this problem simmer for a bit in my brain,
+which should help me digest and understand it over time.
+With some additional reading I hope to be able to explain what is going on here.
+Full disclosure: I am fairly new to the async world
+and thus, this will take a bit more time.</p>
+<p>If you are interested in this feature and would like to discuss things through,
+I would be more than happy to do so!
+Learning something new and understanding concepts better
+is one of my main reasons for writing instrumentRs.</p>
+<p>So until I further understand my own async implementation,
+I will restrain from posting about it.
+I will of course keep on hacking at it and feeling out
+what it can and cannot do.</p>
+<h2 id="comments-questions-ideas">Comments, questions, ideas?</h2>
+<p>If you have comments or questions,
+please get in touch with me.
+You can do so via <a rel="external" href="https://github.com/trappitsch/instrumentrs2">instrumentRs2 on GitHub</a>,
+<a href="mailto:reto@galactic-forensics.space">e-mail</a>,
+<a rel="external" href="https://bsky.app/profile/galactic-forensics.space">Bluesky</a>,
+or <a rel="external" href="https://matrix.to/@trappits:epfl.ch#/@trappits:epfl.ch">Matrix</a>.
+I'm excited to hear your ideas!</p>
+<section class="footnotes">
+<ol class="footnotes-list">
+<li id="fn-1">
+<p><a rel="external" href="https://blog.rust-lang.org/2023/12/21/async-fn-rpit-in-traits/">Announcing <code>async fn</code> and return-position <code>impl Trait</code> in traits</a> <a href="#fr-1-1">↩</a></p>
+</li>
+<li id="fn-2">
+<p><a rel="external" href="https://doc.rust-lang.org/std/pin/index.html">Module pin</a> <a href="#fr-2-1">↩</a></p>
+</li>
+</ol>
+</section>
+
+  </div>
+  
+
+  <footer class="post-footer">
+      
+      <ul class="post-tags">
+          
+          
+          <li><a href="https:&#x2F;&#x2F;blog.galactic-forensics.space&#x2F;tags&#x2F;rust&#x2F;">Rust</a></li>
+          
+          
+          <li><a href="https:&#x2F;&#x2F;blog.galactic-forensics.space&#x2F;tags&#x2F;instrumentrs&#x2F;">instrumentRs</a></li>
+          
+      </ul>
+      
+
+    
+    
+
+
+<nav class="paginav">
+    
+    <a class="prev" href="https:&#x2F;&#x2F;blog.galactic-forensics.space&#x2F;blog&#x2F;08-instrumentrs2-mock-interface&#x2F;">
+        <span class="title">« Prev</span>
+        <br>
+        <span>Testing drivers in instrumentRs v0.2.0</span>
+    </a>
+    
+    
+    <a class="next" href="https:&#x2F;&#x2F;blog.galactic-forensics.space&#x2F;blog&#x2F;10-derive-macro&#x2F;">
+        <span class="title">Next »</span>
+        <br>
+        <span>InstrumentRs: #[derive(Parameter)]</span>
+    </a>
+    
+</nav>
+
+    
+  </footer>
+
+</article>
+
+</main>
+
+<footer class="footer">
+  <div class="footer-credits">
+    
+    <span>&copy; 2026 <a href="https:&#x2F;&#x2F;blog.galactic-forensics.space">trappitsch</a></span>
+    
+    <span>
+        Powered by
+        <a href="https://www.getzola.org/" rel="noopener noreferrer" target="_blank">Zola</a> &
+        <a href="https://github.com/edwardzcn-decade/cela" rel="noopener" target="_blank">Cela</a>
+    </span>
+  </div>
+  <div class="footer-scheme">
+    <select id="scheme-select" title="Color scheme" aria-label="Color scheme">
+      <option value="catppuccin-latte">Latte</option>
+      <option value="catppuccin-macchiato">Macchiato</option>
+      <option value="rose-pine">Rosé Pine</option>
+      <option value="nord">Nord</option>
+    </select>
+  </div>
+</footer>
+
+
+<a href="#top" aria-label="go to top" title="Go to Top (Alt + G)" class="top-link" id="top-link" accesskey="g">
+  <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 12 6" fill="currentColor">
+      <path d="M12 6H0l6-6z" />
+  </svg>
+</a>
+
+
+
+
+
+
+
+
+<div id="search-toggle-box" class="hidden">
+  <div class="search-toggle-modal">
+    <input type="text" id="search-toggle-input" placeholder="Type to search..." />
+    <button id="search-toggle-button">Search</button>
+  </div>
+</div>
+
+
+
+<script src="https://blog.galactic-forensics.space/js/site-ui.js"></script>
+<script src="https://blog.galactic-forensics.space/js/search-ui.js"></script>
+<script src="https://blog.galactic-forensics.space/js/home-effects.js"></script>
+
+
+</body>
+
+</html>
