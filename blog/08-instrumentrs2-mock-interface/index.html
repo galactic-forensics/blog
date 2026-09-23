@@ -1,0 +1,934 @@
+<!DOCTYPE html>
+<html lang="en" dir="ltr">
+
+<head>
+<meta charset="utf-8">
+<meta http-equiv="X-UA-Compatible" content="IE=edge">
+<meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
+<meta name="robots" content="index, follow">
+
+
+
+
+<title>Testing drivers in instrumentRs v0.2.0</title>
+
+
+
+
+
+<meta name="keywords" content="Rust, instrumentRs">
+
+
+
+
+<meta name="description" content="Thoughts and ideas...">
+
+
+
+<meta name="author" content="trappitsch">
+
+
+
+
+
+
+
+  <link rel="canonical" href="https:&#x2F;&#x2F;blog.galactic-forensics.space&#x2F;blog&#x2F;08-instrumentrs2-mock-interface&#x2F;">
+
+
+<link rel="stylesheet" href="https://blog.galactic-forensics.space/css/theme-runtime.css">
+<link rel="stylesheet" href="https://blog.galactic-forensics.space/css/theme.css">
+<link rel="icon" href="https://blog.galactic-forensics.space/favicon.ico">
+<link rel="icon" type="image/png" sizes="16x16" href="https://blog.galactic-forensics.space/favicon-16x16.png">
+<link rel="icon" type="image/png" sizes="32x32" href="https://blog.galactic-forensics.space/favicon-32x32.png">
+<link rel="apple-touch-icon" href="https://blog.galactic-forensics.space/apple-touch-icon.png">
+<meta name="theme-color" content="#2e2e33">
+<meta name="msapplication-TileColor" content="#2e2e33">
+
+
+
+<link rel="alternate" type="application/atom+xml" title="RSS" href="https://blog.galactic-forensics.space/atom.xml">
+
+
+
+<noscript>
+    <style>
+        #theme-toggle,
+        .top-link {
+            display: none;
+        }
+    </style>
+    
+    <style>
+        @media (prefers-color-scheme: dark) {
+            :root {
+                --theme-bg: rgb(24, 25, 38);
+                --surface-bg: rgb(36, 39, 58);
+                --surface-muted: rgb(54, 58, 79);
+                --surface-strong: rgb(68, 71, 90);
+                --text-main: rgb(202, 211, 245);
+                --text-muted: rgb(165, 173, 203);
+                --content-text: rgb(184, 192, 224);
+                --highlight-bg: rgb(54, 58, 79);
+                --code-bg: rgb(30, 32, 48);
+                --border-color: rgb(68, 71, 90);
+                --accent-color: rgb(138, 173, 244);
+                --accent-strong: rgb(125, 196, 228);
+                --accent-soft: rgba(138, 173, 244, 0.18);
+                --focus-ring: rgba(138, 173, 244, 0.32);
+                --overlay-backdrop: rgba(17, 17, 27, 0.72);
+                --hero-glow: radial-gradient(circle at top, rgba(138, 173, 244, 0.18), transparent 55%);
+            }
+
+            .list {
+                background: var(--theme-bg);
+            }
+
+            .list:not(.dark)::-webkit-scrollbar-track {
+                background: 0 0;
+            }
+
+            .list:not(.dark)::-webkit-scrollbar-thumb {
+                border-color: var(--theme-bg);
+            }
+        }
+
+    </style>
+    
+</noscript>
+
+
+  
+
+
+<link rel="stylesheet" href="https://blog.galactic-forensics.space/css/code-theme-overrides.css">
+
+</head>
+
+<body
+class=""
+id="top"
+data-show-code-copy-buttons="true"
+data-show-theme-toggle="true"
+data-remember-choice="true"
+data-search-page-url="https://blog.galactic-forensics.space/search"
+data-search-index-json-url="https://blog.galactic-forensics.space/search_index.en.json"
+data-search-index-js-url="https://blog.galactic-forensics.space/search_index.en.js">
+<script>document.documentElement.classList.add("js");</script>
+<script>
+  (function () {
+    var scheme;
+    var darkSchemes = ["catppuccin-macchiato", "rose-pine", "nord"];
+    scheme = localStorage.getItem("pref-scheme");
+    if (!scheme) {
+      scheme = "catppuccin-macchiato";
+      }
+    document.documentElement.setAttribute("data-scheme", scheme);
+    if (darkSchemes.indexOf(scheme) !== -1) {
+      document.documentElement.classList.add("dark");
+      document.body.classList.add("dark");
+    }
+    localStorage.setItem("pref-scheme", scheme);
+    })();
+</script>
+<header class="header">
+  <nav class="nav">
+    <div class="logo">
+      <a
+        href="https:&#x2F;&#x2F;blog.galactic-forensics.space"
+        accesskey="h"
+        title="Mind Bytes (Alt + H)"
+      >
+        
+        
+      </a>
+      <div class="logo-switches">
+        <button id="theme-toggle" accesskey="t" title="(Alt + T)">
+          <svg
+            id="moon"
+            xmlns="http://www.w3.org/2000/svg"
+            width="24"
+            height="18"
+            viewBox="0 0 24 24"
+            fill="none"
+            stroke="currentColor"
+            stroke-width="2"
+            stroke-linecap="round"
+            stroke-linejoin="round"
+          >
+            <path d="M21 12.79A9 9 0 1 1 11.21 3 7 7 0 0 0 21 12.79z"></path>
+          </svg>
+          <svg
+            id="sun"
+            xmlns="http://www.w3.org/2000/svg"
+            width="24"
+            height="18"
+            viewBox="0 0 24 24"
+            fill="none"
+            stroke="currentColor"
+            stroke-width="2"
+            stroke-linecap="round"
+            stroke-linejoin="round"
+          >
+            <circle cx="12" cy="12" r="5"></circle>
+            <line x1="12" y1="1" x2="12" y2="3"></line>
+            <line x1="12" y1="21" x2="12" y2="23"></line>
+            <line x1="4.22" y1="4.22" x2="5.64" y2="5.64"></line>
+            <line x1="18.36" y1="18.36" x2="19.78" y2="19.78"></line>
+            <line x1="1" y1="12" x2="3" y2="12"></line>
+            <line x1="21" y1="12" x2="23" y2="12"></line>
+            <line x1="4.22" y1="19.78" x2="5.64" y2="18.36"></line>
+            <line x1="18.36" y1="5.64" x2="19.78" y2="4.22"></line>
+          </svg>
+        </button>
+        
+        
+      </div>
+    </div>
+    
+    <ul id="menu">
+      
+        
+        
+        
+        
+        
+        
+          
+        
+
+        
+        
+        
+        
+        
+      <li>
+        <a href="https:&#x2F;&#x2F;blog.galactic-forensics.space" title="Home"
+          
+          >
+          <span>Home</span></a>
+      </li>
+      
+        
+        
+        
+        
+        
+        
+          
+
+          
+          
+            
+            
+              
+            
+          
+            
+            
+          
+
+          
+            
+            
+            
+              
+            
+          
+        
+
+        
+        
+        
+        
+        
+      <li>
+        <a href="https:&#x2F;&#x2F;blog.galactic-forensics.space&#x2F;tags&#x2F;" title="Tags"
+          
+          >
+          <span>Tags</span></a>
+      </li>
+      
+        
+        
+        
+        
+        
+        
+          
+
+          
+          
+            
+            
+          
+            
+            
+              
+            
+          
+
+          
+            
+            
+            
+              
+            
+          
+        
+
+        
+        
+        
+        
+        
+      <li>
+        <a href="https:&#x2F;&#x2F;blog.galactic-forensics.space&#x2F;categories&#x2F;" title="Categories"
+          
+          >
+          <span>Categories</span></a>
+      </li>
+      
+        
+        
+        
+        
+        
+        
+          
+        
+
+        
+        
+        
+        
+        
+      <li>
+        <a href="#" title="Search"
+          data-search-toggle="true"
+          >
+          <span>Search</span></a>
+      </li>
+      
+    </ul>
+    
+  </nav>
+</header>
+
+<main class="main">
+
+
+
+
+
+
+
+
+
+<article class="post-single">
+  <header class="post-header">
+      <nav class="breadcrumbs" aria-label="breadcrumb">
+          <a href="https://blog.galactic-forensics.space">Home</a>&nbsp;»&nbsp;
+          
+          <a href="https:&#x2F;&#x2F;blog.galactic-forensics.space&#x2F;blog&#x2F;">Posts</a>&nbsp;»&nbsp;
+          
+          <a href="https:&#x2F;&#x2F;blog.galactic-forensics.space&#x2F;blog&#x2F;08-instrumentrs2-mock-interface&#x2F;">Testing drivers in instrumentRs v0.2.0</a>
+      </nav>
+      <h1 class="post-title">Testing drivers in instrumentRs v0.2.0</h1>
+      
+      
+      <div class="post-meta">
+      
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+<span title="2026-06-19 00:00:00 +0000">2026-06-19</span>&nbsp;·&nbsp;12 min&nbsp;·&nbsp;2296 words&nbsp;·&nbsp;trappitsch
+
+      
+      </div>
+      
+  </header>
+
+  
+  
+
+<div class="toc">
+  <details >
+    <summary accesskey="c" title="(Alt + C)">
+      <span class="details">Table of Contents</span>
+    </summary>
+
+    <div class="inner">
+      <ul>
+        
+        <li>
+          <a href="#testing-instrument-drivers" aria-label="Testing instrument drivers">Testing instrument drivers</a>
+          
+          <ul>
+            
+            <li>
+              <a href="#what-should-a-simple-test-look-like" aria-label="What should a simple test look like?">What should a simple test look like?</a>
+              
+            </li>
+            
+            <li>
+              <a href="#does-the-driver-author-experience-matter" aria-label="Does the driver author experience matter?">Does the driver author experience matter?</a>
+              
+            </li>
+            
+          </ul>
+          
+        </li>
+        
+        <li>
+          <a href="#the-mock-interface" aria-label="The mock interface">The mock interface</a>
+          
+          <ul>
+            
+            <li>
+              <a href="#the-implementation" aria-label="The implementation">The implementation</a>
+              
+            </li>
+            
+            <li>
+              <a href="#the-driver-author-experience-matters" aria-label="The driver author experience matters!">The driver author experience matters!</a>
+              
+            </li>
+            
+            <li>
+              <a href="#testing-the-mock-interface" aria-label="Testing the mock interface">Testing the mock interface</a>
+              
+            </li>
+            
+          </ul>
+          
+        </li>
+        
+        <li>
+          <a href="#what-errors-did-i-find" aria-label="What errors did I find?">What errors did I find?</a>
+          
+        </li>
+        
+        <li>
+          <a href="#next-steps-for-instrumentrs-v0-2-0" aria-label="Next steps for instrumentRs v0.2.0">Next steps for instrumentRs v0.2.0</a>
+          
+        </li>
+        
+        <li>
+          <a href="#comments-questions-ideas" aria-label="Comments, questions, ideas?">Comments, questions, ideas?</a>
+          
+        </li>
+        
+      </ul>
+    </div>
+  </details>
+</div>
+
+  
+
+  
+  <div class="post-content">
+      <p>In the <a href="/blog/07-instrumentrs2">last blogpost</a>
+we discussed design ideas for <code>instrumentRs v0.2.0</code>.
+Here, I will mainly focus on
+the mock interface for testing instruments drivers
+developed using <code>instrumenRs v0.2.0</code>.
+If you haven't already done so,
+it is highly recommended that you read the <a href="/blog/07-instrumentrs2">last blogpost</a> first
+for context.</p>
+<span id="continue-reading"></span>
+<p>In addition to a mock interface,
+proper error handling now also been implemented.
+This, turns out, was in fact fairly straightforward in comparison to <code>v0.1.0</code>,
+as <code>instrumentRs v0.2.0</code> will be fully generic over the interface.
+The <a rel="external" href="https://crates.io/crates/thiserror">thiserror</a> crate was, as usual,
+invaluable in error handling and propagation.</p>
+<h2 id="testing-instrument-drivers">Testing instrument drivers</h2>
+<p>To test an instrument driver
+we want to make sure that when the end user calls a given method,
+the right bytes are sent to the instrument.
+Furthermore,
+when an instrument is queried,
+the correct query command should be sent,
+but then the received response should also be decoded correctly.</p>
+<p>This kind of testing can be facilitated by using a mock interface.
+A driver author can use this mock interface
+to implement tests for the instrument driver.
+These tests should allow maintaining, refactoring, etc.,
+the instrument driver in the future
+without having access to the actual hardware.</p>
+<h3 id="what-should-a-simple-test-look-like">What should a simple test look like?</h3>
+<p>Let us consider once more the simple <a rel="external" href="https://github.com/galactic-forensics/digoutbox">DigOutBox</a>.
+Each of the 16 channels of this box can be turned on or off,
+but we can also receive the state of these channels individually.
+The function calls for these two functions
+in the instrument channel implementation
+look like this:</p>
+<pre class="giallo" style="color-scheme: light dark; color: light-dark(#4C4F69, #CDD6F4); background-color: light-dark(#EFF1F5, #1E1E2E);"><code data-lang="rust"><span class="giallo-l"><span style="color: light-dark(#8839EF, #CBA6F7);">pub</span><span style="color: light-dark(#8839EF, #CBA6F7);"> fn</span><span style="color: light-dark(#1E66F5, #89B4FA);font-style: italic;"> get_channel</span><span style="color: light-dark(#7C7F93, #9399B2);">(</span><span style="color: light-dark(#179299, #94E2D5);">&amp;</span><span style="color: light-dark(#8839EF, #CBA6F7);">mut</span><span style="color: light-dark(#D20F39, #F38BA8);"> self</span><span style="color: light-dark(#7C7F93, #9399B2);">)</span><span style="color: light-dark(#179299, #94E2D5);"> -&gt;</span><span style="color: light-dark(#DF8E1D, #F9E2AF);font-style: italic;"> Result</span><span style="color: light-dark(#04A5E5, #89DCEB);">&lt;</span><span style="color: light-dark(#DF8E1D, #F9E2AF);font-style: italic;">Channel</span><span style="color: light-dark(#7C7F93, #9399B2);">,</span><span style="color: light-dark(#DF8E1D, #F9E2AF);font-style: italic;"> InstrumentRsError</span><span style="color: light-dark(#04A5E5, #89DCEB);">&gt;</span><span style="color: light-dark(#7C7F93, #9399B2);"> {</span></span>
+<span class="giallo-l"><span style="color: light-dark(#179299, #94E2D5);">    ...</span></span>
+<span class="giallo-l"><span style="color: light-dark(#7C7F93, #9399B2);">}</span></span>
+<span class="giallo-l"></span>
+<span class="giallo-l"><span style="color: light-dark(#8839EF, #CBA6F7);">pub</span><span style="color: light-dark(#8839EF, #CBA6F7);"> fn</span><span style="color: light-dark(#1E66F5, #89B4FA);font-style: italic;"> set_channel</span><span style="color: light-dark(#7C7F93, #9399B2);">(</span><span style="color: light-dark(#179299, #94E2D5);">&amp;</span><span style="color: light-dark(#8839EF, #CBA6F7);">mut</span><span style="color: light-dark(#D20F39, #F38BA8);"> self</span><span style="color: light-dark(#7C7F93, #9399B2);">,</span><span style="color: light-dark(#E64553, #EBA0AC);"> val</span><span style="color: light-dark(#179299, #94E2D5);">:</span><span style="color: light-dark(#DF8E1D, #F9E2AF);font-style: italic;"> Channel</span><span style="color: light-dark(#7C7F93, #9399B2);">)</span><span style="color: light-dark(#179299, #94E2D5);"> -&gt;</span><span style="color: light-dark(#DF8E1D, #F9E2AF);font-style: italic;"> Result</span><span style="color: light-dark(#04A5E5, #89DCEB);">&lt;</span><span style="color: light-dark(#7C7F93, #9399B2);">(</span><span style="color: light-dark(#7C7F93, #9399B2);">)</span><span style="color: light-dark(#7C7F93, #9399B2);">,</span><span style="color: light-dark(#DF8E1D, #F9E2AF);font-style: italic;"> InstrumentRsError</span><span style="color: light-dark(#04A5E5, #89DCEB);">&gt;</span><span style="color: light-dark(#7C7F93, #9399B2);"> {</span></span>
+<span class="giallo-l"><span style="color: light-dark(#179299, #94E2D5);">    ...</span></span>
+<span class="giallo-l"><span style="color: light-dark(#7C7F93, #9399B2);">}</span></span></code></pre>
+<p>Here, the set/get values are represented by a
+<a rel="external" href="https://github.com/galactic-forensics/digoutbox">DigOutBox</a> specific <code>Channel</code>,
+which is a simple <code>enum</code> like this:</p>
+<pre class="giallo" style="color-scheme: light dark; color: light-dark(#4C4F69, #CDD6F4); background-color: light-dark(#EFF1F5, #1E1E2E);"><code data-lang="rust"><span class="giallo-l"><span style="color: light-dark(#8839EF, #CBA6F7);">pub</span><span style="color: light-dark(#8839EF, #CBA6F7);"> enum</span><span style="color: light-dark(#DF8E1D, #F9E2AF);font-style: italic;"> Channel</span><span style="color: light-dark(#7C7F93, #9399B2);"> {</span></span>
+<span class="giallo-l"><span style="color: light-dark(#7C7F93, #9399B2);font-style: italic;">    ///</span><span style="color: light-dark(#7C7F93, #9399B2);font-style: italic;"> The channel is on.</span></span>
+<span class="giallo-l"><span style="color: light-dark(#DF8E1D, #F9E2AF);font-style: italic;">    On</span><span style="color: light-dark(#7C7F93, #9399B2);">,</span></span>
+<span class="giallo-l"><span style="color: light-dark(#7C7F93, #9399B2);font-style: italic;">    ///</span><span style="color: light-dark(#7C7F93, #9399B2);font-style: italic;"> The channel is off.</span></span>
+<span class="giallo-l"><span style="color: light-dark(#DF8E1D, #F9E2AF);font-style: italic;">    Off</span><span style="color: light-dark(#7C7F93, #9399B2);">,</span></span>
+<span class="giallo-l"><span style="color: light-dark(#7C7F93, #9399B2);">}</span></span></code></pre>
+<p>The <a rel="external" href="https://digoutbox.readthedocs.io/latest/firmware/#scpi-commands-and-serial-connection">DigOutBox command interface description</a> tells us
+what the instrument driver
+needs to send to the interface when communicating.
+For setting/querying a specific channel this would look like this:</p>
+<ul>
+<li>Turn channel 3 on:
+<ul>
+<li>Driver sends to instrument <code>"DO3 1\n"</code>.</li>
+</ul>
+</li>
+<li>Query status of channel 2:
+<ul>
+<li>Driver sends to instrument <code>"DO2?\n"</code>.</li>
+<li>Instrument responds with <code>"1\n"</code> if the channel is on
+or<code>"0\n"</code> if the channel is off.</li>
+</ul>
+</li>
+</ul>
+<p>Here, <code>\n</code> is the end of line terminator used by the <a rel="external" href="https://github.com/galactic-forensics/digoutbox">DigOutBox</a>.</p>
+<p>To test turning the channel on,
+we want to be able to write a test that might look somewhat like this:</p>
+<pre class="giallo" style="color-scheme: light dark; color: light-dark(#4C4F69, #CDD6F4); background-color: light-dark(#EFF1F5, #1E1E2E);"><code data-lang="rust"><span class="giallo-l"><span style="color: light-dark(#DF8E1D, #F9E2AF);font-style: italic;">#</span><span style="color: light-dark(#7C7F93, #9399B2);">[</span><span style="color: light-dark(#DF8E1D, #F9E2AF);font-style: italic;">test</span><span style="color: light-dark(#7C7F93, #9399B2);">]</span></span>
+<span class="giallo-l"><span style="color: light-dark(#8839EF, #CBA6F7);">fn</span><span style="color: light-dark(#1E66F5, #89B4FA);font-style: italic;"> turn_on_channel3</span><span style="color: light-dark(#7C7F93, #9399B2);">(</span><span style="color: light-dark(#7C7F93, #9399B2);">)</span><span style="color: light-dark(#7C7F93, #9399B2);"> {</span></span>
+<span class="giallo-l"><span style="color: light-dark(#8839EF, #CBA6F7);">    let</span><span> expected_writes</span><span style="color: light-dark(#179299, #94E2D5);"> =</span><span style="color: light-dark(#1E66F5, #89B4FA);font-style: italic;"> vec!</span><span style="color: light-dark(#7C7F93, #9399B2);">[</span><span style="color: light-dark(#40A02B, #A6E3A1);">&quot;</span><span style="color: light-dark(#40A02B, #A6E3A1);">DO3 1</span><span style="color: light-dark(#EA76CB, #F5C2E7);">\</span><span style="color: light-dark(#EA76CB, #F5C2E7);">n</span><span style="color: light-dark(#40A02B, #A6E3A1);">&quot;</span><span style="color: light-dark(#179299, #94E2D5);">.</span><span style="color: light-dark(#1E66F5, #89B4FA);font-style: italic;">as_bytes</span><span style="color: light-dark(#7C7F93, #9399B2);">(</span><span style="color: light-dark(#7C7F93, #9399B2);">)</span><span style="color: light-dark(#179299, #94E2D5);">.</span><span style="color: light-dark(#1E66F5, #89B4FA);font-style: italic;">to_vec</span><span style="color: light-dark(#7C7F93, #9399B2);">(</span><span style="color: light-dark(#7C7F93, #9399B2);">)</span><span style="color: light-dark(#7C7F93, #9399B2);">]</span><span style="color: light-dark(#7C7F93, #9399B2);">;</span></span>
+<span class="giallo-l"><span style="color: light-dark(#8839EF, #CBA6F7);">    let</span><span> interface</span><span style="color: light-dark(#179299, #94E2D5);"> =</span><span style="color: light-dark(#DF8E1D, #F9E2AF);font-style: italic;"> MockInterface</span><span style="color: light-dark(#179299, #94E2D5);">::</span><span style="color: light-dark(#1E66F5, #89B4FA);font-style: italic;">new</span><span style="color: light-dark(#7C7F93, #9399B2);">(</span><span style="color: light-dark(#1E66F5, #89B4FA);font-style: italic;">vec!</span><span style="color: light-dark(#7C7F93, #9399B2);">[</span><span style="color: light-dark(#7C7F93, #9399B2);">]</span><span style="color: light-dark(#7C7F93, #9399B2);">,</span><span> expected_writes</span><span style="color: light-dark(#7C7F93, #9399B2);">)</span><span style="color: light-dark(#7C7F93, #9399B2);">;</span></span>
+<span class="giallo-l"></span>
+<span class="giallo-l"><span style="color: light-dark(#8839EF, #CBA6F7);">    let</span><span style="color: light-dark(#8839EF, #CBA6F7);"> mut</span><span> inst</span><span style="color: light-dark(#179299, #94E2D5);"> =</span><span style="color: light-dark(#DF8E1D, #F9E2AF);font-style: italic;"> DigOutBox</span><span style="color: light-dark(#179299, #94E2D5);">::</span><span style="color: light-dark(#1E66F5, #89B4FA);font-style: italic;">new</span><span style="color: light-dark(#7C7F93, #9399B2);">(</span><span>interface</span><span style="color: light-dark(#7C7F93, #9399B2);">)</span><span style="color: light-dark(#7C7F93, #9399B2);">;</span></span>
+<span class="giallo-l"></span>
+<span class="giallo-l"><span>    inst</span><span style="color: light-dark(#179299, #94E2D5);">.</span><span style="color: light-dark(#1E66F5, #89B4FA);font-style: italic;">channel</span><span style="color: light-dark(#7C7F93, #9399B2);">(</span><span style="color: light-dark(#FE640B, #FAB387);">3</span><span style="color: light-dark(#7C7F93, #9399B2);">)</span><span style="color: light-dark(#179299, #94E2D5);">.</span><span style="color: light-dark(#1E66F5, #89B4FA);font-style: italic;">unwrap</span><span style="color: light-dark(#7C7F93, #9399B2);">(</span><span style="color: light-dark(#7C7F93, #9399B2);">)</span><span style="color: light-dark(#179299, #94E2D5);">.</span><span style="color: light-dark(#1E66F5, #89B4FA);font-style: italic;">set_channel</span><span style="color: light-dark(#7C7F93, #9399B2);">(</span><span style="color: light-dark(#DF8E1D, #F9E2AF);">Channel</span><span style="color: light-dark(#179299, #94E2D5);">::</span><span style="color: light-dark(#DF8E1D, #F9E2AF);font-style: italic;">On</span><span style="color: light-dark(#7C7F93, #9399B2);">)</span><span style="color: light-dark(#179299, #94E2D5);">.</span><span style="color: light-dark(#1E66F5, #89B4FA);font-style: italic;">unwrap</span><span style="color: light-dark(#7C7F93, #9399B2);">(</span><span style="color: light-dark(#7C7F93, #9399B2);">)</span><span style="color: light-dark(#7C7F93, #9399B2);">;</span></span>
+<span class="giallo-l"><span style="color: light-dark(#7C7F93, #9399B2);">}</span></span></code></pre>
+<p>Here, we are first defining what we expect to write to the instrument
+in the <code>expected_writes</code> variable.
+This is exactly the command that needs to be sent to the instrument
+in order to turn on channel 3.
+The <code>MockInterface</code> requires <code>expected_reads</code> and <code>expected_writes</code>
+to be in the form <code>Vec&lt;Vec&lt;u8&gt;&gt;</code> (more on this later).
+We then create a new <code>MockInterface</code>.
+To this mock interface we provide the expected reads
+(no expected reads in this case, thus <code>vec![]</code>)
+and the expected writes.
+Then we create a new <code>DigOutBox</code> instrument and feed it the mock interface.
+Finally, we call the appropriate function and unwrap heavily (for now).
+The <code>MockInterface</code> itself ensures
+that the actual write is the same as the expected write
+and that the <code>expected_write</code> and <code>expected_read</code> vectors
+are fully depleted at the end of the test.</p>
+<p>Let's do another example:
+To test reading the status of channel 2
+and assuming it is turned on in the response
+would look like this:</p>
+<pre class="giallo" style="color-scheme: light dark; color: light-dark(#4C4F69, #CDD6F4); background-color: light-dark(#EFF1F5, #1E1E2E);"><code data-lang="rust"><span class="giallo-l"><span style="color: light-dark(#DF8E1D, #F9E2AF);font-style: italic;">#</span><span style="color: light-dark(#7C7F93, #9399B2);">[</span><span style="color: light-dark(#DF8E1D, #F9E2AF);font-style: italic;">test</span><span style="color: light-dark(#7C7F93, #9399B2);">]</span></span>
+<span class="giallo-l"><span style="color: light-dark(#8839EF, #CBA6F7);">fn</span><span style="color: light-dark(#1E66F5, #89B4FA);font-style: italic;"> read_channel2_on</span><span style="color: light-dark(#7C7F93, #9399B2);">(</span><span style="color: light-dark(#7C7F93, #9399B2);">)</span><span style="color: light-dark(#7C7F93, #9399B2);"> {</span></span>
+<span class="giallo-l"><span style="color: light-dark(#8839EF, #CBA6F7);">    let</span><span> expected_writes</span><span style="color: light-dark(#179299, #94E2D5);"> =</span><span style="color: light-dark(#1E66F5, #89B4FA);font-style: italic;"> vec!</span><span style="color: light-dark(#7C7F93, #9399B2);">[</span><span style="color: light-dark(#40A02B, #A6E3A1);">&quot;</span><span style="color: light-dark(#40A02B, #A6E3A1);">DO2?</span><span style="color: light-dark(#EA76CB, #F5C2E7);">\</span><span style="color: light-dark(#EA76CB, #F5C2E7);">n</span><span style="color: light-dark(#40A02B, #A6E3A1);">&quot;</span><span style="color: light-dark(#179299, #94E2D5);">.</span><span style="color: light-dark(#1E66F5, #89B4FA);font-style: italic;">as_bytes</span><span style="color: light-dark(#7C7F93, #9399B2);">(</span><span style="color: light-dark(#7C7F93, #9399B2);">)</span><span style="color: light-dark(#179299, #94E2D5);">.</span><span style="color: light-dark(#1E66F5, #89B4FA);font-style: italic;">to_vec</span><span style="color: light-dark(#7C7F93, #9399B2);">(</span><span style="color: light-dark(#7C7F93, #9399B2);">)</span><span style="color: light-dark(#7C7F93, #9399B2);">]</span><span style="color: light-dark(#7C7F93, #9399B2);">;</span></span>
+<span class="giallo-l"><span style="color: light-dark(#8839EF, #CBA6F7);">    let</span><span> expected_reads</span><span style="color: light-dark(#179299, #94E2D5);"> =</span><span style="color: light-dark(#1E66F5, #89B4FA);font-style: italic;"> vec!</span><span style="color: light-dark(#7C7F93, #9399B2);">[</span><span style="color: light-dark(#40A02B, #A6E3A1);">&quot;</span><span style="color: light-dark(#40A02B, #A6E3A1);">1</span><span style="color: light-dark(#EA76CB, #F5C2E7);">\</span><span style="color: light-dark(#EA76CB, #F5C2E7);">n</span><span style="color: light-dark(#40A02B, #A6E3A1);">&quot;</span><span style="color: light-dark(#179299, #94E2D5);">.</span><span style="color: light-dark(#1E66F5, #89B4FA);font-style: italic;">as_bytes</span><span style="color: light-dark(#7C7F93, #9399B2);">(</span><span style="color: light-dark(#7C7F93, #9399B2);">)</span><span style="color: light-dark(#179299, #94E2D5);">.</span><span style="color: light-dark(#1E66F5, #89B4FA);font-style: italic;">to_vec</span><span style="color: light-dark(#7C7F93, #9399B2);">(</span><span style="color: light-dark(#7C7F93, #9399B2);">)</span><span style="color: light-dark(#7C7F93, #9399B2);">]</span><span style="color: light-dark(#7C7F93, #9399B2);">;</span></span>
+<span class="giallo-l"><span style="color: light-dark(#8839EF, #CBA6F7);">    let</span><span> interface</span><span style="color: light-dark(#179299, #94E2D5);"> =</span><span style="color: light-dark(#DF8E1D, #F9E2AF);font-style: italic;"> MockInterface</span><span style="color: light-dark(#179299, #94E2D5);">::</span><span style="color: light-dark(#1E66F5, #89B4FA);font-style: italic;">new</span><span style="color: light-dark(#7C7F93, #9399B2);">(</span><span>expected_reads</span><span style="color: light-dark(#7C7F93, #9399B2);">,</span><span> expected_writes</span><span style="color: light-dark(#7C7F93, #9399B2);">)</span><span style="color: light-dark(#7C7F93, #9399B2);">;</span></span>
+<span class="giallo-l"></span>
+<span class="giallo-l"><span style="color: light-dark(#8839EF, #CBA6F7);">    let</span><span style="color: light-dark(#8839EF, #CBA6F7);"> mut</span><span> inst</span><span style="color: light-dark(#179299, #94E2D5);"> =</span><span style="color: light-dark(#DF8E1D, #F9E2AF);font-style: italic;"> DigOutBox</span><span style="color: light-dark(#179299, #94E2D5);">::</span><span style="color: light-dark(#1E66F5, #89B4FA);font-style: italic;">new</span><span style="color: light-dark(#7C7F93, #9399B2);">(</span><span>interface</span><span style="color: light-dark(#7C7F93, #9399B2);">)</span><span style="color: light-dark(#7C7F93, #9399B2);">;</span></span>
+<span class="giallo-l"></span>
+<span class="giallo-l"><span style="color: light-dark(#8839EF, #CBA6F7);">    let</span><span> ch2_state</span><span style="color: light-dark(#179299, #94E2D5);"> =</span><span> inst</span><span style="color: light-dark(#179299, #94E2D5);">.</span><span style="color: light-dark(#1E66F5, #89B4FA);font-style: italic;">channel</span><span style="color: light-dark(#7C7F93, #9399B2);">(</span><span style="color: light-dark(#FE640B, #FAB387);">2</span><span style="color: light-dark(#7C7F93, #9399B2);">)</span><span style="color: light-dark(#179299, #94E2D5);">.</span><span style="color: light-dark(#1E66F5, #89B4FA);font-style: italic;">unwrap</span><span style="color: light-dark(#7C7F93, #9399B2);">(</span><span style="color: light-dark(#7C7F93, #9399B2);">)</span><span style="color: light-dark(#179299, #94E2D5);">.</span><span style="color: light-dark(#1E66F5, #89B4FA);font-style: italic;">get_channel</span><span style="color: light-dark(#7C7F93, #9399B2);">(</span><span style="color: light-dark(#7C7F93, #9399B2);">)</span><span style="color: light-dark(#179299, #94E2D5);">.</span><span style="color: light-dark(#1E66F5, #89B4FA);font-style: italic;">unwrap</span><span style="color: light-dark(#7C7F93, #9399B2);">(</span><span style="color: light-dark(#7C7F93, #9399B2);">)</span><span style="color: light-dark(#7C7F93, #9399B2);">;</span></span>
+<span class="giallo-l"><span style="color: light-dark(#DF8E1D, #F9E2AF);">    std</span><span style="color: light-dark(#179299, #94E2D5);">::</span><span style="color: light-dark(#1E66F5, #89B4FA);font-style: italic;">assert_matches!</span><span style="color: light-dark(#7C7F93, #9399B2);">(</span><span>ch2_state</span><span style="color: light-dark(#7C7F93, #9399B2);">,</span><span style="color: light-dark(#DF8E1D, #F9E2AF);font-style: italic;"> Channel</span><span style="color: light-dark(#179299, #94E2D5);">::</span><span style="color: light-dark(#DF8E1D, #F9E2AF);font-style: italic;">On</span><span style="color: light-dark(#7C7F93, #9399B2);">)</span><span style="color: light-dark(#7C7F93, #9399B2);">;</span></span>
+<span class="giallo-l"><span style="color: light-dark(#7C7F93, #9399B2);">}</span></span></code></pre>
+<p>Here we now have an expected read and an expected write.
+We create a new <code>MockInterface</code> with these values.
+Then, identical to the example above,
+we create a new <code>DigOutBox</code> instrument
+and run the wanted command.
+However, this time we store the returned value in <code>ch2_state</code>
+and assert that it matches the state
+that we told the interface to send back to the driver.</p>
+<h3 id="does-the-driver-author-experience-matter">Does the driver author experience matter?</h3>
+<p>So far so good,
+however, this is still fairly clunky.
+In <code>instrumentRs v0.2.0</code>, testing should be as straightforward as possible
+for the driver author.
+The following functionality should allow for this:</p>
+<ul>
+<li>Expected read and write values can be provided in a more general way
+that agrees with how humans think about what is sent back and forth.</li>
+<li>Setting up the instrument with the mock interface is too verbose
+in above examples and should be streamlined.</li>
+<li>If an error occurs, we want to provide useful and nicely formatted error messages.</li>
+</ul>
+<p>All of these improvements can be implemented with two fairly simple macros
+that aid the driver author with testing.
+To understand how these macros are set up,
+let us first discuss the mock interface implementation and what it actually does.</p>
+<h2 id="the-mock-interface">The mock interface</h2>
+<p>First off, the mock interface is solely used for testing an instrument driver.
+While the driver itself from the perspective of the end user will depend on <code>instrumentRs</code>,
+the mock interface itself is not required by the end user.
+We thus put the mock interface behind a feature.
+This allows a driver author to set up a <code>Cargo.toml</code> file
+as in the following excerpt:</p>
+<pre class="giallo" style="color-scheme: light dark; color: light-dark(#4C4F69, #CDD6F4); background-color: light-dark(#EFF1F5, #1E1E2E);"><code data-lang="toml"><span class="giallo-l"><span style="color: light-dark(#7C7F93, #9399B2);">[</span><span>dependencies</span><span style="color: light-dark(#7C7F93, #9399B2);">]</span></span>
+<span class="giallo-l"><span>instrumentrs</span><span style="color: light-dark(#179299, #94E2D5);"> =</span><span style="color: light-dark(#40A02B, #A6E3A1);"> &quot;</span><span style="color: light-dark(#40A02B, #A6E3A1);">0.2.0</span><span style="color: light-dark(#40A02B, #A6E3A1);">&quot;</span></span>
+<span class="giallo-l"></span>
+<span class="giallo-l"><span style="color: light-dark(#7C7F93, #9399B2);">[</span><span>dev-dependencies</span><span style="color: light-dark(#7C7F93, #9399B2);">]</span></span>
+<span class="giallo-l"><span>instrumentrs</span><span style="color: light-dark(#179299, #94E2D5);"> =</span><span style="color: light-dark(#7C7F93, #9399B2);"> {</span><span> version</span><span style="color: light-dark(#179299, #94E2D5);"> =</span><span style="color: light-dark(#40A02B, #A6E3A1);"> &quot;</span><span style="color: light-dark(#40A02B, #A6E3A1);">0.2.0</span><span style="color: light-dark(#40A02B, #A6E3A1);">&quot;</span><span style="color: light-dark(#7C7F93, #9399B2);">,</span><span> features</span><span style="color: light-dark(#179299, #94E2D5);"> =</span><span style="color: light-dark(#7C7F93, #9399B2);"> [</span><span style="color: light-dark(#40A02B, #A6E3A1);">&quot;</span><span style="color: light-dark(#40A02B, #A6E3A1);">mock-interface</span><span style="color: light-dark(#40A02B, #A6E3A1);">&quot;</span><span style="color: light-dark(#7C7F93, #9399B2);">]</span><span style="color: light-dark(#7C7F93, #9399B2);"> }</span></span></code></pre>
+<p>Thus, the mock interface itself will only be available when testing,
+but the end user does not suffer the additional code and dependencies.
+This also allows us also to add some dependencies
+to make testing easier/prettier.</p>
+<h3 id="the-implementation">The implementation</h3>
+<p>The mock interface itself is implemented as:</p>
+<pre class="giallo" style="color-scheme: light dark; color: light-dark(#4C4F69, #CDD6F4); background-color: light-dark(#EFF1F5, #1E1E2E);"><code data-lang="rust"><span class="giallo-l"><span style="color: light-dark(#8839EF, #CBA6F7);">pub</span><span style="color: light-dark(#8839EF, #CBA6F7);"> struct</span><span style="color: light-dark(#DF8E1D, #F9E2AF);font-style: italic;"> MockInterface</span><span style="color: light-dark(#7C7F93, #9399B2);"> {</span></span>
+<span class="giallo-l"><span style="color: light-dark(#7C7F93, #9399B2);font-style: italic;">    ///</span><span style="color: light-dark(#7C7F93, #9399B2);font-style: italic;"> What we expect the interface to read from the device.</span></span>
+<span class="giallo-l"><span style="color: light-dark(#7C7F93, #9399B2);font-style: italic;">    ///</span></span>
+<span class="giallo-l"><span style="color: light-dark(#7C7F93, #9399B2);font-style: italic;">    ///</span><span style="color: light-dark(#7C7F93, #9399B2);font-style: italic;"> This is a flattened vector of all the bytes that we expect to read.</span></span>
+<span class="giallo-l"><span>    expected_read</span><span style="color: light-dark(#179299, #94E2D5);">:</span><span style="color: light-dark(#DF8E1D, #F9E2AF);font-style: italic;"> Vec</span><span style="color: light-dark(#04A5E5, #89DCEB);">&lt;</span><span style="color: light-dark(#8839EF, #CBA6F7);">u8</span><span style="color: light-dark(#04A5E5, #89DCEB);">&gt;</span><span style="color: light-dark(#7C7F93, #9399B2);">,</span></span>
+<span class="giallo-l"><span style="color: light-dark(#7C7F93, #9399B2);font-style: italic;">    ///</span><span style="color: light-dark(#7C7F93, #9399B2);font-style: italic;"> Index where we are currently at in the `expected_read` when reading.</span></span>
+<span class="giallo-l"><span style="color: light-dark(#7C7F93, #9399B2);font-style: italic;">    ///</span></span>
+<span class="giallo-l"><span style="color: light-dark(#7C7F93, #9399B2);font-style: italic;">    ///</span><span style="color: light-dark(#7C7F93, #9399B2);font-style: italic;"> At the end, this must be equal to the length of the `expected_read` vector.</span></span>
+<span class="giallo-l"><span>    read_idx</span><span style="color: light-dark(#179299, #94E2D5);">:</span><span style="color: light-dark(#8839EF, #CBA6F7);"> usize</span><span style="color: light-dark(#7C7F93, #9399B2);">,</span></span>
+<span class="giallo-l"><span style="color: light-dark(#7C7F93, #9399B2);font-style: italic;">    ///</span><span style="color: light-dark(#7C7F93, #9399B2);font-style: italic;"> What we expect the interface to write to the instrument.</span></span>
+<span class="giallo-l"><span style="color: light-dark(#7C7F93, #9399B2);font-style: italic;">    ///</span></span>
+<span class="giallo-l"><span style="color: light-dark(#7C7F93, #9399B2);font-style: italic;">    ///</span><span style="color: light-dark(#7C7F93, #9399B2);font-style: italic;"> If filled, this is a flattened vector of all bytes we expect to write.</span></span>
+<span class="giallo-l"><span>    expected_write</span><span style="color: light-dark(#179299, #94E2D5);">:</span><span style="color: light-dark(#DF8E1D, #F9E2AF);font-style: italic;"> Vec</span><span style="color: light-dark(#04A5E5, #89DCEB);">&lt;</span><span style="color: light-dark(#8839EF, #CBA6F7);">u8</span><span style="color: light-dark(#04A5E5, #89DCEB);">&gt;</span><span style="color: light-dark(#7C7F93, #9399B2);">,</span></span>
+<span class="giallo-l"><span style="color: light-dark(#7C7F93, #9399B2);font-style: italic;">    ///</span><span style="color: light-dark(#7C7F93, #9399B2);font-style: italic;"> Index where we are currently at in the `expected_write` when writing.</span></span>
+<span class="giallo-l"><span style="color: light-dark(#7C7F93, #9399B2);font-style: italic;">    ///</span></span>
+<span class="giallo-l"><span style="color: light-dark(#7C7F93, #9399B2);font-style: italic;">    ///</span><span style="color: light-dark(#7C7F93, #9399B2);font-style: italic;"> At the end, this must be equal to the length of the `expected_write` vector.</span></span>
+<span class="giallo-l"><span>    write_idx</span><span style="color: light-dark(#179299, #94E2D5);">:</span><span style="color: light-dark(#8839EF, #CBA6F7);"> usize</span><span style="color: light-dark(#7C7F93, #9399B2);">,</span></span>
+<span class="giallo-l"><span style="color: light-dark(#7C7F93, #9399B2);font-style: italic;">    ///</span><span style="color: light-dark(#7C7F93, #9399B2);font-style: italic;"> Number of flushes we expect.</span></span>
+<span class="giallo-l"><span style="color: light-dark(#7C7F93, #9399B2);font-style: italic;">    ///</span></span>
+<span class="giallo-l"><span style="color: light-dark(#7C7F93, #9399B2);font-style: italic;">    ///</span><span style="color: light-dark(#7C7F93, #9399B2);font-style: italic;"> Every time a full command is written the interface must be flushed. Thus, this number is</span></span>
+<span class="giallo-l"><span style="color: light-dark(#7C7F93, #9399B2);font-style: italic;">    ///</span><span style="color: light-dark(#7C7F93, #9399B2);font-style: italic;"> equal to the number of full write commands.</span></span>
+<span class="giallo-l"><span>    flush_exp</span><span style="color: light-dark(#179299, #94E2D5);">:</span><span style="color: light-dark(#8839EF, #CBA6F7);"> usize</span><span style="color: light-dark(#7C7F93, #9399B2);">,</span></span>
+<span class="giallo-l"><span style="color: light-dark(#7C7F93, #9399B2);font-style: italic;">    ///</span><span style="color: light-dark(#7C7F93, #9399B2);font-style: italic;"> Number of flushes counted.</span></span>
+<span class="giallo-l"><span style="color: light-dark(#7C7F93, #9399B2);font-style: italic;">    ///</span></span>
+<span class="giallo-l"><span style="color: light-dark(#7C7F93, #9399B2);font-style: italic;">    ///</span><span style="color: light-dark(#7C7F93, #9399B2);font-style: italic;"> We expect one flush to be called for every full package that is sent to the device.</span></span>
+<span class="giallo-l"><span>    flush_rec</span><span style="color: light-dark(#179299, #94E2D5);">:</span><span style="color: light-dark(#8839EF, #CBA6F7);"> usize</span><span style="color: light-dark(#7C7F93, #9399B2);">,</span></span>
+<span class="giallo-l"><span style="color: light-dark(#7C7F93, #9399B2);">}</span></span></code></pre>
+<p>We implement a <code>new</code> constructor for creating a <code>MockInterface</code> as following:</p>
+<pre class="giallo" style="color-scheme: light dark; color: light-dark(#4C4F69, #CDD6F4); background-color: light-dark(#EFF1F5, #1E1E2E);"><code data-lang="rust"><span class="giallo-l"><span style="color: light-dark(#8839EF, #CBA6F7);">impl</span><span style="color: light-dark(#DF8E1D, #F9E2AF);font-style: italic;"> MockInterface</span><span style="color: light-dark(#7C7F93, #9399B2);"> {</span></span>
+<span class="giallo-l"><span style="color: light-dark(#8839EF, #CBA6F7);">    pub</span><span style="color: light-dark(#8839EF, #CBA6F7);"> fn</span><span style="color: light-dark(#1E66F5, #89B4FA);font-style: italic;"> new</span><span style="color: light-dark(#7C7F93, #9399B2);">(</span><span style="color: light-dark(#E64553, #EBA0AC);">expected_reads</span><span style="color: light-dark(#179299, #94E2D5);">:</span><span style="color: light-dark(#DF8E1D, #F9E2AF);font-style: italic;"> Vec</span><span style="color: light-dark(#04A5E5, #89DCEB);">&lt;</span><span style="color: light-dark(#DF8E1D, #F9E2AF);font-style: italic;">Vec</span><span style="color: light-dark(#04A5E5, #89DCEB);">&lt;</span><span style="color: light-dark(#8839EF, #CBA6F7);">u8</span><span style="color: light-dark(#04A5E5, #89DCEB);">&gt;</span><span style="color: light-dark(#04A5E5, #89DCEB);">&gt;</span><span style="color: light-dark(#7C7F93, #9399B2);">,</span><span style="color: light-dark(#E64553, #EBA0AC);"> expected_writes</span><span style="color: light-dark(#179299, #94E2D5);">:</span><span style="color: light-dark(#DF8E1D, #F9E2AF);font-style: italic;"> Vec</span><span style="color: light-dark(#04A5E5, #89DCEB);">&lt;</span><span style="color: light-dark(#DF8E1D, #F9E2AF);font-style: italic;">Vec</span><span style="color: light-dark(#04A5E5, #89DCEB);">&lt;</span><span style="color: light-dark(#8839EF, #CBA6F7);">u8</span><span style="color: light-dark(#04A5E5, #89DCEB);">&gt;</span><span style="color: light-dark(#04A5E5, #89DCEB);">&gt;</span><span style="color: light-dark(#7C7F93, #9399B2);">)</span><span style="color: light-dark(#179299, #94E2D5);"> -&gt;</span><span style="color: light-dark(#D20F39, #F38BA8);"> Self</span><span style="color: light-dark(#7C7F93, #9399B2);"> {</span></span>
+<span class="giallo-l"><span style="color: light-dark(#179299, #94E2D5);">        ...</span></span>
+<span class="giallo-l"><span style="color: light-dark(#7C7F93, #9399B2);">    }</span></span>
+<span class="giallo-l"><span style="color: light-dark(#7C7F93, #9399B2);">}</span></span></code></pre>
+<p>The user in this case would provide <code>Vec&lt;Vec&lt;u8&gt;&gt;</code>s for the expected reads and writes.
+Each inner <code>Vec&lt;u8&gt;</code> is one full command that is written or read
+and must include the terminator, if required.
+This also allows us to count the number of expected flushes of the instrument:
+Each time a full command is written, the instrument must be flushed.
+Thus, the number of counted flushes must agree with the length of <code>expected_writes</code>
+that is supplied when constructing a new <code>MockInterface</code>.</p>
+<p>To make the mock interface compatible with any instruments,
+we also need to implement the <code>std::io::Read</code> and <code>std::io::Write</code> traits.
+These implementations contain
+the error checking of expected read/write versus received read/write.</p>
+<p><strong>Mock errors</strong></p>
+<p>In order to provide excellent errors,
+<code>instrumentRs v0.2.0</code> provides a <code>MockError</code> type with nicely formatted messages.
+Below example shows a simplified version of <code>MockError</code>:</p>
+<pre class="giallo" style="color-scheme: light dark; color: light-dark(#4C4F69, #CDD6F4); background-color: light-dark(#EFF1F5, #1E1E2E);"><code data-lang="rust"><span class="giallo-l"><span style="color: light-dark(#8839EF, #CBA6F7);">pub</span><span style="color: light-dark(#8839EF, #CBA6F7);"> enum</span><span style="color: light-dark(#DF8E1D, #F9E2AF);font-style: italic;"> MockError</span><span style="color: light-dark(#7C7F93, #9399B2);"> {</span></span>
+<span class="giallo-l"><span style="color: light-dark(#DF8E1D, #F9E2AF);font-style: italic;">    UnexpectedWrite</span><span style="color: light-dark(#7C7F93, #9399B2);"> {</span></span>
+<span class="giallo-l"><span>        expected</span><span style="color: light-dark(#179299, #94E2D5);">:</span><span style="color: light-dark(#8839EF, #CBA6F7);"> u8</span><span style="color: light-dark(#7C7F93, #9399B2);">,</span></span>
+<span class="giallo-l"><span>        expected_char</span><span style="color: light-dark(#179299, #94E2D5);">:</span><span style="color: light-dark(#DF8E1D, #F9E2AF);font-style: italic;"> char</span><span style="color: light-dark(#7C7F93, #9399B2);">,</span></span>
+<span class="giallo-l"><span>        recieved</span><span style="color: light-dark(#179299, #94E2D5);">:</span><span style="color: light-dark(#8839EF, #CBA6F7);"> u8</span><span style="color: light-dark(#7C7F93, #9399B2);">,</span></span>
+<span class="giallo-l"><span>        received_char</span><span style="color: light-dark(#179299, #94E2D5);">:</span><span style="color: light-dark(#DF8E1D, #F9E2AF);font-style: italic;"> char</span><span style="color: light-dark(#7C7F93, #9399B2);">,</span></span>
+<span class="giallo-l"><span style="color: light-dark(#7C7F93, #9399B2);">    }</span><span style="color: light-dark(#7C7F93, #9399B2);">,</span></span>
+<span class="giallo-l"><span style="color: light-dark(#DF8E1D, #F9E2AF);font-style: italic;">    NoMoreReadData</span><span style="color: light-dark(#7C7F93, #9399B2);">,</span></span>
+<span class="giallo-l"><span style="color: light-dark(#DF8E1D, #F9E2AF);font-style: italic;">    NoMoreWriteData</span><span style="color: light-dark(#7C7F93, #9399B2);">,</span></span>
+<span class="giallo-l"><span style="color: light-dark(#7C7F93, #9399B2);">}</span></span></code></pre>
+<p>For clarity, all derives for <a rel="external" href="https://crates.io/crates/thiserror">thiserror</a> were omitted.
+These errors have implementations to turn them into <code>std::io::Error</code> types,
+a requirement to return them from the implementations of
+<code>std::io::Read</code> and <code>std::io::Write</code>.</p>
+<p>The <code>UnexpectedWrite</code> error triggers when a byte in the data written to the interface
+is not the same as the expected byte.
+The error message will provide the mismatching expected and received byte
+as a <code>u8</code> and as a <code>char</code>.</p>
+<p>The <code>NoMoreReadData</code> is emitted
+when the driver tries to read more data from the interface,
+but the <code>expected_read</code> data has already been fully read.
+This error will mainly trigger when working with instruments
+that do not read up to a terminator but rather read a defined number of bytes.</p>
+<p>The <code>NoMoreWriteData</code> error analogously will trigger
+when the driver tries to write more data to the interface
+than are expected from <code>expected_write</code>.</p>
+<p>Below, we show how to interact in a nice and helpful way with these errors.</p>
+<p><strong>Panics</strong></p>
+<p>For proper testing,
+we also want to make sure that all <code>expected_read</code> and <code>expected_write</code> bytes
+were used up during the test
+and that <code>flush</code> was called the appropriate amount of times during the test.
+Since we pass ownership of the mock interface to the instrument driver,
+we do not have access to it after the tests are finished
+to call some kind of <code>finalize()</code>
+function that checks for proper depletion and flushing.
+However, we can call such a <code>finalize()</code> check when the interface itself is dropped
+as following:</p>
+<pre class="giallo" style="color-scheme: light dark; color: light-dark(#4C4F69, #CDD6F4); background-color: light-dark(#EFF1F5, #1E1E2E);"><code data-lang="rust"><span class="giallo-l"><span style="color: light-dark(#8839EF, #CBA6F7);">impl</span><span style="color: light-dark(#DF8E1D, #F9E2AF);font-style: italic;"> Drop</span><span style="color: light-dark(#8839EF, #CBA6F7);"> for</span><span style="color: light-dark(#DF8E1D, #F9E2AF);font-style: italic;"> MockInterface</span><span style="color: light-dark(#7C7F93, #9399B2);"> {</span></span>
+<span class="giallo-l"><span style="color: light-dark(#8839EF, #CBA6F7);">    fn</span><span style="color: light-dark(#1E66F5, #89B4FA);font-style: italic;"> drop</span><span style="color: light-dark(#7C7F93, #9399B2);">(</span><span style="color: light-dark(#179299, #94E2D5);">&amp;</span><span style="color: light-dark(#8839EF, #CBA6F7);">mut</span><span style="color: light-dark(#D20F39, #F38BA8);"> self</span><span style="color: light-dark(#7C7F93, #9399B2);">)</span><span style="color: light-dark(#7C7F93, #9399B2);"> {</span></span>
+<span class="giallo-l"><span style="color: light-dark(#8839EF, #CBA6F7);">        if</span><span style="color: light-dark(#179299, #94E2D5);"> !</span><span style="color: light-dark(#DF8E1D, #F9E2AF);">thread</span><span style="color: light-dark(#179299, #94E2D5);">::</span><span style="color: light-dark(#1E66F5, #89B4FA);font-style: italic;">panicking</span><span style="color: light-dark(#7C7F93, #9399B2);">(</span><span style="color: light-dark(#7C7F93, #9399B2);">)</span><span style="color: light-dark(#7C7F93, #9399B2);"> {</span></span>
+<span class="giallo-l"><span style="color: light-dark(#D20F39, #F38BA8);">            self</span><span style="color: light-dark(#179299, #94E2D5);">.</span><span style="color: light-dark(#1E66F5, #89B4FA);font-style: italic;">finalize</span><span style="color: light-dark(#7C7F93, #9399B2);">(</span><span style="color: light-dark(#7C7F93, #9399B2);">)</span><span style="color: light-dark(#7C7F93, #9399B2);">;</span></span>
+<span class="giallo-l"><span style="color: light-dark(#7C7F93, #9399B2);">        }</span></span>
+<span class="giallo-l"><span style="color: light-dark(#7C7F93, #9399B2);">    }</span></span>
+<span class="giallo-l"><span style="color: light-dark(#7C7F93, #9399B2);">}</span></span></code></pre>
+<p>This will run the above mentioned checks and,
+if any of them fail,
+will panic.
+If the thread the test is running in has already panicked,
+we ignore these <code>finalize()</code> checks to let the user deal
+with one problem at a time.
+This also keeps the error/panic messages during testing neat.</p>
+<!-- markdownlint-disable MD026 -->
+<h3 id="the-driver-author-experience-matters">The driver author experience matters!</h3>
+<!-- markdownlint-enable MD026 -->
+<p>As demonstrated above, using using the <code>MockInterface</code> as it is defined is clunky
+and leads to code that is hard to read.
+Above examples have, e.g.,
+many <code>.as_bytes().to_vec()</code> statements.
+Let's make this more convenient!</p>
+<p>To set up an instrument test, e.g., using the <code>DigOutBox</code> driver
+as in the example above,
+the <code>smock!</code> (synchronous mock) macro is provided.
+This simplifies the test above to read the state of channel 2 to the following:</p>
+<pre class="giallo" style="color-scheme: light dark; color: light-dark(#4C4F69, #CDD6F4); background-color: light-dark(#EFF1F5, #1E1E2E);"><code data-lang="rust"><span class="giallo-l"><span style="color: light-dark(#8839EF, #CBA6F7);">static</span><span style="color: light-dark(#FE640B, #FAB387);"> TERM</span><span style="color: light-dark(#179299, #94E2D5);">:</span><span style="color: light-dark(#179299, #94E2D5);"> &amp;</span><span style="color: light-dark(#DF8E1D, #F9E2AF);font-style: italic;">str</span><span style="color: light-dark(#179299, #94E2D5);"> =</span><span style="color: light-dark(#40A02B, #A6E3A1);"> &quot;</span><span style="color: light-dark(#EA76CB, #F5C2E7);">\</span><span style="color: light-dark(#EA76CB, #F5C2E7);">n</span><span style="color: light-dark(#40A02B, #A6E3A1);">&quot;</span><span style="color: light-dark(#7C7F93, #9399B2);">;</span></span>
+<span class="giallo-l"></span>
+<span class="giallo-l"><span style="color: light-dark(#DF8E1D, #F9E2AF);font-style: italic;">#</span><span style="color: light-dark(#7C7F93, #9399B2);">[</span><span style="color: light-dark(#DF8E1D, #F9E2AF);font-style: italic;">test</span><span style="color: light-dark(#7C7F93, #9399B2);">]</span></span>
+<span class="giallo-l"><span style="color: light-dark(#8839EF, #CBA6F7);">fn</span><span style="color: light-dark(#1E66F5, #89B4FA);font-style: italic;"> read_channel2_macro</span><span style="color: light-dark(#7C7F93, #9399B2);">(</span><span style="color: light-dark(#7C7F93, #9399B2);">)</span><span style="color: light-dark(#7C7F93, #9399B2);"> {</span></span>
+<span class="giallo-l"><span style="color: light-dark(#8839EF, #CBA6F7);">    let</span><span> expected_writes</span><span style="color: light-dark(#179299, #94E2D5);"> =</span><span style="color: light-dark(#7C7F93, #9399B2);"> [</span><span style="color: light-dark(#40A02B, #A6E3A1);">&quot;</span><span style="color: light-dark(#40A02B, #A6E3A1);">DO2?</span><span style="color: light-dark(#40A02B, #A6E3A1);">&quot;</span><span style="color: light-dark(#7C7F93, #9399B2);">]</span><span style="color: light-dark(#7C7F93, #9399B2);">;</span></span>
+<span class="giallo-l"><span style="color: light-dark(#8839EF, #CBA6F7);">    let</span><span> expected_reads</span><span style="color: light-dark(#179299, #94E2D5);"> =</span><span style="color: light-dark(#7C7F93, #9399B2);"> [</span><span style="color: light-dark(#40A02B, #A6E3A1);">&quot;</span><span style="color: light-dark(#40A02B, #A6E3A1);">1</span><span style="color: light-dark(#40A02B, #A6E3A1);">&quot;</span><span style="color: light-dark(#7C7F93, #9399B2);">]</span><span style="color: light-dark(#7C7F93, #9399B2);">;</span></span>
+<span class="giallo-l"></span>
+<span class="giallo-l"><span style="color: light-dark(#8839EF, #CBA6F7);">    let</span><span style="color: light-dark(#8839EF, #CBA6F7);"> mut</span><span> inst</span><span style="color: light-dark(#179299, #94E2D5);"> =</span><span style="color: light-dark(#1E66F5, #89B4FA);font-style: italic;"> smock!</span><span style="color: light-dark(#7C7F93, #9399B2);">(</span><span style="color: light-dark(#DF8E1D, #F9E2AF);font-style: italic;">DigOutBox</span><span style="color: light-dark(#7C7F93, #9399B2);">,</span><span> expected_reads</span><span style="color: light-dark(#7C7F93, #9399B2);">,</span><span> expected_writes</span><span style="color: light-dark(#7C7F93, #9399B2);">,</span><span style="color: light-dark(#FE640B, #FAB387);"> TERM</span><span style="color: light-dark(#7C7F93, #9399B2);">)</span><span style="color: light-dark(#7C7F93, #9399B2);">;</span></span>
+<span class="giallo-l"></span>
+<span class="giallo-l"><span style="color: light-dark(#8839EF, #CBA6F7);">    let</span><span> ch2_state</span><span style="color: light-dark(#179299, #94E2D5);"> =</span><span> inst</span><span style="color: light-dark(#179299, #94E2D5);">.</span><span style="color: light-dark(#1E66F5, #89B4FA);font-style: italic;">channel</span><span style="color: light-dark(#7C7F93, #9399B2);">(</span><span style="color: light-dark(#FE640B, #FAB387);">2</span><span style="color: light-dark(#7C7F93, #9399B2);">)</span><span style="color: light-dark(#179299, #94E2D5);">.</span><span style="color: light-dark(#1E66F5, #89B4FA);font-style: italic;">unwrap</span><span style="color: light-dark(#7C7F93, #9399B2);">(</span><span style="color: light-dark(#7C7F93, #9399B2);">)</span><span style="color: light-dark(#179299, #94E2D5);">.</span><span style="color: light-dark(#1E66F5, #89B4FA);font-style: italic;">get_channel</span><span style="color: light-dark(#7C7F93, #9399B2);">(</span><span style="color: light-dark(#7C7F93, #9399B2);">)</span><span style="color: light-dark(#179299, #94E2D5);">.</span><span style="color: light-dark(#1E66F5, #89B4FA);font-style: italic;">unwrap</span><span style="color: light-dark(#7C7F93, #9399B2);">(</span><span style="color: light-dark(#7C7F93, #9399B2);">)</span><span style="color: light-dark(#7C7F93, #9399B2);">;</span></span>
+<span class="giallo-l"><span style="color: light-dark(#DF8E1D, #F9E2AF);">    std</span><span style="color: light-dark(#179299, #94E2D5);">::</span><span style="color: light-dark(#1E66F5, #89B4FA);font-style: italic;">assert_matches!</span><span style="color: light-dark(#7C7F93, #9399B2);">(</span><span>ch2_state</span><span style="color: light-dark(#7C7F93, #9399B2);">,</span><span style="color: light-dark(#DF8E1D, #F9E2AF);font-style: italic;"> Channel</span><span style="color: light-dark(#179299, #94E2D5);">::</span><span style="color: light-dark(#DF8E1D, #F9E2AF);font-style: italic;">On</span><span style="color: light-dark(#7C7F93, #9399B2);">)</span><span style="color: light-dark(#7C7F93, #9399B2);">;</span></span>
+<span class="giallo-l"><span style="color: light-dark(#7C7F93, #9399B2);">}</span></span></code></pre>
+<p>We first statically define the terminator since we will use it for all tests.
+The <code>smock!</code> macro then takes the following arguments:</p>
+<ol>
+<li>The instrument driver itself,
+which has, since it is an <code>instrumentRs</code> driver,
+a well defined constructor.</li>
+<li>The values we expect to read from the device.
+These values can be provided in any iterable list of types
+that are compatible with the <a href="/blog/07-instrumentrs2/#transport">Writable trait</a>.</li>
+<li>The values we expect to write to the instrument.
+Again, any iterable list of values compatible with the
+<a href="/blog/07-instrumentrs2/#transport">Writable trait</a> are allowed.</li>
+<li>(Optional:) The terminator, which must also simply be compatible
+with the <a href="/blog/07-instrumentrs2/#transport">Writable trait</a>.
+If a terminator is given, its byte(s) representation will be automatically appended
+to each expected read and write.</li>
+</ol>
+<p>The <code>smock!</code> macro then returns the instrument itself loaded with the mock interface.
+This structure allows us to define expected reads and writes
+in an easy to understand form
+and create an instance of the instrument
+that is loaded with an adequate (synchronous) mock interface.</p>
+<p>One more issue to address here is the simple unwrapping of the result.
+While generally fine for a test,
+it is not the most convenient way to debug failing tests.
+Since the <code>MockInterface</code> must return <code>std::io::Error</code> types,
+unwrapping a test error returns an error message that is not very pretty.
+For example, if we change the expected write above to <code>"DOut2?"</code>,
+we would get the following output when running with <code>cargo test</code>:</p>
+<p><img src="/assets/08/unwrapping.png" alt="Error message in test when simply unwrapping a result" /></p>
+<p>Even if you terminal window is wider,
+this is an ugly error message.</p>
+<p>We thus provide a second macro to unwrap mock errors in a pretty fashion.
+The whole failing test would then turns into this:</p>
+<pre class="giallo" style="color-scheme: light dark; color: light-dark(#4C4F69, #CDD6F4); background-color: light-dark(#EFF1F5, #1E1E2E);"><code data-lang="rust"><span class="giallo-l"><span style="color: light-dark(#8839EF, #CBA6F7);">static</span><span style="color: light-dark(#FE640B, #FAB387);"> TERM</span><span style="color: light-dark(#179299, #94E2D5);">:</span><span style="color: light-dark(#179299, #94E2D5);"> &amp;</span><span style="color: light-dark(#DF8E1D, #F9E2AF);font-style: italic;">str</span><span style="color: light-dark(#179299, #94E2D5);"> =</span><span style="color: light-dark(#40A02B, #A6E3A1);"> &quot;</span><span style="color: light-dark(#EA76CB, #F5C2E7);">\</span><span style="color: light-dark(#EA76CB, #F5C2E7);">n</span><span style="color: light-dark(#40A02B, #A6E3A1);">&quot;</span><span style="color: light-dark(#7C7F93, #9399B2);">;</span></span>
+<span class="giallo-l"></span>
+<span class="giallo-l"><span style="color: light-dark(#DF8E1D, #F9E2AF);font-style: italic;">#</span><span style="color: light-dark(#7C7F93, #9399B2);">[</span><span style="color: light-dark(#DF8E1D, #F9E2AF);font-style: italic;">test</span><span style="color: light-dark(#7C7F93, #9399B2);">]</span></span>
+<span class="giallo-l"><span style="color: light-dark(#8839EF, #CBA6F7);">fn</span><span style="color: light-dark(#1E66F5, #89B4FA);font-style: italic;"> read_channel2_macro_pretty</span><span style="color: light-dark(#7C7F93, #9399B2);">(</span><span style="color: light-dark(#7C7F93, #9399B2);">)</span><span style="color: light-dark(#7C7F93, #9399B2);"> {</span></span>
+<span class="giallo-l"><span style="color: light-dark(#8839EF, #CBA6F7);">    let</span><span> expected_writes</span><span style="color: light-dark(#179299, #94E2D5);"> =</span><span style="color: light-dark(#7C7F93, #9399B2);"> [</span><span style="color: light-dark(#40A02B, #A6E3A1);">&quot;</span><span style="color: light-dark(#40A02B, #A6E3A1);">DOut2?</span><span style="color: light-dark(#40A02B, #A6E3A1);">&quot;</span><span style="color: light-dark(#7C7F93, #9399B2);">]</span><span style="color: light-dark(#7C7F93, #9399B2);">;</span></span>
+<span class="giallo-l"><span style="color: light-dark(#8839EF, #CBA6F7);">    let</span><span> expected_reads</span><span style="color: light-dark(#179299, #94E2D5);"> =</span><span style="color: light-dark(#7C7F93, #9399B2);"> [</span><span style="color: light-dark(#40A02B, #A6E3A1);">&quot;</span><span style="color: light-dark(#40A02B, #A6E3A1);">1</span><span style="color: light-dark(#40A02B, #A6E3A1);">&quot;</span><span style="color: light-dark(#7C7F93, #9399B2);">]</span><span style="color: light-dark(#7C7F93, #9399B2);">;</span></span>
+<span class="giallo-l"></span>
+<span class="giallo-l"><span style="color: light-dark(#8839EF, #CBA6F7);">    let</span><span style="color: light-dark(#8839EF, #CBA6F7);"> mut</span><span> inst</span><span style="color: light-dark(#179299, #94E2D5);"> =</span><span style="color: light-dark(#1E66F5, #89B4FA);font-style: italic;"> smock!</span><span style="color: light-dark(#7C7F93, #9399B2);">(</span><span style="color: light-dark(#DF8E1D, #F9E2AF);font-style: italic;">DigOutBox</span><span style="color: light-dark(#7C7F93, #9399B2);">,</span><span> expected_reads</span><span style="color: light-dark(#7C7F93, #9399B2);">,</span><span> expected_writes</span><span style="color: light-dark(#7C7F93, #9399B2);">,</span><span style="color: light-dark(#FE640B, #FAB387);"> TERM</span><span style="color: light-dark(#7C7F93, #9399B2);">)</span><span style="color: light-dark(#7C7F93, #9399B2);">;</span></span>
+<span class="giallo-l"></span>
+<span class="giallo-l"><span style="color: light-dark(#8839EF, #CBA6F7);">    let</span><span> ch2_state</span><span style="color: light-dark(#179299, #94E2D5);"> =</span><span style="color: light-dark(#1E66F5, #89B4FA);font-style: italic;"> u!</span><span style="color: light-dark(#7C7F93, #9399B2);">(</span><span>inst</span><span style="color: light-dark(#179299, #94E2D5);">.</span><span style="color: light-dark(#1E66F5, #89B4FA);font-style: italic;">channel</span><span style="color: light-dark(#7C7F93, #9399B2);">(</span><span style="color: light-dark(#FE640B, #FAB387);">2</span><span style="color: light-dark(#7C7F93, #9399B2);">)</span><span style="color: light-dark(#179299, #94E2D5);">.</span><span style="color: light-dark(#1E66F5, #89B4FA);font-style: italic;">unwrap</span><span style="color: light-dark(#7C7F93, #9399B2);">(</span><span style="color: light-dark(#7C7F93, #9399B2);">)</span><span style="color: light-dark(#179299, #94E2D5);">.</span><span style="color: light-dark(#1E66F5, #89B4FA);font-style: italic;">get_channel</span><span style="color: light-dark(#7C7F93, #9399B2);">(</span><span style="color: light-dark(#7C7F93, #9399B2);">)</span><span style="color: light-dark(#7C7F93, #9399B2);">)</span><span style="color: light-dark(#7C7F93, #9399B2);">;</span></span>
+<span class="giallo-l"><span style="color: light-dark(#DF8E1D, #F9E2AF);">    std</span><span style="color: light-dark(#179299, #94E2D5);">::</span><span style="color: light-dark(#1E66F5, #89B4FA);font-style: italic;">assert_matches!</span><span style="color: light-dark(#7C7F93, #9399B2);">(</span><span>ch2_state</span><span style="color: light-dark(#7C7F93, #9399B2);">,</span><span style="color: light-dark(#DF8E1D, #F9E2AF);font-style: italic;"> Channel</span><span style="color: light-dark(#179299, #94E2D5);">::</span><span style="color: light-dark(#DF8E1D, #F9E2AF);font-style: italic;">On</span><span style="color: light-dark(#7C7F93, #9399B2);">)</span><span style="color: light-dark(#7C7F93, #9399B2);">;</span></span>
+<span class="giallo-l"><span style="color: light-dark(#7C7F93, #9399B2);">}</span></span></code></pre>
+<p>The <code>u!</code> macro simply matches on the result.
+If the result is <code>Ok(inner)</code>, <code>inner</code> is returned.
+If the result is however an <code>Err(e)</code>,
+the error message <code>e</code> is formatted colorful
+using <a rel="external" href="https://crates.io/crates/termcolor">termcolor</a> and then printed to <code>stderr</code>.
+After printing the macro panics to abort the test.
+The terminal output now looks like this:</p>
+<p><img src="/assets/08/u_macro.png" alt="Error message when using the provided u! macro instead of unwrapping results." /></p>
+<p>The error message is now nicely formatted:</p>
+<ul>
+<li>The error type itself is shown in bold red.</li>
+<li>The "expected byte" line, showing the expected byte and its character representation,
+is printed in blue, as it is likely the "good" value.</li>
+<li>The "received byte", showing the received byte and its character representation,
+is printed in yellow, as it is likely the "bad" value.</li>
+<li>The subsequent panic message indicates the proper line
+in which the test failed and adequately states so.</li>
+</ul>
+<p>For driver authors that can, for some reason or another,
+not display colorful terminal output,
+a <code>uplain!</code> macro is also provided that does the same formatting,
+however, does not color the output.</p>
+<p>Note that the <a rel="external" href="https://crates.io/crates/termcolor">termcolor</a> crate is of course only a dependency
+when the "mock-interface" feature is activated.
+Thus, this dependency will not be forwarded to the end user
+as it is only necessary for testing/development.</p>
+<h3 id="testing-the-mock-interface">Testing the mock interface</h3>
+<p>In order to ensure that the mock interface is indeed doing what we want it to do,
+two mock instruments (enough with the mocking already!)
+were created that interact either with <code>&amp;str</code>/<code>String</code> or with <code>&amp;[u8]</code>/<code>Vec&lt;u8&gt;</code>
+for the <code>W</code>/<code>WR</code> types used in the <a href="/blog/07-instrumentrs2/#transport">transport module</a>.
+These integration tests allow us to keep the mock interface itself tested
+such that the correct error messages get returned
+and ensure that the mock interface itself keeps on working.</p>
+<h2 id="what-errors-did-i-find">What errors did I find?</h2>
+<p>After writing the mock interface and writing a few tests for <a rel="external" href="https://github.com/galactic-forensics/digoutbox">DigOutBox</a>,
+I quickly discovered the following two errors in the previous version
+of my example driver:</p>
+<ul>
+<li>The number of flushes were in fact incorrect.
+The interface was at times flushed twice after a write.</li>
+<li>The terminator was appended twice
+when sending certain commands to the instrument.</li>
+</ul>
+<p>When testing the mock interface itself,
+I also found an error in how the read index advanced
+when writing tests where no terminator is sent,
+but an exact number of bytes is read.</p>
+<p>Even if not getting/setting all properties of an instrument are tested,
+a few tests can really smoke out errors in how the transport is implemented!
+In case you needed it,
+how I found my own bugs shows once more how valuable tests are.</p>
+<h2 id="next-steps-for-instrumentrs-v0-2-0">Next steps for <code>instrumentRs v0.2.0</code></h2>
+<p>So what is next for <code>instrumentRs</code>?
+The <a href="/blog/07-instrumentrs2#next-steps">previous next steps</a> still apply,
+however, error handling and the creation of a mock interface
+are finished for now.
+I anticipate to next work on implementing <code>asycn</code> support
+and, once worked out, write another blogpost about it.
+The longer term outlook remains the same as published
+in the <a href="/blog/07-instrumentrs2#next-steps">previous next steps</a> section.</p>
+<h2 id="comments-questions-ideas">Comments, questions, ideas?</h2>
+<p>As always, if you have comments or questions,
+please get in touch with me.
+You can do so via <a rel="external" href="https://github.com/trappitsch/instrumentrs2">instrumentRs2 on GitHub</a>,
+<a href="mailto:reto@galactic-forensics.space">e-mail</a>,
+<a rel="external" href="https://bsky.app/profile/galactic-forensics.space">Bluesky</a>,
+or <a rel="external" href="https://matrix.to/@trappits:epfl.ch#/@trappits:epfl.ch">Matrix</a>.
+I'm excited to hear your thoughts and ideas!</p>
+
+  </div>
+  
+
+  <footer class="post-footer">
+      
+      <ul class="post-tags">
+          
+          
+          <li><a href="https:&#x2F;&#x2F;blog.galactic-forensics.space&#x2F;tags&#x2F;rust&#x2F;">Rust</a></li>
+          
+          
+          <li><a href="https:&#x2F;&#x2F;blog.galactic-forensics.space&#x2F;tags&#x2F;instrumentrs&#x2F;">instrumentRs</a></li>
+          
+      </ul>
+      
+
+    
+    
+
+
+<nav class="paginav">
+    
+    <a class="prev" href="https:&#x2F;&#x2F;blog.galactic-forensics.space&#x2F;blog&#x2F;07-instrumentrs2&#x2F;">
+        <span class="title">« Prev</span>
+        <br>
+        <span>instrumentRs v0.2.0 design ideas</span>
+    </a>
+    
+    
+    <a class="next" href="https:&#x2F;&#x2F;blog.galactic-forensics.space&#x2F;blog&#x2F;09-instrumentrs2-lakeshore336&#x2F;">
+        <span class="title">Next »</span>
+        <br>
+        <span>Lakeshore 336 Temperature Controller Driver with instrumentRs v0.2.0</span>
+    </a>
+    
+</nav>
+
+    
+  </footer>
+
+</article>
+
+</main>
+
+<footer class="footer">
+  <div class="footer-credits">
+    
+    <span>&copy; 2026 <a href="https:&#x2F;&#x2F;blog.galactic-forensics.space">trappitsch</a></span>
+    
+    <span>
+        Powered by
+        <a href="https://www.getzola.org/" rel="noopener noreferrer" target="_blank">Zola</a> &
+        <a href="https://github.com/edwardzcn-decade/cela" rel="noopener" target="_blank">Cela</a>
+    </span>
+  </div>
+  <div class="footer-scheme">
+    <select id="scheme-select" title="Color scheme" aria-label="Color scheme">
+      <option value="catppuccin-latte">Latte</option>
+      <option value="catppuccin-macchiato">Macchiato</option>
+      <option value="rose-pine">Rosé Pine</option>
+      <option value="nord">Nord</option>
+    </select>
+  </div>
+</footer>
+
+
+<a href="#top" aria-label="go to top" title="Go to Top (Alt + G)" class="top-link" id="top-link" accesskey="g">
+  <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 12 6" fill="currentColor">
+      <path d="M12 6H0l6-6z" />
+  </svg>
+</a>
+
+
+
+
+
+
+
+
+<div id="search-toggle-box" class="hidden">
+  <div class="search-toggle-modal">
+    <input type="text" id="search-toggle-input" placeholder="Type to search..." />
+    <button id="search-toggle-button">Search</button>
+  </div>
+</div>
+
+
+
+<script src="https://blog.galactic-forensics.space/js/site-ui.js"></script>
+<script src="https://blog.galactic-forensics.space/js/search-ui.js"></script>
+<script src="https://blog.galactic-forensics.space/js/home-effects.js"></script>
+
+
+</body>
+
+</html>

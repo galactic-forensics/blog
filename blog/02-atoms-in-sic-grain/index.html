@@ -1,0 +1,603 @@
+<!DOCTYPE html>
+<html lang="en" dir="ltr">
+
+<head>
+<meta charset="utf-8">
+<meta http-equiv="X-UA-Compatible" content="IE=edge">
+<meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
+<meta name="robots" content="index, follow">
+
+
+
+
+<title>The number of atoms in a SiC stardust grain</title>
+
+
+
+
+
+<meta name="keywords" content="Stardust, Python">
+
+
+
+
+<meta name="description" content="Thoughts and ideas...">
+
+
+
+<meta name="author" content="trappitsch">
+
+
+
+
+
+
+
+  <link rel="canonical" href="https:&#x2F;&#x2F;blog.galactic-forensics.space&#x2F;blog&#x2F;02-atoms-in-sic-grain&#x2F;">
+
+
+<link rel="stylesheet" href="https://blog.galactic-forensics.space/css/theme-runtime.css">
+<link rel="stylesheet" href="https://blog.galactic-forensics.space/css/theme.css">
+<link rel="icon" href="https://blog.galactic-forensics.space/favicon.ico">
+<link rel="icon" type="image/png" sizes="16x16" href="https://blog.galactic-forensics.space/favicon-16x16.png">
+<link rel="icon" type="image/png" sizes="32x32" href="https://blog.galactic-forensics.space/favicon-32x32.png">
+<link rel="apple-touch-icon" href="https://blog.galactic-forensics.space/apple-touch-icon.png">
+<meta name="theme-color" content="#2e2e33">
+<meta name="msapplication-TileColor" content="#2e2e33">
+
+
+
+<link rel="alternate" type="application/atom+xml" title="RSS" href="https://blog.galactic-forensics.space/atom.xml">
+
+
+
+<noscript>
+    <style>
+        #theme-toggle,
+        .top-link {
+            display: none;
+        }
+    </style>
+    
+    <style>
+        @media (prefers-color-scheme: dark) {
+            :root {
+                --theme-bg: rgb(24, 25, 38);
+                --surface-bg: rgb(36, 39, 58);
+                --surface-muted: rgb(54, 58, 79);
+                --surface-strong: rgb(68, 71, 90);
+                --text-main: rgb(202, 211, 245);
+                --text-muted: rgb(165, 173, 203);
+                --content-text: rgb(184, 192, 224);
+                --highlight-bg: rgb(54, 58, 79);
+                --code-bg: rgb(30, 32, 48);
+                --border-color: rgb(68, 71, 90);
+                --accent-color: rgb(138, 173, 244);
+                --accent-strong: rgb(125, 196, 228);
+                --accent-soft: rgba(138, 173, 244, 0.18);
+                --focus-ring: rgba(138, 173, 244, 0.32);
+                --overlay-backdrop: rgba(17, 17, 27, 0.72);
+                --hero-glow: radial-gradient(circle at top, rgba(138, 173, 244, 0.18), transparent 55%);
+            }
+
+            .list {
+                background: var(--theme-bg);
+            }
+
+            .list:not(.dark)::-webkit-scrollbar-track {
+                background: 0 0;
+            }
+
+            .list:not(.dark)::-webkit-scrollbar-thumb {
+                border-color: var(--theme-bg);
+            }
+        }
+
+    </style>
+    
+</noscript>
+
+
+  
+  <script>
+    window.MathJax = {
+      tex: {
+        inlineMath: [['$', '$'], ['\\(', '\\)']],
+        displayMath: [['$$', '$$'], ['\\[', '\\]']]
+      },
+      options: {
+        ignoreHtmlClass: "no-mathjax",
+        processHtmlClass: "mathjax"
+      }
+    };
+  </script>
+  <script async src="https://cdn.jsdelivr.net/npm/mathjax@3/es5/tex-mml-chtml.js"></script>
+  
+
+
+<link rel="stylesheet" href="https://blog.galactic-forensics.space/css/code-theme-overrides.css">
+
+</head>
+
+<body
+class=""
+id="top"
+data-show-code-copy-buttons="true"
+data-show-theme-toggle="true"
+data-remember-choice="true"
+data-search-page-url="https://blog.galactic-forensics.space/search"
+data-search-index-json-url="https://blog.galactic-forensics.space/search_index.en.json"
+data-search-index-js-url="https://blog.galactic-forensics.space/search_index.en.js">
+<script>document.documentElement.classList.add("js");</script>
+<script>
+  (function () {
+    var scheme;
+    var darkSchemes = ["catppuccin-macchiato", "rose-pine", "nord"];
+    scheme = localStorage.getItem("pref-scheme");
+    if (!scheme) {
+      scheme = "catppuccin-macchiato";
+      }
+    document.documentElement.setAttribute("data-scheme", scheme);
+    if (darkSchemes.indexOf(scheme) !== -1) {
+      document.documentElement.classList.add("dark");
+      document.body.classList.add("dark");
+    }
+    localStorage.setItem("pref-scheme", scheme);
+    })();
+</script>
+<header class="header">
+  <nav class="nav">
+    <div class="logo">
+      <a
+        href="https:&#x2F;&#x2F;blog.galactic-forensics.space"
+        accesskey="h"
+        title="Mind Bytes (Alt + H)"
+      >
+        
+        
+      </a>
+      <div class="logo-switches">
+        <button id="theme-toggle" accesskey="t" title="(Alt + T)">
+          <svg
+            id="moon"
+            xmlns="http://www.w3.org/2000/svg"
+            width="24"
+            height="18"
+            viewBox="0 0 24 24"
+            fill="none"
+            stroke="currentColor"
+            stroke-width="2"
+            stroke-linecap="round"
+            stroke-linejoin="round"
+          >
+            <path d="M21 12.79A9 9 0 1 1 11.21 3 7 7 0 0 0 21 12.79z"></path>
+          </svg>
+          <svg
+            id="sun"
+            xmlns="http://www.w3.org/2000/svg"
+            width="24"
+            height="18"
+            viewBox="0 0 24 24"
+            fill="none"
+            stroke="currentColor"
+            stroke-width="2"
+            stroke-linecap="round"
+            stroke-linejoin="round"
+          >
+            <circle cx="12" cy="12" r="5"></circle>
+            <line x1="12" y1="1" x2="12" y2="3"></line>
+            <line x1="12" y1="21" x2="12" y2="23"></line>
+            <line x1="4.22" y1="4.22" x2="5.64" y2="5.64"></line>
+            <line x1="18.36" y1="18.36" x2="19.78" y2="19.78"></line>
+            <line x1="1" y1="12" x2="3" y2="12"></line>
+            <line x1="21" y1="12" x2="23" y2="12"></line>
+            <line x1="4.22" y1="19.78" x2="5.64" y2="18.36"></line>
+            <line x1="18.36" y1="5.64" x2="19.78" y2="4.22"></line>
+          </svg>
+        </button>
+        
+        
+      </div>
+    </div>
+    
+    <ul id="menu">
+      
+        
+        
+        
+        
+        
+        
+          
+        
+
+        
+        
+        
+        
+        
+      <li>
+        <a href="https:&#x2F;&#x2F;blog.galactic-forensics.space" title="Home"
+          
+          >
+          <span>Home</span></a>
+      </li>
+      
+        
+        
+        
+        
+        
+        
+          
+
+          
+          
+            
+            
+              
+            
+          
+            
+            
+          
+
+          
+            
+            
+            
+              
+            
+          
+        
+
+        
+        
+        
+        
+        
+      <li>
+        <a href="https:&#x2F;&#x2F;blog.galactic-forensics.space&#x2F;tags&#x2F;" title="Tags"
+          
+          >
+          <span>Tags</span></a>
+      </li>
+      
+        
+        
+        
+        
+        
+        
+          
+
+          
+          
+            
+            
+          
+            
+            
+              
+            
+          
+
+          
+            
+            
+            
+              
+            
+          
+        
+
+        
+        
+        
+        
+        
+      <li>
+        <a href="https:&#x2F;&#x2F;blog.galactic-forensics.space&#x2F;categories&#x2F;" title="Categories"
+          
+          >
+          <span>Categories</span></a>
+      </li>
+      
+        
+        
+        
+        
+        
+        
+          
+        
+
+        
+        
+        
+        
+        
+      <li>
+        <a href="#" title="Search"
+          data-search-toggle="true"
+          >
+          <span>Search</span></a>
+      </li>
+      
+    </ul>
+    
+  </nav>
+</header>
+
+<main class="main">
+
+
+
+
+
+
+
+
+
+<article class="post-single">
+  <header class="post-header">
+      <nav class="breadcrumbs" aria-label="breadcrumb">
+          <a href="https://blog.galactic-forensics.space">Home</a>&nbsp;»&nbsp;
+          
+          <a href="https:&#x2F;&#x2F;blog.galactic-forensics.space&#x2F;blog&#x2F;">Posts</a>&nbsp;»&nbsp;
+          
+          <a href="https:&#x2F;&#x2F;blog.galactic-forensics.space&#x2F;blog&#x2F;02-atoms-in-sic-grain&#x2F;">The number of atoms in a SiC stardust grain</a>
+      </nav>
+      <h1 class="post-title">The number of atoms in a SiC stardust grain</h1>
+      
+      
+      <div class="post-meta">
+      
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+<span title="2022-03-26 00:00:00 +0000">2022-03-26</span>&nbsp;·&nbsp;3 min&nbsp;·&nbsp;588 words&nbsp;·&nbsp;trappitsch
+
+      
+      </div>
+      
+  </header>
+
+  
+  
+
+<div class="toc">
+  <details >
+    <summary accesskey="c" title="(Alt + C)">
+      <span class="details">Table of Contents</span>
+    </summary>
+
+    <div class="inner">
+      <ul>
+        
+        <li>
+          <a href="#calculation" aria-label="Calculation">Calculation</a>
+          
+        </li>
+        
+        <li>
+          <a href="#examples" aria-label="Examples">Examples</a>
+          
+          <ul>
+            
+            <li>
+              <a href="#example-1" aria-label="Example 1">Example 1</a>
+              
+            </li>
+            
+            <li>
+              <a href="#example-2" aria-label="Example 2">Example 2</a>
+              
+            </li>
+            
+          </ul>
+          
+        </li>
+        
+      </ul>
+    </div>
+  </details>
+</div>
+
+  
+
+  
+  <div class="post-content">
+      <p>Let's calculate how many atoms are in a SiC stardust grain and use python to do so!</p>
+<span id="continue-reading"></span>
+<p>In this article, we will analyze how many atoms of a given trace element are in a presolar SiC grain of a given size. Furthermore, the Jupyter notebook in which this article was written is available via <a rel="external" href="https://mybinder.org/"><code>binder</code></a>, so you can adjust it at any point to change the calculations and adopt it to your needs. Click on the icon at the bottom to run this notebook in <a rel="external" href="https://mybinder.org/"><code>binder</code></a>. Throughout this notebook we will be using SI units.</p>
+<h1 id="calculation">Calculation</h1>
+<p>First, let us calculate the mass of a given SiC grain. We therefore need to define its radius $r$ and it's typical density $\rho = 3160\,$kg m$^{-3}$ (according to <a rel="external" href="https://en.wikipedia.org/wiki/Silicon_carbide">Wikipedia</a>). Via the volume $V$ for a spherical grain</p>
+<p>\begin{equation}
+V = \frac{4}{3} \pi r^3,
+\end{equation}</p>
+<p>we can calculate the mass of the grain as:</p>
+<p>\begin{equation}
+m = V\rho = \frac{4}{3} \pi r^3 \rho
+\end{equation}</p>
+<p>For a given radius, we can now write a <code>python</code> function to calculate the mass as following:</p>
+<pre class="giallo" style="color-scheme: light dark; color: light-dark(#4C4F69, #CDD6F4); background-color: light-dark(#EFF1F5, #1E1E2E);"><code data-lang="python"><span class="giallo-l"><span style="color: light-dark(#8839EF, #CBA6F7);">import</span><span> math</span></span>
+<span class="giallo-l"></span>
+<span class="giallo-l"><span>rho</span><span style="color: light-dark(#179299, #94E2D5);"> =</span><span style="color: light-dark(#FE640B, #FAB387);"> 3160</span><span style="color: light-dark(#7C7F93, #9399B2);font-style: italic;">  #</span><span style="color: light-dark(#7C7F93, #9399B2);font-style: italic;"> kg / m**3</span></span>
+<span class="giallo-l"><span style="color: light-dark(#8839EF, #CBA6F7);">def</span><span style="color: light-dark(#1E66F5, #89B4FA);font-style: italic;"> mass</span><span style="color: light-dark(#7C7F93, #9399B2);">(</span><span style="color: light-dark(#E64553, #EBA0AC);font-style: italic;">r</span><span style="color: light-dark(#7C7F93, #9399B2);">:</span><span style="color: light-dark(#8839EF, #CBA6F7);font-style: italic;"> float</span><span style="color: light-dark(#7C7F93, #9399B2);">)</span><span style="color: light-dark(#7C7F93, #9399B2);"> -&gt;</span><span style="color: light-dark(#8839EF, #CBA6F7);font-style: italic;"> float</span><span style="color: light-dark(#7C7F93, #9399B2);">:</span></span>
+<span class="giallo-l"><span style="color: light-dark(#40A02B, #A6E3A1);">    &quot;&quot;&quot;</span><span style="color: light-dark(#40A02B, #A6E3A1);">Calculate mass of spherical grain with density `rho`.</span></span>
+<span class="giallo-l"><span style="color: light-dark(#40A02B, #A6E3A1);">    </span></span>
+<span class="giallo-l"><span style="color: light-dark(#40A02B, #A6E3A1);">    :param r: Radius in meters</span></span>
+<span class="giallo-l"><span style="color: light-dark(#40A02B, #A6E3A1);">    </span></span>
+<span class="giallo-l"><span style="color: light-dark(#40A02B, #A6E3A1);">    :return: Mass in kg</span></span>
+<span class="giallo-l"><span style="color: light-dark(#40A02B, #A6E3A1);">    &quot;&quot;&quot;</span></span>
+<span class="giallo-l"><span style="color: light-dark(#8839EF, #CBA6F7);">    return</span><span style="color: light-dark(#FE640B, #FAB387);"> 4</span><span style="color: light-dark(#179299, #94E2D5);">/</span><span style="color: light-dark(#FE640B, #FAB387);">3</span><span style="color: light-dark(#179299, #94E2D5);"> *</span><span> math</span><span style="color: light-dark(#7C7F93, #9399B2);">.</span><span>pi</span><span style="color: light-dark(#179299, #94E2D5);"> *</span><span> r</span><span style="color: light-dark(#179299, #94E2D5);">**</span><span style="color: light-dark(#FE640B, #FAB387);">3</span><span style="color: light-dark(#179299, #94E2D5);"> *</span><span> rho</span></span></code></pre>
+<p>The approximate molar mass of SiC is the molar mass of a silicon atom plus the molar mass of a carbon atom, therefore $M_\mathrm{SiC} = 40\,$g mol$^{-1}$. Let us assume we have some trace element, e.g., iron, given at a concentration of 10 ppm. If the concentration is by weight $c_{wt}$, we can directly calculate the mass of all the iron as:</p>
+<p>\begin{equation}
+m_\mathrm{Fe} = c_{wt} \times m
+\end{equation}</p>
+<p>If the concentration is given by number of atoms $c_n$, we first have to convert it first in order to calculate the mass of iron of the grain. For this, we need to know the molar mass of iron, which is approximately $M_\mathrm{Fe} = 56\,$g mol$^{-1}$. The mass of iron can in this case be calculated as:</p>
+<p>\begin{equation}
+m_\mathrm{Fe} = c_n \frac{M_\mathrm{Fe}}{M_\mathrm{SiC}} \times m
+\end{equation}</p>
+<p>Let us now calculate the mass of the species of interest with <code>python</code>:</p>
+<pre class="giallo" style="color-scheme: light dark; color: light-dark(#4C4F69, #CDD6F4); background-color: light-dark(#EFF1F5, #1E1E2E);"><code data-lang="python"><span class="giallo-l"><span>molar_mass_sic</span><span style="color: light-dark(#179299, #94E2D5);"> =</span><span style="color: light-dark(#FE640B, #FAB387);"> 40</span><span style="color: light-dark(#179299, #94E2D5);"> *</span><span style="color: light-dark(#FE640B, #FAB387);"> 1e-3</span><span style="color: light-dark(#7C7F93, #9399B2);font-style: italic;">  #</span><span style="color: light-dark(#7C7F93, #9399B2);font-style: italic;"> kg / mol</span></span>
+<span class="giallo-l"></span>
+<span class="giallo-l"><span style="color: light-dark(#7C7F93, #9399B2);font-style: italic;">#</span><span style="color: light-dark(#7C7F93, #9399B2);font-style: italic;"> calculate mass of a species of interest</span></span>
+<span class="giallo-l"><span style="color: light-dark(#8839EF, #CBA6F7);">def</span><span style="color: light-dark(#1E66F5, #89B4FA);font-style: italic;"> mass_species</span><span style="color: light-dark(#7C7F93, #9399B2);">(</span><span style="color: light-dark(#E64553, #EBA0AC);font-style: italic;">r</span><span style="color: light-dark(#7C7F93, #9399B2);">:</span><span style="color: light-dark(#8839EF, #CBA6F7);font-style: italic;"> float</span><span style="color: light-dark(#7C7F93, #9399B2);">,</span><span style="color: light-dark(#E64553, #EBA0AC);font-style: italic;"> mol_mass</span><span style="color: light-dark(#7C7F93, #9399B2);">:</span><span style="color: light-dark(#8839EF, #CBA6F7);font-style: italic;"> float</span><span style="color: light-dark(#7C7F93, #9399B2);">,</span><span style="color: light-dark(#E64553, #EBA0AC);font-style: italic;"> conc</span><span style="color: light-dark(#7C7F93, #9399B2);">:</span><span style="color: light-dark(#8839EF, #CBA6F7);font-style: italic;"> float</span><span style="color: light-dark(#7C7F93, #9399B2);">,</span><span style="color: light-dark(#E64553, #EBA0AC);font-style: italic;"> conc_as_weight</span><span style="color: light-dark(#7C7F93, #9399B2);">:</span><span style="color: light-dark(#8839EF, #CBA6F7);font-style: italic;"> bool</span><span style="color: light-dark(#7C7F93, #9399B2);">)</span><span style="color: light-dark(#7C7F93, #9399B2);"> -&gt;</span><span style="color: light-dark(#8839EF, #CBA6F7);font-style: italic;"> float</span><span style="color: light-dark(#7C7F93, #9399B2);">:</span></span>
+<span class="giallo-l"><span style="color: light-dark(#40A02B, #A6E3A1);">    &quot;&quot;&quot;</span><span style="color: light-dark(#40A02B, #A6E3A1);">Calculate mass of the given species in a SiC grain.</span></span>
+<span class="giallo-l"><span style="color: light-dark(#40A02B, #A6E3A1);">    </span></span>
+<span class="giallo-l"><span style="color: light-dark(#40A02B, #A6E3A1);">    :param r: Radius of the SiC grain in m.</span></span>
+<span class="giallo-l"><span style="color: light-dark(#40A02B, #A6E3A1);">    :param mol_mass: Molar mass of the species of interest in kg / mol.</span></span>
+<span class="giallo-l"><span style="color: light-dark(#40A02B, #A6E3A1);">    :param conc: Concentration of the species of interest.</span></span>
+<span class="giallo-l"><span style="color: light-dark(#40A02B, #A6E3A1);">    :param conc_as_weight: Is the concentration per weight (`True`) or by number (`False`).</span></span>
+<span class="giallo-l"><span style="color: light-dark(#40A02B, #A6E3A1);">    </span></span>
+<span class="giallo-l"><span style="color: light-dark(#40A02B, #A6E3A1);">    :return: Mass of species in kg</span></span>
+<span class="giallo-l"><span style="color: light-dark(#40A02B, #A6E3A1);">    &quot;&quot;&quot;</span></span>
+<span class="giallo-l"><span>    cwt</span><span style="color: light-dark(#179299, #94E2D5);"> =</span><span> conc</span><span style="color: light-dark(#8839EF, #CBA6F7);"> if</span><span> conc_as_weight</span><span style="color: light-dark(#8839EF, #CBA6F7);"> else</span><span> conc</span><span style="color: light-dark(#179299, #94E2D5);"> *</span><span> mol_mass</span><span style="color: light-dark(#179299, #94E2D5);"> /</span><span> molar_mass_sic</span></span>
+<span class="giallo-l"><span>    mass_species</span><span style="color: light-dark(#179299, #94E2D5);"> =</span><span> cwt</span><span style="color: light-dark(#179299, #94E2D5);"> *</span><span style="color: light-dark(#1E66F5, #89B4FA);"> mass</span><span style="color: light-dark(#7C7F93, #9399B2);">(</span><span>r</span><span style="color: light-dark(#7C7F93, #9399B2);">)</span></span>
+<span class="giallo-l"><span style="color: light-dark(#8839EF, #CBA6F7);">    return</span><span> mass_species</span></span></code></pre>
+<p>Finally, we know that per mol of material, Avogadro's number $N_A = 6.0221415 \times 10^{23}$ of atoms are present. For iron, we could therefore calculate the number of atoms as:</p>
+<p>\begin{equation}
+n_\mathrm{Fe} = N_A \frac{m_\mathrm{Fe}}{M_\mathrm{Fe}}
+\end{equation}</p>
+<p>Here, $M_\mathrm{Fe}$ is again the molar mass of iron. We can now create our final function in <code>python</code>:</p>
+<pre class="giallo" style="color-scheme: light dark; color: light-dark(#4C4F69, #CDD6F4); background-color: light-dark(#EFF1F5, #1E1E2E);"><code data-lang="python"><span class="giallo-l"><span>n_a</span><span style="color: light-dark(#179299, #94E2D5);"> =</span><span style="color: light-dark(#FE640B, #FAB387);"> 6.0221415e23</span></span>
+<span class="giallo-l"></span>
+<span class="giallo-l"><span style="color: light-dark(#8839EF, #CBA6F7);">def</span><span style="color: light-dark(#1E66F5, #89B4FA);font-style: italic;"> number_of_atoms</span><span style="color: light-dark(#7C7F93, #9399B2);">(</span><span style="color: light-dark(#E64553, #EBA0AC);font-style: italic;">r</span><span style="color: light-dark(#7C7F93, #9399B2);">:</span><span style="color: light-dark(#8839EF, #CBA6F7);font-style: italic;"> float</span><span style="color: light-dark(#7C7F93, #9399B2);">,</span><span style="color: light-dark(#E64553, #EBA0AC);font-style: italic;"> mol_mass</span><span style="color: light-dark(#7C7F93, #9399B2);">:</span><span style="color: light-dark(#8839EF, #CBA6F7);font-style: italic;"> float</span><span style="color: light-dark(#7C7F93, #9399B2);">,</span><span style="color: light-dark(#E64553, #EBA0AC);font-style: italic;"> conc</span><span style="color: light-dark(#7C7F93, #9399B2);">:</span><span style="color: light-dark(#8839EF, #CBA6F7);font-style: italic;"> float</span><span style="color: light-dark(#7C7F93, #9399B2);">,</span><span style="color: light-dark(#E64553, #EBA0AC);font-style: italic;"> conc_as_weight</span><span style="color: light-dark(#7C7F93, #9399B2);">:</span><span style="color: light-dark(#8839EF, #CBA6F7);font-style: italic;"> bool</span><span style="color: light-dark(#7C7F93, #9399B2);">)</span><span style="color: light-dark(#7C7F93, #9399B2);"> -&gt;</span><span style="color: light-dark(#8839EF, #CBA6F7);font-style: italic;"> float</span><span style="color: light-dark(#7C7F93, #9399B2);">:</span></span>
+<span class="giallo-l"><span style="color: light-dark(#40A02B, #A6E3A1);">    &quot;&quot;&quot;</span><span style="color: light-dark(#40A02B, #A6E3A1);">Calculate the number of atoms for a given species in a presolar SiC grain.</span></span>
+<span class="giallo-l"><span style="color: light-dark(#40A02B, #A6E3A1);">    </span></span>
+<span class="giallo-l"><span style="color: light-dark(#40A02B, #A6E3A1);">    :param r: Radius of the SiC grain.</span></span>
+<span class="giallo-l"><span style="color: light-dark(#40A02B, #A6E3A1);">    :param mol_mass: Molar mass of the species of interest in kg / mol.</span></span>
+<span class="giallo-l"><span style="color: light-dark(#40A02B, #A6E3A1);">    :param conc: Concentration of the species of interest.</span></span>
+<span class="giallo-l"><span style="color: light-dark(#40A02B, #A6E3A1);">    :param conc_as_weight: Is the concentration per weight (`True`) or by number (`False`).</span></span>
+<span class="giallo-l"><span style="color: light-dark(#40A02B, #A6E3A1);">    </span></span>
+<span class="giallo-l"><span style="color: light-dark(#40A02B, #A6E3A1);">    :return: Mass of species in kg</span></span>
+<span class="giallo-l"><span style="color: light-dark(#40A02B, #A6E3A1);">    &quot;&quot;&quot;</span></span>
+<span class="giallo-l"><span>    m_species</span><span style="color: light-dark(#179299, #94E2D5);"> =</span><span style="color: light-dark(#1E66F5, #89B4FA);"> mass_species</span><span style="color: light-dark(#7C7F93, #9399B2);">(</span><span>r</span><span style="color: light-dark(#7C7F93, #9399B2);">,</span><span> mol_mass</span><span style="color: light-dark(#7C7F93, #9399B2);">,</span><span> conc</span><span style="color: light-dark(#7C7F93, #9399B2);">,</span><span> conc_as_weight</span><span style="color: light-dark(#7C7F93, #9399B2);">)</span></span>
+<span class="giallo-l"><span>    n_species</span><span style="color: light-dark(#179299, #94E2D5);"> =</span><span> n_a</span><span style="color: light-dark(#179299, #94E2D5);"> *</span><span> m_species</span><span style="color: light-dark(#179299, #94E2D5);"> /</span><span> mol_mass</span></span>
+<span class="giallo-l"><span style="color: light-dark(#8839EF, #CBA6F7);">    return</span><span> n_species</span></span></code></pre><h1 id="examples">Examples</h1>
+<p>We can now run some examples using the everything we just created.</p>
+<h2 id="example-1">Example 1</h2>
+<p>Assume we have 10 ppm by weight of iron in a grain with 1 µm radius. We can then calculate the number of atoms as:</p>
+<pre class="giallo" style="color-scheme: light dark; color: light-dark(#4C4F69, #CDD6F4); background-color: light-dark(#EFF1F5, #1E1E2E);"><code data-lang="python"><span class="giallo-l"><span>r</span><span style="color: light-dark(#179299, #94E2D5);"> =</span><span style="color: light-dark(#FE640B, #FAB387);"> 1e-6</span></span>
+<span class="giallo-l"><span>mol_mass</span><span style="color: light-dark(#179299, #94E2D5);"> =</span><span style="color: light-dark(#FE640B, #FAB387);"> 56e-3</span></span>
+<span class="giallo-l"><span>conc</span><span style="color: light-dark(#179299, #94E2D5);"> =</span><span style="color: light-dark(#FE640B, #FAB387);"> 10e-6</span></span>
+<span class="giallo-l"><span>conc_as_weight</span><span style="color: light-dark(#179299, #94E2D5);"> =</span><span style="color: light-dark(#FE640B, #FAB387);"> True</span></span>
+<span class="giallo-l"></span>
+<span class="giallo-l"><span>n_fe</span><span style="color: light-dark(#179299, #94E2D5);"> =</span><span style="color: light-dark(#1E66F5, #89B4FA);"> number_of_atoms</span><span style="color: light-dark(#7C7F93, #9399B2);">(</span><span>r</span><span style="color: light-dark(#7C7F93, #9399B2);">,</span><span> mol_mass</span><span style="color: light-dark(#7C7F93, #9399B2);">,</span><span> conc</span><span style="color: light-dark(#7C7F93, #9399B2);">,</span><span> conc_as_weight</span><span style="color: light-dark(#7C7F93, #9399B2);">)</span></span>
+<span class="giallo-l"><span style="color: light-dark(#FE640B, #FAB387);font-style: italic;">print</span><span style="color: light-dark(#7C7F93, #9399B2);">(</span><span style="color: light-dark(#40A02B, #A6E3A1);font-style: italic;">f</span><span style="color: light-dark(#40A02B, #A6E3A1);">&quot;</span><span style="color: light-dark(#40A02B, #A6E3A1);">Number of iron atoms per grain: </span><span style="color: light-dark(#EA76CB, #F5C2E7);">{</span><span>n_fe</span><span style="color: light-dark(#8839EF, #CBA6F7);">:.3e</span><span style="color: light-dark(#EA76CB, #F5C2E7);">}</span><span style="color: light-dark(#40A02B, #A6E3A1);">&quot;</span><span style="color: light-dark(#7C7F93, #9399B2);">)</span></span></code></pre><pre class="giallo" style="color-scheme: light dark; color: light-dark(#4C4F69, #CDD6F4); background-color: light-dark(#EFF1F5, #1E1E2E);"><code data-lang="plain"><span class="giallo-l"><span>Number of iron atoms per grain: 1.423e+06</span></span></code></pre><h2 id="example-2">Example 2</h2>
+<p>We can perform the same calculation, assuming that the concentration is per number. Since the molar mass of iron is heavier than the molar mass of SiC, we would expect the total number of atoms to be larger than in example 1. Let's see if that is true:</p>
+<pre class="giallo" style="color-scheme: light dark; color: light-dark(#4C4F69, #CDD6F4); background-color: light-dark(#EFF1F5, #1E1E2E);"><code data-lang="python"><span class="giallo-l"><span>n_fe</span><span style="color: light-dark(#179299, #94E2D5);"> =</span><span style="color: light-dark(#1E66F5, #89B4FA);"> number_of_atoms</span><span style="color: light-dark(#7C7F93, #9399B2);">(</span><span>r</span><span style="color: light-dark(#7C7F93, #9399B2);">,</span><span> mol_mass</span><span style="color: light-dark(#7C7F93, #9399B2);">,</span><span> conc</span><span style="color: light-dark(#7C7F93, #9399B2);">,</span><span style="color: light-dark(#FE640B, #FAB387);"> False</span><span style="color: light-dark(#7C7F93, #9399B2);">)</span></span>
+<span class="giallo-l"><span style="color: light-dark(#FE640B, #FAB387);font-style: italic;">print</span><span style="color: light-dark(#7C7F93, #9399B2);">(</span><span style="color: light-dark(#40A02B, #A6E3A1);font-style: italic;">f</span><span style="color: light-dark(#40A02B, #A6E3A1);">&quot;</span><span style="color: light-dark(#40A02B, #A6E3A1);">Number of iron atoms per grain: </span><span style="color: light-dark(#EA76CB, #F5C2E7);">{</span><span>n_fe</span><span style="color: light-dark(#8839EF, #CBA6F7);">:.3e</span><span style="color: light-dark(#EA76CB, #F5C2E7);">}</span><span style="color: light-dark(#40A02B, #A6E3A1);">&quot;</span><span style="color: light-dark(#7C7F93, #9399B2);">)</span></span></code></pre><pre class="giallo" style="color-scheme: light dark; color: light-dark(#4C4F69, #CDD6F4); background-color: light-dark(#EFF1F5, #1E1E2E);"><code data-lang="plain"><span class="giallo-l"><span>Number of iron atoms per grain: 1.993e+06</span></span></code></pre>
+<p>This simple Jupyter Notebook allows  you to determine how many atoms of a species you would expect in a SiC stardust grain. If you then want to measure the atoms, you'll know what you're up against. Good luck!</p>
+<p><a rel="external" href="https://mybinder.org/v2/gh/galactic-forensics/mindbytes/HEAD?labpath=atoms_in_sic_grains%2Fatoms_in_sic_grain.ipynb"><img src="https://mybinder.org/badge_logo.svg" alt="Binder" /></a></p>
+
+  </div>
+  
+
+  <footer class="post-footer">
+      
+      <ul class="post-tags">
+          
+          
+          <li><a href="https:&#x2F;&#x2F;blog.galactic-forensics.space&#x2F;tags&#x2F;stardust&#x2F;">Stardust</a></li>
+          
+          
+          <li><a href="https:&#x2F;&#x2F;blog.galactic-forensics.space&#x2F;tags&#x2F;python&#x2F;">Python</a></li>
+          
+      </ul>
+      
+
+    
+    
+
+
+<nav class="paginav">
+    
+    <a class="prev" href="https:&#x2F;&#x2F;blog.galactic-forensics.space&#x2F;blog&#x2F;01-resources-programming&#x2F;">
+        <span class="title">« Prev</span>
+        <br>
+        <span>Resources for Programming</span>
+    </a>
+    
+    
+    <a class="next" href="https:&#x2F;&#x2F;blog.galactic-forensics.space&#x2F;blog&#x2F;03-suncrash&#x2F;">
+        <span class="title">Next »</span>
+        <br>
+        <span>The day the Earth stood still</span>
+    </a>
+    
+</nav>
+
+    
+  </footer>
+
+</article>
+
+</main>
+
+<footer class="footer">
+  <div class="footer-credits">
+    
+    <span>&copy; 2026 <a href="https:&#x2F;&#x2F;blog.galactic-forensics.space">trappitsch</a></span>
+    
+    <span>
+        Powered by
+        <a href="https://www.getzola.org/" rel="noopener noreferrer" target="_blank">Zola</a> &
+        <a href="https://github.com/edwardzcn-decade/cela" rel="noopener" target="_blank">Cela</a>
+    </span>
+  </div>
+  <div class="footer-scheme">
+    <select id="scheme-select" title="Color scheme" aria-label="Color scheme">
+      <option value="catppuccin-latte">Latte</option>
+      <option value="catppuccin-macchiato">Macchiato</option>
+      <option value="rose-pine">Rosé Pine</option>
+      <option value="nord">Nord</option>
+    </select>
+  </div>
+</footer>
+
+
+<a href="#top" aria-label="go to top" title="Go to Top (Alt + G)" class="top-link" id="top-link" accesskey="g">
+  <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 12 6" fill="currentColor">
+      <path d="M12 6H0l6-6z" />
+  </svg>
+</a>
+
+
+
+
+
+
+
+
+<div id="search-toggle-box" class="hidden">
+  <div class="search-toggle-modal">
+    <input type="text" id="search-toggle-input" placeholder="Type to search..." />
+    <button id="search-toggle-button">Search</button>
+  </div>
+</div>
+
+
+
+<script src="https://blog.galactic-forensics.space/js/site-ui.js"></script>
+<script src="https://blog.galactic-forensics.space/js/search-ui.js"></script>
+<script src="https://blog.galactic-forensics.space/js/home-effects.js"></script>
+
+
+</body>
+
+</html>
