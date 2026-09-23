@@ -19,6 +19,8 @@ for [SMC HRR] chillers
 to test out the [instrumentRs v0.2.0] framework idea.
 This post presents the findings of this work.
 
+<!--more-->
+
 I also spent some time
 developing an embedded driver for the
 Analog Devices [LTC2686] eight-channel programmable digital-to-analog converter
